@@ -41,8 +41,7 @@ module OmniAuth
       def callback_phase
         raise MissingCredentialsError.new("Missing login credentials") if request['username'].nil? || request['password'].nil?
         begin
-        creds = {'username' => request['username'], 'password' => request['password']}
-        @ldap_user_info = @adaptor.bind_as(:filter => Net::LDAP::Filter.eq(@adaptor.uid, @options.name_proc.call(creds['username'])),:size => 1)
+        @ldap_user_info = @adaptor.bind_as(:filter => Net::LDAP::Filter.eq(@adaptor.uid, @options[:name_proc].call(request['username'])),:size => 1, :password => request['password'])
         return fail!(:invalid_credentials) if !@ldap_user_info
            
         @user_info = self.class.map_user(@@config, @ldap_user_info)

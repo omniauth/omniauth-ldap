@@ -4,7 +4,8 @@ require 'rack'
 require 'net/ldap'
 require 'net/ntlm'
 require 'uri'
-
+require 'sasl'
+require 'kconv'
 module OmniAuth
   module LDAP
     class Adaptor
@@ -24,11 +25,9 @@ module OmniAuth
       }
 
       attr_accessor :bind_dn, :password
-      attr_reader :connection, :uid, :base
+      attr_reader :connection, :uid, :base, :auth
 
       def initialize(configuration={})
-        @disconnected = false
-        @bound = false
         @configuration = configuration.dup
         @configuration[:allow_anonymous] ||= false
         @logger = @configuration.delete(:logger)
@@ -40,23 +39,22 @@ module OmniAuth
         VALID_ADAPTER_CONFIGURATION_KEYS.each do |name|
           instance_variable_set("@#{name}", configuration[name])
         end
-
         method = ensure_method(@method)
         config = {
           :host => @host,
           :port => @port,
-          :encryption => method
+          :encryption => method,
+          :base => @base
         }
         @uri = construct_uri(@host, @port, @method != :plain)
         
-        @bind_method = @try_sasl ? "sasl" : @allow_anonymous ? 'anonymous' : 'simple'
-        @bind_method = 'anonymous' unless @bind_dn && @password
+        @bind_method = @try_sasl ? :sasl : (@allow_anonymous||!@bind_dn||!@password ? :anonymous : :simple)
         
-        @auth = sasl_auths.first if @bind_method == 'sasl'
-        @bind_method = 'simple' unless @auth
+        
+        @auth = sasl_auths({:username => @bind_dn, :password => @password}).first if @bind_method == :sasl
         @auth ||= { :method => @bind_method,
                     :username => @bind_dn,
-                    :password => @passowrd
+                    :password => @password
                   }
         config[:auth] = @auth
         @connection = Net::LDAP.new(config)
@@ -65,35 +63,26 @@ module OmniAuth
       #:base => "dc=yourcompany, dc=com",
       # :filter => "(mail=#{user})",
       # :password => psw
-      def bind_as(args = {})
+      def bind_as(args = {})        
         result = false
-        @connection.open { |me|
-          rs = search args
+        @connection.open do |me|
+          rs = me.search args
           if rs and rs.first and dn = rs.first.dn
             password = args[:password]
-            method = args[:method]
+            method = args[:method] || @method
             password = password.call if password.respond_to?(:call)
             if method == 'sasl'
-            result = rs if bind(sasl_auths(args))
+            result = rs.first if me.bind(sasl_auths({:username => dn, :password => password}).first)
             else
-            result = rs if bind(:method => :simple, :username => dn,
+            result = rs.first if me.bind(:method => :simple, :username => dn,
                                 :password => password)
             end
           end
-        }
+        end
         result
       end
 
       private
-
-      def ensure_port(method)
-        if method == :ssl
-          URI::LDAPS::DEFAULT_PORT
-        else
-          URI::LDAP::DEFAULT_PORT
-        end
-      end
-
       def ensure_method(method)
           method ||= "plain"
           normalized_method = method.to_s.downcase.to_sym
@@ -112,21 +101,21 @@ module OmniAuth
           sasl_bind_setup = "sasl_bind_setup_#{normalized_mechanism}"
           next unless respond_to?(sasl_bind_setup, true)
           initial_credential, challenge_response = send(sasl_bind_setup, options)
-
           auths << {
             :method => :sasl,
             :initial_credential => initial_credential,
             :mechanism => mechanism,
-            :challenge_response => challenge_response,
+            :challenge_response => challenge_response
           }
         end
+        auths
       end
 
       def sasl_bind_setup_digest_md5(options)
         bind_dn = options[:username]
         initial_credential = ""
         challenge_response = Proc.new do |cred|
-          pref = SASL::Preferences.new :digest_uri => "ldap/#{@host}", :username => bind_dn, :has_password? => true, :password => options[:password]||@password
+          pref = SASL::Preferences.new :digest_uri => "ldap/#{@host}", :username => bind_dn, :has_password? => true, :password => options[:password]
           sasl = SASL.new("DIGEST-MD5", pref)
           response = sasl.receive("challenge", cred)
           response[1]
@@ -136,7 +125,7 @@ module OmniAuth
 
       def sasl_bind_setup_gss_spnego(options)
         bind_dn = options[:username]
-        psw = [bind_dn, options[:password]||@password]
+        psw = options[:password]
         raise LdapError.new( "invalid binding information" ) unless (bind_dn && psw)
 
         nego = proc {|challenge|
