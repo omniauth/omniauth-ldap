@@ -8,11 +8,11 @@ Gem::Specification.new do |gem|
   gem.summary       = %q{A LDAP strategy for OmniAuth.}
   gem.homepage      = "https://github.com/intridea/omniauth-ldap"
 
-  gem.add_runtime_dependency     'omniauth', '~> 1.0.0'
-  gem.add_runtime_dependency     'net-ldap', '~>0.2.2'
+  gem.add_runtime_dependency     'omniauth', '~> 1.0'
+  gem.add_runtime_dependency     'net-ldap', '~> 0.2.2'
   gem.add_runtime_dependency     'pyu-ruby-sasl', '~> 0.0.3.1'
-  gem.add_runtime_dependency     'rubyntlm', '~> 0.1.1'
-  gem.add_development_dependency 'rspec', '~> 2.6'
+  gem.add_runtime_dependency     'rubyntlm', '~> 0.1.1'  
+  gem.add_development_dependency 'rspec', '~> 2.7'
   gem.add_development_dependency 'simplecov'
   gem.add_development_dependency 'rack-test'
   gem.add_development_dependency 'libnotify'
