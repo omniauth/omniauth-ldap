@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    omniauth-ldap (1.0.0.beta1)
+    omniauth-ldap (1.0.1)
       net-ldap (~> 0.2.2)
-      omniauth (~> 1.0.0)
+      omniauth (~> 1.0)
       pyu-ruby-sasl (~> 0.0.3.1)
       rubyntlm (~> 0.1.1)
 
@@ -74,6 +74,6 @@ DEPENDENCIES
   omniauth-ldap!
   rack-test
   rb-fsevent
-  rspec (~> 2.6)
+  rspec (~> 2.7)
   ruby-debug19
   simplecov

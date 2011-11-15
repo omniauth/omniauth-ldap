@@ -1,5 +1,4 @@
 require 'omniauth'
-require 'ruby-debug'
 
 module OmniAuth
   module Strategies
