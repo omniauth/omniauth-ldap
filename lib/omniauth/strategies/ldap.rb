@@ -58,7 +58,7 @@ module OmniAuth
         @user_info
       }
       extra {
-        @ldap_user_info
+        { 'original_ldap_entry' => @ldap_user_info }
       }
             
       def self.map_user(mapper, object)
