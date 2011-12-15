@@ -3,7 +3,7 @@ require 'omniauth'
 module OmniAuth
   module Strategies
     class LDAP
-      class MissingCredentialsError < StandardError; end      
+      class MissingCredentialsError < StandardError; end
       include OmniAuth::Strategy
       @@config = {
         'name' => 'cn',
@@ -20,12 +20,12 @@ module OmniAuth
         'image' => 'jpegPhoto',
         'description' => 'description'
       }
-      option :title, "LDAP Authentication" #default title for authentication form 
+      option :title, "LDAP Authentication" #default title for authentication form
       option :port, 389
       option :method, :plain
       option :uid, 'sAMAccountName'
       option :name_proc, lambda {|n| n}
-      def initialize(app, *args, &block)        
+      def initialize(app, *args, &block)
         super
         @adaptor = OmniAuth::LDAP::Adaptor.new @options
       end
@@ -42,24 +42,24 @@ module OmniAuth
         begin
         @ldap_user_info = @adaptor.bind_as(:filter => Net::LDAP::Filter.eq(@adaptor.uid, @options[:name_proc].call(request['username'])),:size => 1, :password => request['password'])
         return fail!(:invalid_credentials) if !@ldap_user_info
-           
+
         @user_info = self.class.map_user(@@config, @ldap_user_info)
         super
         rescue Exception => e
           return fail!(:ldap_error, e)
         end
       end
-      
+
       uid {
         @user_info["uid"]
-      }      
+      }
       info {
         @user_info
       }
       extra {
-        { 'original_ldap_entry' => @ldap_user_info }
+        { :raw_info => @ldap_user_info }
       }
-            
+
       def self.map_user(mapper, object)
         user = {}
         mapper.each do |key, value|
