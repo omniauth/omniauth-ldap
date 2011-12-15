@@ -1,9 +1,5 @@
 # OmniAuth LDAP
 
-**Note:** This gem is designed to work with the in-beta OmniAuth 1.0
-library. It will not be officially released on RubyGems.org until
-OmniAuth 1.0 is released.
-
 == LDAP
 
 Use the LDAP strategy as a middleware in your application:
@@ -19,7 +15,7 @@ Use the LDAP strategy as a middleware in your application:
         :bind_dn => 'default_bind_dn'
         :password => 'password'
 
-All of the listed options are required, with the exception of :name_proc, :bind_dn, and :password.
+All of the listed options are required, with the exception of :title, :name_proc, :bind_dn, and :password.
 Allowed values of :method are: :plain, :ssl, :tls.
 
 :bind_dn and :password is the default credentials to perform user lookup.
