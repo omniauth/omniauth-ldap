@@ -25,10 +25,7 @@ module OmniAuth
       option :method, :plain
       option :uid, 'sAMAccountName'
       option :name_proc, lambda {|n| n}
-      def initialize(app, *args, &block)
-        super
-        @adaptor = OmniAuth::LDAP::Adaptor.new @options
-      end
+
       def request_phase
         f = OmniAuth::Form.new(:title => (options[:title] || "LDAP Authentication"), :url => callback_path)
         f.text_field 'Login', 'username'
@@ -38,13 +35,15 @@ module OmniAuth
       end
 
       def callback_phase
+        @adaptor = OmniAuth::LDAP::Adaptor.new @options
+
         raise MissingCredentialsError.new("Missing login credentials") if request['username'].nil? || request['password'].nil?
         begin
-        @ldap_user_info = @adaptor.bind_as(:filter => Net::LDAP::Filter.eq(@adaptor.uid, @options[:name_proc].call(request['username'])),:size => 1, :password => request['password'])
-        return fail!(:invalid_credentials) if !@ldap_user_info
+          @ldap_user_info = @adaptor.bind_as(:filter => Net::LDAP::Filter.eq(@adaptor.uid, @options[:name_proc].call(request['username'])),:size => 1, :password => request['password'])
+          return fail!(:invalid_credentials) if !@ldap_user_info
 
-        @user_info = self.class.map_user(@@config, @ldap_user_info)
-        super
+          @user_info = self.class.map_user(@@config, @ldap_user_info)
+          super
         rescue Exception => e
           return fail!(:ldap_error, e)
         end
@@ -64,20 +63,20 @@ module OmniAuth
         user = {}
         mapper.each do |key, value|
           case value
-            when String
-              user[key] = object[value.downcase.to_sym].first if object[value.downcase.to_sym]
-            when Array
-              value.each {|v| (user[key] = object[v.downcase.to_sym].first; break;) if object[v.downcase.to_sym]}
-            when Hash
-              value.map do |key1, value1|
-                pattern = key1.dup
-                value1.each_with_index do |v,i|
-                  part = ''; v.collect(&:downcase).collect(&:to_sym).each {|v1| (part = object[v1].first; break;) if object[v1]}
-                  pattern.gsub!("%#{i}",part||'')
-                end
-                user[key] = pattern
+          when String
+            user[key] = object[value.downcase.to_sym].first if object[value.downcase.to_sym]
+          when Array
+            value.each {|v| (user[key] = object[v.downcase.to_sym].first; break;) if object[v.downcase.to_sym]}
+          when Hash
+            value.map do |key1, value1|
+              pattern = key1.dup
+              value1.each_with_index do |v,i|
+                part = ''; v.collect(&:downcase).collect(&:to_sym).each {|v1| (part = object[v1].first; break;) if object[v1]}
+                pattern.gsub!("%#{i}",part||'')
               end
+              user[key] = pattern
             end
+          end
         end
         user
       end
