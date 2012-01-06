@@ -26,18 +26,20 @@ module OmniAuth
 
       attr_accessor :bind_dn, :password
       attr_reader :connection, :uid, :base, :auth
-
+      def self.validate(configuration={})
+        message = []
+        MUST_HAVE_KEYS.each do |name|
+           message << name if configuration[name].nil?
+        end
+        raise ArgumentError.new(message.join(",") +" MUST be provided") unless message.empty?
+      end
       def initialize(configuration={})
+        Adaptor.validate(configuration)
         @configuration = configuration.dup
         @configuration[:allow_anonymous] ||= false
         @logger = @configuration.delete(:logger)
-        message = []
-        MUST_HAVE_KEYS.each do |name|
-            message << name if configuration[name].nil?
-        end
-        raise ArgumentError.new(message.join(",") +" MUST be provided") unless message.empty?
         VALID_ADAPTER_CONFIGURATION_KEYS.each do |name|
-          instance_variable_set("@#{name}", configuration[name])
+          instance_variable_set("@#{name}", @configuration[name])
         end
         method = ensure_method(@method)
         config = {

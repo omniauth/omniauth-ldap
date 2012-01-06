@@ -27,6 +27,7 @@ module OmniAuth
       option :name_proc, lambda {|n| n}
 
       def request_phase
+        OmniAuth::LDAP::Adaptor.validate @options
         f = OmniAuth::Form.new(:title => (options[:title] || "LDAP Authentication"), :url => callback_path)
         f.text_field 'Login', 'username'
         f.password_field 'Password', 'password'
