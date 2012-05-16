@@ -14,7 +14,7 @@ module OmniAuth
       class AuthenticationError < StandardError; end
       class ConnectionError < StandardError; end
 
-      VALID_ADAPTER_CONFIGURATION_KEYS = [:host, :port, :method, :bind_dn, :password, :try_sasl, :sasl_mechanisms, :uid, :base, :allow_anonymous]
+      VALID_ADAPTER_CONFIGURATION_KEYS = [:host, :port, :method, :bind_dn, :password, :try_sasl, :sasl_mechanisms, :uid, :base, :allow_anonymous, :use_user_credential]
 
       MUST_HAVE_KEYS = [:host, :port, :method, :uid, :base]
 
@@ -25,6 +25,7 @@ module OmniAuth
       }
 
       attr_accessor :bind_dn, :password
+      attr_accessor :use_user_credential
       attr_reader :connection, :uid, :base, :auth
       def self.validate(configuration={})
         message = []
@@ -41,6 +42,11 @@ module OmniAuth
         VALID_ADAPTER_CONFIGURATION_KEYS.each do |name|
           instance_variable_set("@#{name}", @configuration[name])
         end
+        @uri = construct_uri(@host, @port, @method != :plain)  # seems not used anywhere.
+        reset_connection
+      end
+
+      def reset_connection
         method = ensure_method(@method)
         config = {
           :host => @host,
@@ -48,18 +54,23 @@ module OmniAuth
           :encryption => method,
           :base => @base
         }
-        @uri = construct_uri(@host, @port, @method != :plain)
-        
         @bind_method = @try_sasl ? :sasl : (@allow_anonymous||!@bind_dn||!@password ? :anonymous : :simple)
         
-        
-        @auth = sasl_auths({:username => @bind_dn, :password => @password}).first if @bind_method == :sasl
-        @auth ||= { :method => @bind_method,
+        if @bind_method == :sasl
+          @auth = sasl_auths({:username => @bind_dn, :password => @password}).first if @bind_method == :sasl
+        else
+          @auth = { :method => @bind_method,
                     :username => @bind_dn,
                     :password => @password
                   }
+        end
         config[:auth] = @auth
         @connection = Net::LDAP.new(config)
+      end
+
+      # convert 'dc=intridea, dc=com' to 'intridea.com'
+      def base_to_host(str)
+        str.split(',').map{|x| x.split('=').last}.join('.')
       end
       
       #:base => "dc=yourcompany, dc=com",
