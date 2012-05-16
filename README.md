@@ -38,6 +38,10 @@ Allowed values of :method are: :plain, :ssl, :tls.
   Use them to initialize a SASL connection to server. If you are not familiar with these authentication methods, 
   please just avoid them.
 
+:use_user_credential Allow you to use current login user's info as LDAP credential. true/false.
+  If you don't have a default credential (:bind_dn and :password) for ldap config, 
+  You can fake it by using the current login user's name and password.
+
 Direct users to '/auth/ldap' to have them authenticated via your company's LDAP server.
 
 

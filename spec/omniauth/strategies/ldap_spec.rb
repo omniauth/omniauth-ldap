@@ -55,6 +55,7 @@ describe "OmniAuth::Strategies::LDAP" do
     context 'failure' do
     before(:each) do
       @adaptor.stub(:bind_as).and_return(false)
+      @adaptor.stub(:use_user_credential).and_return(false)
     end
       it 'should raise MissingCredentialsError' do
         lambda{post('/auth/ldap/callback', {})}.should raise_error OmniAuth::Strategies::LDAP::MissingCredentialsError
@@ -75,6 +76,7 @@ describe "OmniAuth::Strategies::LDAP" do
     context 'success' do
       let(:auth_hash){ last_request.env['omniauth.auth'] }
       before(:each) do
+        @adaptor.stub(:use_user_credential).and_return(false)
         @adaptor.stub(:bind_as).and_return({:dn => ['cn=ping, dc=intridea, dc=com'], :mail => ['ping@intridea.com'], :givenname => ['Ping'], :sn => ['Yu'], 
                                             :telephonenumber => ['555-555-5555'], :mobile => ['444-444-4444'], :uid => ['ping'], :title => ['dev'], :address =>[ 'k street'],
                                             :l => ['Washington'], :st => ['DC'], :co => ["U.S.A"], :postofficebox => ['20001'], :wwwhomepage => ['www.intridea.com'],
@@ -98,6 +100,24 @@ describe "OmniAuth::Strategies::LDAP" do
         auth_hash.info.url.should == 'www.intridea.com'
         auth_hash.info.image.should == 'http://www.intridea.com/ping.jpg'
         auth_hash.info.description.should == 'omniauth-ldap'
+      end
+    end
+
+    context 'use user credential' do
+      let(:auth_hash){ last_request.env['omniauth.auth'] }
+      before(:each) do
+        @adaptor = mock(OmniAuth::LDAP::Adaptor, {:uid => 'sAMAccountName', 
+                                                  :base => 'dc=intridea, dc=com',
+                                                  :use_user_credential => true})
+        OmniAuth::LDAP::Adaptor.stub(:new).and_return(@adaptor)
+      end
+      
+      it 'should reset connection' do
+        @adaptor.stub(:base_to_host).and_return('intridea.com')
+        @adaptor.should_receive(:bind_dn=).with('ping@intridea.com')
+        @adaptor.should_receive(:password=).with('password')
+        @adaptor.should_receive(:reset_connection)
+        post('/auth/ldap/callback', {:username => 'ping', :password => 'password'})
       end
     end
   end
