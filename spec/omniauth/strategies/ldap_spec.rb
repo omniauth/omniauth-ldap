@@ -35,7 +35,7 @@ describe "OmniAuth::Strategies::LDAP" do
     end
 
     it 'should have the callback as the action for the form' do
-      last_response.body.should be_include("action='/auth/ldap/callback'")
+      last_response.body.should be_include("action='http://example.org/auth/ldap/callback'")
     end
 
     it 'should have a text field for each of the fields' do
