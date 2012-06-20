@@ -57,18 +57,18 @@ module OmniAuth
         # Fast-path: if a trusted identity header is present, skip the login form
         # and jump to the callback where we will complete using directory lookup.
         if header_username
-          return Rack::Response.new([], 302, "Location" => callback_path).finish
+          return Rack::Response.new([], 302, "Location" => callback_url).finish
         end
 
         # If credentials were POSTed directly to /auth/:provider, redirect to the callback path.
         # This mirrors the behavior of many OmniAuth providers and allows test helpers (like
         # OmniAuth::Test::PhonySession) to populate `env['omniauth.auth']` on the callback request.
         if request.post? && request.params["username"].to_s != "" && request.params["password"].to_s != ""
-          return Rack::Response.new([], 302, "Location" => callback_path).finish
+          return Rack::Response.new([], 302, "Location" => callback_url).finish
         end
 
         OmniAuth::LDAP::Adaptor.validate(@options)
-        f = OmniAuth::Form.new(title: options[:title] || "LDAP Authentication", url: callback_path)
+        f = OmniAuth::Form.new(title: options[:title] || "LDAP Authentication", url: callback_url)
         f.text_field("Login", "username")
         f.password_field("Password", "password")
         f.button("Sign In")

@@ -70,7 +70,7 @@ RSpec.describe "OmniAuth::Strategies::LDAP" do
     end
 
     it "has the callback as the action for the form" do
-      expect(last_response.body).to include("action='/auth/ldap/callback'")
+      expect(last_response.body).to include("action='http://example.org/auth/ldap/callback'")
     end
 
     it "has a text field for each of the fields" do
