@@ -38,7 +38,12 @@ module OmniAuth
       def callback_phase
         @adaptor = OmniAuth::LDAP::Adaptor.new @options
 
-        raise MissingCredentialsError.new("Missing login credentials") if request['username'].nil? || request['password'].nil?
+        # GITLAB security patch
+        # Dont allow blank password for ldap auth
+        if request['username'].nil? || request['username'].empty? || request['password'].nil? || request['password'].empty?
+          raise MissingCredentialsError.new("Missing login credentials") 
+        end
+
         begin
           @ldap_user_info = @adaptor.bind_as(:filter => Net::LDAP::Filter.eq(@adaptor.uid, @options[:name_proc].call(request['username'])),:size => 1, :password => request['password'])
           return fail!(:invalid_credentials) if !@ldap_user_info
