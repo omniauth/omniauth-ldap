@@ -59,6 +59,12 @@ describe "OmniAuth::Strategies::LDAP" do
       it 'should raise MissingCredentialsError' do
         lambda{post('/auth/ldap/callback', {})}.should raise_error OmniAuth::Strategies::LDAP::MissingCredentialsError
       end
+      it 'should raise MissingCredentialsError for nil password' do
+        lambda{post('/auth/ldap/callback', {:username => 'ping'})}.should raise_error OmniAuth::Strategies::LDAP::MissingCredentialsError
+      end
+      it 'should raise MissingCredentialsError for empty password' do
+        lambda{post('/auth/ldap/callback', {:username => 'ping', :password => ''})}.should raise_error OmniAuth::Strategies::LDAP::MissingCredentialsError
+      end
       it 'should redirect to error page' do        
         post('/auth/ldap/callback', {:username => 'ping', :password => 'password'})
         last_response.should be_redirect
