@@ -67,21 +67,32 @@ describe "OmniAuth::Strategies::LDAP" do
         end
       end
 
-      context "when password is not preset" do
+      context "when username is empty" do
         it 'should redirect to error page' do
-          post('/auth/ldap/callback', {:username => "ping"})
+          post('/auth/ldap/callback', {:username => ""})
 
           last_response.should be_redirect
           last_response.headers['Location'].should =~ %r{missing_credentials}
         end
       end
 
-      context "when password is empty" do
-        it 'should redirect to error page' do
-          post('/auth/ldap/callback', {:username => "ping", :password => ""})
+      context "when username is present" do
+        context "and password is not preset" do
+          it 'should redirect to error page' do
+            post('/auth/ldap/callback', {:username => "ping"})
 
-          last_response.should be_redirect
-          last_response.headers['Location'].should =~ %r{missing_credentials}
+            last_response.should be_redirect
+            last_response.headers['Location'].should =~ %r{missing_credentials}
+          end
+        end
+
+        context "and password is empty" do
+          it 'should redirect to error page' do
+            post('/auth/ldap/callback', {:username => "ping", :password => ""})
+
+            last_response.should be_redirect
+            last_response.headers['Location'].should =~ %r{missing_credentials}
+          end
         end
       end
 
