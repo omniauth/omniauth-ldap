@@ -3,7 +3,6 @@ require 'omniauth'
 module OmniAuth
   module Strategies
     class LDAP
-      class MissingCredentialsError < StandardError; end
       include OmniAuth::Strategy
       @@config = {
         'name' => 'cn',
@@ -38,7 +37,7 @@ module OmniAuth
       def callback_phase
         @adaptor = OmniAuth::LDAP::Adaptor.new @options
 
-        raise MissingCredentialsError.new("Missing login credentials") if request['username'].nil? || request['password'].nil?
+        return fail!(:missing_credentials) if request['username'].nil? || request['password'].nil?
         begin
           @ldap_user_info = @adaptor.bind_as(:filter => Net::LDAP::Filter.eq(@adaptor.uid, @options[:name_proc].call(request['username'])),:size => 1, :password => request['password'])
           return fail!(:invalid_credentials) if !@ldap_user_info

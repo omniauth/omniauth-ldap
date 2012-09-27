@@ -56,10 +56,13 @@ describe "OmniAuth::Strategies::LDAP" do
     before(:each) do
       @adaptor.stub(:bind_as).and_return(false)
     end
-      it 'should raise MissingCredentialsError' do
-        lambda{post('/auth/ldap/callback', {})}.should raise_error OmniAuth::Strategies::LDAP::MissingCredentialsError
+      it 'should redirect to error page when username is not present' do
+        post('/auth/ldap/callback', {})
+
+        last_response.should be_redirect
+        last_response.headers['Location'].should =~ %r{missing_credentials}
       end
-      it 'should redirect to error page' do        
+      it 'should redirect to error page' do
         post('/auth/ldap/callback', {:username => 'ping', :password => 'password'})
         last_response.should be_redirect
         last_response.headers['Location'].should =~ %r{invalid_credentials}
@@ -81,9 +84,9 @@ describe "OmniAuth::Strategies::LDAP" do
                                             :jpegphoto => ['http://www.intridea.com/ping.jpg'], :description => ['omniauth-ldap']})
         post('/auth/ldap/callback', {:username => 'ping', :password => 'password'})
       end
-      
-      it 'should raise MissingCredentialsError' do
-        should_not raise_error OmniAuth::Strategies::LDAP::MissingCredentialsError
+
+      it 'should not redirect to error page' do
+        last_response.should_not be_redirect
       end
       it 'should map user info' do
         auth_hash.uid.should == 'cn=ping, dc=intridea, dc=com'
