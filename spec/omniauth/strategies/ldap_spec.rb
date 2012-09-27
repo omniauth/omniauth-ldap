@@ -11,7 +11,7 @@ describe "OmniAuth::Strategies::LDAP" do
   # :password => 'password'
   class MyLdapProvider < OmniAuth::Strategies::LDAP; end
 
-  def app
+  let(:app) do
     Rack::Builder.new {
       use OmniAuth::Test::PhonySession
       use MyLdapProvider, :name => 'ldap', :title => 'MyLdap Form', :host => '192.168.1.145', :base => 'dc=score, dc=local', :name_proc => Proc.new {|name| name.gsub(/@.*$/,'')}
@@ -19,7 +19,7 @@ describe "OmniAuth::Strategies::LDAP" do
     }.to_app
   end
 
-  def session
+  let(:session) do
     last_request.env['rack.session']
   end
 
