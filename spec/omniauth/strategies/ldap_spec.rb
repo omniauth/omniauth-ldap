@@ -58,24 +58,55 @@ describe "OmniAuth::Strategies::LDAP" do
         @adaptor.stub(:bind_as).and_return(false)
       end
 
-      it 'should redirect to error page when username is not present' do
-        post('/auth/ldap/callback', {})
+      context "when username is not preset" do
+        it 'should redirect to error page' do
+          post('/auth/ldap/callback', {})
 
-        last_response.should be_redirect
-        last_response.headers['Location'].should =~ %r{missing_credentials}
+          last_response.should be_redirect
+          last_response.headers['Location'].should =~ %r{missing_credentials}
+        end
       end
 
-      it 'should redirect to error page' do
-        post('/auth/ldap/callback', {:username => 'ping', :password => 'password'})
-        last_response.should be_redirect
-        last_response.headers['Location'].should =~ %r{invalid_credentials}
+      context "when password is not preset" do
+        it 'should redirect to error page' do
+          post('/auth/ldap/callback', {:username => "ping"})
+
+          last_response.should be_redirect
+          last_response.headers['Location'].should =~ %r{missing_credentials}
+        end
       end
 
-      it 'should redirect to error page when there is exception' do
-        @adaptor.stub(:bind_as).and_throw(Exception.new('connection_error'))
-        post('/auth/ldap/callback', {:username => 'ping', :password => 'password'})
-        last_response.should be_redirect
-        last_response.headers['Location'].should =~ %r{ldap_error}
+      context "when password is empty" do
+        it 'should redirect to error page' do
+          post('/auth/ldap/callback', {:username => "ping", :password => ""})
+
+          last_response.should be_redirect
+          last_response.headers['Location'].should =~ %r{missing_credentials}
+        end
+      end
+
+      context "when username and password are present" do
+        context "and bind on LDAP server failed" do
+          it 'should redirect to error page' do
+            post('/auth/ldap/callback', {:username => 'ping', :password => 'password'})
+
+            last_response.should be_redirect
+            last_response.headers['Location'].should =~ %r{invalid_credentials}
+          end
+        end
+
+        context "and communication with LDAP server caused an exception" do
+          before :each do
+            @adaptor.stub(:bind_as).and_throw(Exception.new('connection_error'))
+          end
+
+          it 'should redirect to error page' do
+            post('/auth/ldap/callback', {:username => "ping", :password => "password"})
+
+            last_response.should be_redirect
+            last_response.headers['Location'].should =~ %r{ldap_error}
+          end
+        end
       end
     end
 
@@ -83,10 +114,20 @@ describe "OmniAuth::Strategies::LDAP" do
       let(:auth_hash){ last_request.env['omniauth.auth'] }
 
       before(:each) do
-        @adaptor.stub(:bind_as).and_return({:dn => ['cn=ping, dc=intridea, dc=com'], :mail => ['ping@intridea.com'], :givenname => ['Ping'], :sn => ['Yu'],
-                                             :telephonenumber => ['555-555-5555'], :mobile => ['444-444-4444'], :uid => ['ping'], :title => ['dev'], :address =>[ 'k street'],
-                                             :l => ['Washington'], :st => ['DC'], :co => ["U.S.A"], :postofficebox => ['20001'], :wwwhomepage => ['www.intridea.com'],
-                                             :jpegphoto => ['http://www.intridea.com/ping.jpg'], :description => ['omniauth-ldap']})
+        @adaptor.stub(:bind_as).and_return({
+                                             :dn   => ['cn=ping, dc=intridea, dc=com'],
+                                             :mail => ['ping@intridea.com'],
+                                             :givenname => ['Ping'], :sn => ['Yu'],
+                                             :telephonenumber => ['555-555-5555'],
+                                             :mobile => ['444-444-4444'],
+                                             :uid => ['ping'],
+                                             :title => ['dev'],
+                                             :address =>[ 'k street'],
+                                             :l => ['Washington'], :st => ['DC'], :co => ["U.S.A"], :postofficebox => ['20001'],
+                                             :wwwhomepage => ['www.intridea.com'],
+                                             :jpegphoto => ['http://www.intridea.com/ping.jpg'],
+                                             :description => ['omniauth-ldap']})
+
         post('/auth/ldap/callback', {:username => 'ping', :password => 'password'})
       end
 
@@ -94,7 +135,7 @@ describe "OmniAuth::Strategies::LDAP" do
         last_response.should_not be_redirect
       end
 
-      it 'should map user info' do
+      it 'should map user info to Auth Hash' do
         auth_hash.uid.should == 'cn=ping, dc=intridea, dc=com'
         auth_hash.info.email.should == 'ping@intridea.com'
         auth_hash.info.first_name.should == 'Ping'
