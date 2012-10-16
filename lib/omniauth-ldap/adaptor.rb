@@ -14,9 +14,10 @@ module OmniAuth
       class AuthenticationError < StandardError; end
       class ConnectionError < StandardError; end
 
-      VALID_ADAPTER_CONFIGURATION_KEYS = [:host, :port, :method, :bind_dn, :password, :try_sasl, :sasl_mechanisms, :uid, :base, :allow_anonymous]
+      VALID_ADAPTER_CONFIGURATION_KEYS = [:host, :port, :method, :bind_dn, :password, :try_sasl, :sasl_mechanisms, :uid, :base, :allow_anonymous, :filter]
 
-      MUST_HAVE_KEYS = [:host, :port, :method, :uid, :base]
+      # A list of needed keys. Possible alternatives are specified using sub-lists.
+      MUST_HAVE_KEYS = [:host, :port, :method, [:uid, :filter], :base]
 
       METHOD = {
         :ssl => :simple_tls,
@@ -25,11 +26,15 @@ module OmniAuth
       }
 
       attr_accessor :bind_dn, :password
-      attr_reader :connection, :uid, :base, :auth
+      attr_reader :connection, :uid, :base, :auth, :filter
       def self.validate(configuration={})
         message = []
-        MUST_HAVE_KEYS.each do |name|
-           message << name if configuration[name].nil?
+        MUST_HAVE_KEYS.each do |names|
+          names = [names].flatten
+          missing_keys = names.select{|name| configuration[name].nil?}
+          if missing_keys == names
+            message << names.join(' or ')
+          end
         end
         raise ArgumentError.new(message.join(",") +" MUST be provided") unless message.empty?
       end
