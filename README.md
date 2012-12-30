@@ -1,6 +1,6 @@
-# OmniAuth LDAP
+# GitLab fork | OmniAuth LDAP [![build status](https://secure.travis-ci.org/gitlabhq/omniauth-ldap.png)](https://travis-ci.org/gitlabhq/omniauth-ldap)
 
-== LDAP
+### LDAP
 
 Use the LDAP strategy as a middleware in your application:
 
