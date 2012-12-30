@@ -49,10 +49,10 @@ module OmniAuth
           :base => @base
         }
         @uri = construct_uri(@host, @port, @method != :plain)
-        
+
         @bind_method = @try_sasl ? :sasl : (@allow_anonymous||!@bind_dn||!@password ? :anonymous : :simple)
-        
-        
+
+
         @auth = sasl_auths({:username => @bind_dn, :password => @password}).first if @bind_method == :sasl
         @auth ||= { :method => @bind_method,
                     :username => @bind_dn,
@@ -61,11 +61,11 @@ module OmniAuth
         config[:auth] = @auth
         @connection = Net::LDAP.new(config)
       end
-      
+
       #:base => "dc=yourcompany, dc=com",
       # :filter => "(mail=#{user})",
       # :password => psw
-      def bind_as(args = {})        
+      def bind_as(args = {})
         result = false
         @connection.open do |me|
           rs = me.search args

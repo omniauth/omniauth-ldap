@@ -1,6 +1,7 @@
 require 'spec_helper'
+
 describe "OmniAuth::Strategies::LDAP" do
-  # :title => "My LDAP", 
+  # :title => "My LDAP",
   # :host => '10.101.10.1',
   # :port => 389,
   # :method => :plain,
@@ -8,12 +9,13 @@ describe "OmniAuth::Strategies::LDAP" do
   # :uid => 'sAMAccountName',
   # :name_proc => Proc.new {|name| name.gsub(/@.*$/,'')}
   # :bind_dn => 'default_bind_dn'
-  # :password => 'password'  
-  class MyLdapProvider < OmniAuth::Strategies::LDAP; end        
+  # :password => 'password'
+  class MyLdapProvider < OmniAuth::Strategies::LDAP; end
+
   def app
     Rack::Builder.new {
       use OmniAuth::Test::PhonySession
-      use MyLdapProvider, :name => 'ldap', :title => 'MyLdap Form', :host => '192.168.1.145', :base => 'dc=score, dc=local', :name_proc => Proc.new {|name| name.gsub(/@.*$/,'')} 
+      use MyLdapProvider, :name => 'ldap', :title => 'MyLdap Form', :host => '192.168.1.145', :base => 'dc=score, dc=local', :name_proc => Proc.new {|name| name.gsub(/@.*$/,'')}
       run lambda { |env| [404, {'Content-Type' => 'text/plain'}, [env.key?('omniauth.auth').to_s]] }
     }.to_app
   end
@@ -52,36 +54,42 @@ describe "OmniAuth::Strategies::LDAP" do
       @adaptor = mock(OmniAuth::LDAP::Adaptor, {:uid => 'ping'})
       OmniAuth::LDAP::Adaptor.stub(:new).and_return(@adaptor)
     end
+
     context 'failure' do
-    before(:each) do
-      @adaptor.stub(:bind_as).and_return(false)
-    end
-      it 'should raise MissingCredentialsError' do
-        lambda{post('/auth/ldap/callback', {})}.should raise_error OmniAuth::Strategies::LDAP::MissingCredentialsError
+      before(:each) do
+        @adaptor.stub(:bind_as).and_return(false)
       end
-      it 'should redirect to error page' do        
+
+      it 'should raise MissingCredentialsError' do
+        post('/auth/ldap/callback', {})
+        last_response.should be_redirect
+        last_response.headers['Location'].should =~ %r{ldap_error}
+      end
+
+      it 'should redirect to error page' do
         post('/auth/ldap/callback', {:username => 'ping', :password => 'password'})
         last_response.should be_redirect
         last_response.headers['Location'].should =~ %r{invalid_credentials}
       end
-      it 'should redirect to error page when there is exception' do        
+
+      it 'should redirect to error page when there is exception' do
         @adaptor.stub(:bind_as).and_throw(Exception.new('connection_error'))
         post('/auth/ldap/callback', {:username => 'ping', :password => 'password'})
         last_response.should be_redirect
         last_response.headers['Location'].should =~ %r{ldap_error}
       end
     end
-    
+
     context 'success' do
       let(:auth_hash){ last_request.env['omniauth.auth'] }
       before(:each) do
-        @adaptor.stub(:bind_as).and_return({:dn => ['cn=ping, dc=intridea, dc=com'], :mail => ['ping@intridea.com'], :givenname => ['Ping'], :sn => ['Yu'], 
-                                            :telephonenumber => ['555-555-5555'], :mobile => ['444-444-4444'], :uid => ['ping'], :title => ['dev'], :address =>[ 'k street'],
-                                            :l => ['Washington'], :st => ['DC'], :co => ["U.S.A"], :postofficebox => ['20001'], :wwwhomepage => ['www.intridea.com'],
-                                            :jpegphoto => ['http://www.intridea.com/ping.jpg'], :description => ['omniauth-ldap']})
+        @adaptor.stub(:bind_as).and_return({:dn => ['cn=ping, dc=intridea, dc=com'], :mail => ['ping@intridea.com'], :givenname => ['Ping'], :sn => ['Yu'],
+                                           :telephonenumber => ['555-555-5555'], :mobile => ['444-444-4444'], :uid => ['ping'], :title => ['dev'], :address =>[ 'k street'],
+                                           :l => ['Washington'], :st => ['DC'], :co => ["U.S.A"], :postofficebox => ['20001'], :wwwhomepage => ['www.intridea.com'],
+                                           :jpegphoto => ['http://www.intridea.com/ping.jpg'], :description => ['omniauth-ldap']})
         post('/auth/ldap/callback', {:username => 'ping', :password => 'password'})
       end
-      
+
       it 'should raise MissingCredentialsError' do
         should_not raise_error OmniAuth::Strategies::LDAP::MissingCredentialsError
       end
