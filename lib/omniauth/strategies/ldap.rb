@@ -40,7 +40,7 @@ module OmniAuth
         return fail!(:missing_credentials) if missing_credentials?
         begin
           @ldap_user_info = @adaptor.bind_as(:filter => Net::LDAP::Filter.eq(@adaptor.uid, @options[:name_proc].call(request['username'])),:size => 1, :password => request['password'])
-          return fail!(:invalid_credentials) if !@ldap_user_info
+          return fail!(@adaptor.bind_failure_reason) if !@ldap_user_info
 
           @user_info = self.class.map_user(@@config, @ldap_user_info)
           super
