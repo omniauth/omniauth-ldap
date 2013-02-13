@@ -25,7 +25,7 @@ module OmniAuth
       }
 
       attr_accessor :bind_dn, :password
-      attr_reader :connection, :uid, :base, :auth
+      attr_reader :connection, :uid, :base, :auth, :bind_failure_reason
       def self.validate(configuration={})
         message = []
         MUST_HAVE_KEYS.each do |name|
@@ -38,6 +38,7 @@ module OmniAuth
         @configuration = configuration.dup
         @configuration[:allow_anonymous] ||= false
         @logger = @configuration.delete(:logger)
+        @bind_failure_reason = nil
         VALID_ADAPTER_CONFIGURATION_KEYS.each do |name|
           instance_variable_set("@#{name}", @configuration[name])
         end
@@ -67,9 +68,11 @@ module OmniAuth
       # :password => psw
       def bind_as(args = {})        
         result = false
+        @bind_failure_reason = :invalid_credentials
         @connection.open do |me|
           rs = me.search args
           if rs and rs.first and dn = rs.first.dn
+            @bind_failure_reason = :locked_account
             password = args[:password]
             method = args[:method] || @method
             password = password.call if password.respond_to?(:call)
@@ -81,6 +84,7 @@ module OmniAuth
             end
           end
         end
+        @bind_failure_reason = nil unless result
         result
       end
 
