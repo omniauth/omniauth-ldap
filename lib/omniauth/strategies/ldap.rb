@@ -61,17 +61,19 @@ module OmniAuth
 
       def self.map_user(mapper, object)
         user = {}
+        # Net::LDAP::Entry's [] always returns an array. For non-existing
+        # keys, an empty array. Let's keep that in mind while mapping.
         mapper.each do |key, value|
           case value
           when String
-            user[key] = object[value.downcase.to_sym].first if object[value.downcase.to_sym]
+            user[key] = object[value.downcase.to_sym].first unless object[value.downcase.to_sym].empty?
           when Array
-            value.each {|v| (user[key] = object[v.downcase.to_sym].first; break;) if object[v.downcase.to_sym]}
+            value.each {|v| (user[key] = object[v.downcase.to_sym].first; break;) unless object[v.downcase.to_sym].empty?}
           when Hash
             value.map do |key1, value1|
               pattern = key1.dup
               value1.each_with_index do |v,i|
-                part = ''; v.collect(&:downcase).collect(&:to_sym).each {|v1| (part = object[v1].first; break;) if object[v1]}
+                part = ''; v.collect(&:downcase).collect(&:to_sym).each {|v1| (part = object[v1].first; break;) unless object[v1].empty?}
                 pattern.gsub!("%#{i}",part||'')
               end
               user[key] = pattern
