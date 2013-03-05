@@ -11,8 +11,8 @@ Use the LDAP strategy as a middleware in your application:
         :method => :plain,
         :base => 'dc=intridea, dc=com',
         :uid => 'sAMAccountName',
-        :name_proc => Proc.new {|name| name.gsub(/@.*$/,'')}
-        :bind_dn => 'default_bind_dn'
+        :name_proc => Proc.new {|name| name.gsub(/@.*$/,'')},
+        :bind_dn => 'default_bind_dn',
         :password => 'password'
 
 All of the listed options are required, with the exception of :title, :name_proc, :bind_dn, and :password.
