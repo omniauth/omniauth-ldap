@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     gitlab_omniauth-ldap (1.0.2)
-      net-ldap (~> 0.2.2)
+      net-ldap (~> 0.3.1)
       omniauth (~> 1.0)
       pyu-ruby-sasl (~> 0.0.3.1)
       rubyntlm (~> 0.1.1)
@@ -14,7 +14,7 @@ GEM
     diff-lcs (1.1.3)
     hashie (1.2.0)
     method_source (0.8.1)
-    net-ldap (0.2.2)
+    net-ldap (0.3.1)
     omniauth (1.1.1)
       hashie (~> 1.2)
       rack
