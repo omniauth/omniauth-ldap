@@ -25,7 +25,7 @@ module OmniAuth
       }
 
       attr_accessor :bind_dn, :password
-      attr_reader :connection, :uid, :base, :auth
+      attr_reader :connections, :uid, :base, :auth
       def self.validate(configuration={})
         message = []
         MUST_HAVE_KEYS.each do |name|
@@ -48,39 +48,50 @@ module OmniAuth
           :encryption => method,
           :base => @base
         }
-        @uri = construct_uri(@host, @port, @method != :plain)
-        
+
+        @host = [ @host ] unless @host.is_a?(Array)
+        @uri = @host.map {|h| construct_uri(h, @port, @method != :plain)}
+
         @bind_method = @try_sasl ? :sasl : (@allow_anonymous||!@bind_dn||!@password ? :anonymous : :simple)
-        
-        
+
         @auth = sasl_auths({:username => @bind_dn, :password => @password}).first if @bind_method == :sasl
         @auth ||= { :method => @bind_method,
                     :username => @bind_dn,
                     :password => @password
                   }
         config[:auth] = @auth
-        @connection = Net::LDAP.new(config)
+
+        @connections = @host.map {|host| Net::LDAP.new(config.merge(:host => host))}
       end
-      
+
       #:base => "dc=yourcompany, dc=com",
       # :filter => "(mail=#{user})",
       # :password => psw
-      def bind_as(args = {})        
+      def bind_as(args = {})
         result = false
-        @connection.open do |me|
-          rs = me.search args
-          if rs and rs.first and dn = rs.first.dn
-            password = args[:password]
-            method = args[:method] || @method
-            password = password.call if password.respond_to?(:call)
-            if method == 'sasl'
-            result = rs.first if me.bind(sasl_auths({:username => dn, :password => password}).first)
-            else
-            result = rs.first if me.bind(:method => :simple, :username => dn,
-                                :password => password)
+        @connections.find do |connection|
+          begin
+            connection.open do |me|
+              rs = me.search(args)
+              if rs and rs.first and dn = rs.first.dn
+                password = args[:password]
+                method = args[:method] || @method
+                password = password.call if password.respond_to?(:call)
+                if method == 'sasl'
+                result = rs.first if me.bind(sasl_auths({:username => dn, :password => password}).first)
+                else
+                result = rs.first if me.bind(:method => :simple, :username => dn,
+                                    :password => password)
+                end
+              end
             end
+          rescue Net::LDAP::LdapError => e
+            # FIXME(auxesis): this isn't the best, but @logger often doesn't exist
+            puts e.message
           end
+          result
         end
+
         result
       end
 
