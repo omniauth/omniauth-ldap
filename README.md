@@ -16,7 +16,7 @@ Use the LDAP strategy as a middleware in your application:
         :password => 'password',
         :group => 'group'
 
-All of the listed options are required, with the exception of :title, :name_proc, :bind_dn, :password, :group.
+All of the listed options are required, with the exception of :title, :name_proc, :bind_dn, :password and :group.
 Allowed values of :method are: :plain, :ssl, :tls.
 
 :bind_dn and :password is the default credentials to perform user lookup.
