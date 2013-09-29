@@ -49,7 +49,7 @@ describe "OmniAuth::Strategies::LDAP" do
 
   describe 'post /auth/ldap/callback' do
     before(:each) do
-      @adaptor = mock(OmniAuth::LDAP::Adaptor, {:uid => 'ping'})
+      @adaptor = double(OmniAuth::LDAP::Adaptor, {:uid => 'ping'})
       OmniAuth::LDAP::Adaptor.stub(:new).and_return(@adaptor)
     end
 
@@ -131,7 +131,7 @@ describe "OmniAuth::Strategies::LDAP" do
                                              :givenname => ['Ping'], :sn => ['Yu'],
                                              :telephonenumber => ['555-555-5555'],
                                              :mobile => ['444-444-4444'],
-                                             :uid => ['ping'],
+                                             :sAMAccountName => ['pong'],
                                              :title => ['dev'],
                                              :address =>[ 'k street'],
                                              :l => ['Washington'], :st => ['DC'], :co => ["U.S.A"], :postofficebox => ['20001'],
@@ -153,7 +153,7 @@ describe "OmniAuth::Strategies::LDAP" do
         auth_hash.info.last_name.should == 'Yu'
         auth_hash.info.phone.should == '555-555-5555'
         auth_hash.info.mobile.should == '444-444-4444'
-        auth_hash.info.nickname.should == 'ping'
+        auth_hash.info.nickname.should == 'pong'
         auth_hash.info.title.should == 'dev'
         auth_hash.info.location.should == 'k street, Washington, DC, U.S.A 20001'
         auth_hash.info.url.should == 'www.intridea.com'
