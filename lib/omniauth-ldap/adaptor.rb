@@ -3,7 +3,6 @@
 require 'rack'
 require 'net/ldap'
 require 'net/ntlm'
-require 'uri'
 require 'sasl'
 require 'kconv'
 module OmniAuth
@@ -48,11 +47,9 @@ module OmniAuth
           :encryption => method,
           :base => @base
         }
-        @uri = construct_uri(@host, @port, @method != :plain)
-        
         @bind_method = @try_sasl ? :sasl : (@allow_anonymous||!@bind_dn||!@password ? :anonymous : :simple)
-        
-        
+
+
         @auth = sasl_auths({:username => @bind_dn, :password => @password}).first if @bind_method == :sasl
         @auth ||= { :method => @bind_method,
                     :username => @bind_dn,
@@ -61,11 +58,11 @@ module OmniAuth
         config[:auth] = @auth
         @connection = Net::LDAP.new(config)
       end
-      
+
       #:base => "dc=yourcompany, dc=com",
       # :filter => "(mail=#{user})",
       # :password => psw
-      def bind_as(args = {})        
+      def bind_as(args = {})
         result = false
         @connection.open do |me|
           rs = me.search args
@@ -140,10 +137,6 @@ module OmniAuth
         [Net::NTLM::Message::Type1.new.serialize, nego]
       end
 
-      def construct_uri(host, port, ssl)
-        protocol = ssl ? "ldaps" : "ldap"
-        URI.parse("#{protocol}://#{host}:#{port}").to_s
-      end
     end
   end
 end
