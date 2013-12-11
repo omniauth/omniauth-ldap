@@ -125,20 +125,25 @@ describe "OmniAuth::Strategies::LDAP" do
       let(:auth_hash){ last_request.env['omniauth.auth'] }
 
       before(:each) do
-        @adaptor.stub(:bind_as).and_return({
-                                             :dn   => ['cn=ping, dc=intridea, dc=com'],
-                                             :mail => ['ping@intridea.com'],
-                                             :givenname => ['Ping'], :sn => ['Yu'],
-                                             :telephonenumber => ['555-555-5555'],
-                                             :mobile => ['444-444-4444'],
-                                             :uid => ['ping'],
-                                             :title => ['dev'],
-                                             :address =>[ 'k street'],
-                                             :l => ['Washington'], :st => ['DC'], :co => ["U.S.A"], :postofficebox => ['20001'],
-                                             :wwwhomepage => ['www.intridea.com'],
-                                             :jpegphoto => ['http://www.intridea.com/ping.jpg'],
-                                             :description => ['omniauth-ldap']})
-
+        @adaptor.stub(:bind_as).and_return(Net::LDAP::Entry.from_single_ldif_string(
+      %Q{dn: cn=ping, dc=intridea, dc=com
+mail: ping@intridea.com
+givenname: Ping
+sn: Yu
+telephonenumber: 555-555-5555
+mobile: 444-444-4444
+uid: ping
+title: dev
+address: k street
+l: Washington
+st: DC
+co: U.S.A
+postofficebox: 20001
+wwwhomepage: www.intridea.com
+jpegphoto: http://www.intridea.com/ping.jpg
+description: omniauth-ldap
+}
+    ))
         post('/auth/ldap/callback', {:username => 'ping', :password => 'password'})
       end
 
