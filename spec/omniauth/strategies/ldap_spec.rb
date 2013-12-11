@@ -49,7 +49,7 @@ describe "OmniAuth::Strategies::LDAP" do
 
   describe 'post /auth/ldap/callback' do
     before(:each) do
-      @adaptor = mock(OmniAuth::LDAP::Adaptor, {:uid => 'ping'})
+      @adaptor = double(OmniAuth::LDAP::Adaptor, {:uid => 'ping'})
       OmniAuth::LDAP::Adaptor.stub(:new).and_return(@adaptor)
     end
 
