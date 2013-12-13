@@ -50,6 +50,7 @@ describe "OmniAuth::Strategies::LDAP" do
   describe 'post /auth/ldap/callback' do
     before(:each) do
       @adaptor = double(OmniAuth::LDAP::Adaptor, {:uid => 'ping'})
+      @adaptor.stub(:filter)
       OmniAuth::LDAP::Adaptor.stub(:new).and_return(@adaptor)
     end
 
@@ -104,6 +105,17 @@ describe "OmniAuth::Strategies::LDAP" do
             last_response.should be_redirect
             last_response.headers['Location'].should =~ %r{invalid_credentials}
           end
+          context 'and filter is set' do
+            it 'should bind with filter' do
+              @adaptor.stub(:filter).and_return('uid=%{username}')
+              Net::LDAP::Filter.should_receive(:construct).with('uid=ping')
+              post('/auth/ldap/callback', {:username => 'ping', :password => 'password'})
+
+              last_response.should be_redirect
+              last_response.headers['Location'].should =~ %r{invalid_credentials}
+            end
+          end
+
         end
 
         context "and communication with LDAP server caused an exception" do
@@ -125,6 +137,7 @@ describe "OmniAuth::Strategies::LDAP" do
       let(:auth_hash){ last_request.env['omniauth.auth'] }
 
       before(:each) do
+        @adaptor.stub(:filter)
         @adaptor.stub(:bind_as).and_return(Net::LDAP::Entry.from_single_ldif_string(
       %Q{dn: cn=ping, dc=intridea, dc=com
 mail: ping@intridea.com
@@ -144,14 +157,25 @@ jpegphoto: http://www.intridea.com/ping.jpg
 description: omniauth-ldap
 }
     ))
-        post('/auth/ldap/callback', {:username => 'ping', :password => 'password'})
       end
 
       it 'should not redirect to error page' do
+        post('/auth/ldap/callback', {:username => 'ping', :password => 'password'})
         last_response.should_not be_redirect
       end
 
+      context 'and filter is set' do
+        it 'should bind with filter' do
+          @adaptor.stub(:filter).and_return('uid=%{username}')
+          Net::LDAP::Filter.should_receive(:construct).with('uid=ping')
+          post('/auth/ldap/callback', {:username => 'ping', :password => 'password'})
+
+          last_response.should_not be_redirect
+        end
+      end
+
       it 'should map user info to Auth Hash' do
+        post('/auth/ldap/callback', {:username => 'ping', :password => 'password'})
         auth_hash.uid.should == 'cn=ping, dc=intridea, dc=com'
         auth_hash.info.email.should == 'ping@intridea.com'
         auth_hash.info.first_name.should == 'Ping'
