@@ -86,6 +86,10 @@ module OmniAuth
         result
       end
 
+      def search args = {}
+        @connection.search args
+      end
+
       private
       def ensure_method(method)
           method ||= "plain"

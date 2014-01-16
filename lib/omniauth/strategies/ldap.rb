@@ -17,13 +17,16 @@ module OmniAuth
         'uid' => 'dn',
         'url' => ['wwwhomepage'],
         'image' => 'jpegPhoto',
-        'description' => 'description'
+        'description' => 'description',
+        'groups' => 'groups'
       }
       option :title, "LDAP Authentication" #default title for authentication form
       option :port, 389
       option :method, :plain
       option :uid, 'sAMAccountName'
       option :name_proc, lambda {|n| n}
+      option :group_query, '(&(objectClass=posixGroup)(memberUid=%{username}))'
+      option :group_attribute, 'cn'
 
       def request_phase
         OmniAuth::LDAP::Adaptor.validate @options
@@ -41,6 +44,15 @@ module OmniAuth
         begin
           @ldap_user_info = @adaptor.bind_as(:filter => filter(@adaptor), :size => 1, :password => request['password'])
           return fail!(:invalid_credentials) if !@ldap_user_info
+
+          # execute groups query
+          if options[:group_query]
+            uid = @ldap_user_info[@options[:uid].intern].first
+            dn = @ldap_user_info[:dn].first
+            groups = @adaptor.search(filter: options[:group_query] % {username: uid, dn: dn})
+            groups.collect!{|g|g[options[:group_attribute].intern]}
+            @ldap_user_info['groups'] = groups
+          end
 
           @user_info = self.class.map_user(@@config, @ldap_user_info)
           super
