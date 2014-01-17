@@ -18,6 +18,8 @@ Use the LDAP strategy as a middleware in your application:
         :name_proc => Proc.new {|name| name.gsub(/@.*$/,'')}
         :bind_dn => 'default_bind_dn'
         :password => 'password'
+        :group_query => '(&(objectClass=posixGroup)(memberUid=%{username}))'
+        :group_attribute => 'cn'
 
 All of the listed options are required, with the exception of :title, :name_proc, :bind_dn, and :password.
 Allowed values of :method are: :plain, :ssl, :tls.
@@ -44,6 +46,15 @@ Allowed values of :method are: :plain, :ssl, :tls.
 :try_sasl and :sasl_mechanisms are optional. :try_sasl [true | false], :sasl_mechanisms ['DIGEST-MD5' | 'GSS-SPNEGO']
   Use them to initialize a SASL connection to server. If you are not familiar with these authentication methods, 
   please just avoid them.
+
+:group_query will perform an additional search on the LDAP server after a user has successfully 
+  authenticated, and add information about their group membership to the auth object returned by 
+  Omniauth under the extra/groups key. %{username} will be replaced with the value of the field specified 
+  by uid. %{dn} will be replaced by the dn of the authenticated user. If using this option, you must 
+  also specify group_attribute. Set group_query to nil or false to disable this additional query.
+ 
+:group_attribute is the LDAP attribute to extract from the entries returned by group_query. This 
+  will be added to the auth object returned by Omniauth under the extra/groups key.
 
 Direct users to '/auth/ldap' to have them authenticated via your company's LDAP server.
 

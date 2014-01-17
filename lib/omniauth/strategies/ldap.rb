@@ -17,15 +17,14 @@ module OmniAuth
         'uid' => 'dn',
         'url' => ['wwwhomepage'],
         'image' => 'jpegPhoto',
-        'description' => 'description',
-        'groups' => 'groups'
+        'description' => 'description'
       }
       option :title, "LDAP Authentication" #default title for authentication form
       option :port, 389
       option :method, :plain
       option :uid, 'sAMAccountName'
       option :name_proc, lambda {|n| n}
-      option :group_query, '(&(objectClass=posixGroup)(memberUid=%{username}))'
+      option :group_query, nil
       option :group_attribute, 'cn'
 
       def request_phase
@@ -46,19 +45,23 @@ module OmniAuth
           return fail!(:invalid_credentials) if !@ldap_user_info
 
           # execute groups query
-          if options[:group_query]
-            uid = @ldap_user_info[@options[:uid].intern].first
-            dn = @ldap_user_info[:dn].first
-            groups = @adaptor.search(filter: options[:group_query] % {username: uid, dn: dn})
-            groups.collect!{|g|g[options[:group_attribute].intern]}
-            @ldap_user_info['groups'] = groups
-          end
-
+          @groups = group_query(@adaptor, @ldap_user_info)
+          
           @user_info = self.class.map_user(@@config, @ldap_user_info)
           super
         rescue Exception => e
           return fail!(:ldap_error, e)
         end
+      end
+
+      def group_query adaptor, ldap_user_info
+        return nil unless adaptor.group_query and !adaptor.group_query.empty?
+
+        uid = ldap_user_info[@options[:uid].intern].first
+        dn = ldap_user_info[:dn].first
+        groups = adaptor.search(filter: adaptor.group_query % {username: uid, dn: dn})
+        groups.collect!{|g|g[options[:group_attribute].intern].first}
+        return groups
       end
 
       def filter adaptor
@@ -76,7 +79,9 @@ module OmniAuth
         @user_info
       }
       extra {
-        { :raw_info => @ldap_user_info }
+        ex = { :raw_info => @ldap_user_info }
+        ex[:groups] = @groups if @groups
+        ex
       }
 
       def self.map_user(mapper, object)
