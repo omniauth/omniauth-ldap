@@ -59,7 +59,7 @@ module OmniAuth
 
         uid = ldap_user_info[@options[:uid].intern].first
         dn = ldap_user_info[:dn].first
-        groups = adaptor.search(filter: adaptor.group_query % {username: uid, dn: dn})
+        groups = adaptor.search(filter: adaptor.group_query % {username: Net::LDAP::Filter.escape(uid), dn: Net::LDAP::Filter.escape(dn)})
         groups.collect!{|g|g[options[:group_attribute].intern].first}
         return groups
       end
