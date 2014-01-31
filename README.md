@@ -11,6 +11,10 @@ Use the LDAP strategy as a middleware in your application:
         :method => :plain,
         :base => 'dc=intridea, dc=com',
         :uid => 'sAMAccountName',
+        :name_proc => Proc.new {|name| name.gsub(/@.*$/,'')},
+        :bind_dn => 'default_bind_dn',
+        # Or, alternatively:
+        #:filter => '(&(uid=%{username})(memberOf=cn=myapp-users,ou=groups,dc=example,dc=com))'
         :name_proc => Proc.new {|name| name.gsub(/@.*$/,'')}
         :bind_dn => 'default_bind_dn'
         :password => 'password'
@@ -28,6 +32,9 @@ Allowed values of :method are: :plain, :ssl, :tls.
 
 :uid is the LDAP attribute name for the user name in the login form. 
   typically AD would be 'sAMAccountName' or 'UserPrincipalName', while OpenLDAP is 'uid'.
+
+:filter is the LDAP filter used to search the user entry. It can be used in place of :uid for more flexibility.
+  `%{username}` will be replaced by the user name processed by :name_proc.
 
 :name_proc allows you to match the user name entered with the format of the :uid attributes. 
   For example, value of 'sAMAccountName' in AD contains only the windows user name. If your user prefers using 

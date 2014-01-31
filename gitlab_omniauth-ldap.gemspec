@@ -7,6 +7,7 @@ Gem::Specification.new do |gem|
   gem.description   = %q{A LDAP strategy for OmniAuth.}
   gem.summary       = %q{A LDAP strategy for OmniAuth.}
   gem.homepage      = "https://github.com/gitlabhq/omniauth-ldap"
+  gem.license       = "MIT"
 
   gem.add_runtime_dependency     'omniauth', '~> 1.0'
   gem.add_runtime_dependency     'net-ldap', '~> 0.3.1'
