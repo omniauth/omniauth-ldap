@@ -69,6 +69,11 @@ use OmniAuth::Strategies::LDAP,
   tls_options: {
     ssl_version: "TLSv1_2",
     ciphers: ["AES-128-CBC", "AES-128-CBC-HMAC-SHA1", "AES-128-CBC-HMAC-SHA256"],
+  },
+  mapping: {
+    'name' => 'cn;lang-en',
+    'email' => ['preferredEmail', 'mail'],
+    'nickname' => ['uid', 'userid', 'sAMAccountName']
   }
 # Or, alternatively:
 # use OmniAuth::Strategies::LDAP, filter: '(&(uid=%{username})(memberOf=cn=myapp-users,ou=groups,dc=example,dc=com))'
@@ -199,6 +204,7 @@ The following options are available for configuring the OmniAuth LDAP strategy:
   - `adaptor.last_password_policy_response` — the matching password policy response control (implementation-specific object). This can indicate conditions such as password expired, account locked, reset required, or grace logins remaining (per the draft RFC).
 - `:connect_timeout` - Maximum time in seconds to wait when establishing the TCP connection to the LDAP server. Forwarded to `Net::LDAP`.
 - `:read_timeout` - Maximum time in seconds to wait for reads during LDAP operations (search/bind). Forwarded to `Net::LDAP`.
+- `:mapping` - allows you to customize mapping of LDAP attributes to the returned user info hash. The default mappings are defined in [ldap.rb](lib/omniauth/strategies/ldap.rb#L7), it will be merged with yours.
 
 Example enabling password policy:
 
