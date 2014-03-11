@@ -66,7 +66,7 @@ module OmniAuth
         # If credentials were POSTed directly to /auth/:provider, redirect to the callback path.
         # This mirrors the behavior of many OmniAuth providers and allows test helpers (like
         # OmniAuth::Test::PhonySession) to populate `env['omniauth.auth']` on the callback request.
-        if request.post? && request.params["username"].to_s != "" && request.params["password"].to_s != ""
+        if request.post? && request_data["username"].to_s != "" && request_data["password"].to_s != ""
           return Rack::Response.new([], 302, "Location" => callback_url).finish
         end
 
@@ -100,12 +100,12 @@ module OmniAuth
 
         return fail!(:missing_credentials) if missing_credentials?
         begin
-          @ldap_user_info = @adaptor.bind_as(filter: filter(@adaptor), size: 1, password: request.params["password"])
+          @ldap_user_info = @adaptor.bind_as(filter: filter(@adaptor), size: 1, password: request_data["password"])
 
           unless @ldap_user_info
             # Attach password policy info to env if available (best-effort)
             attach_password_policy_env(@adaptor)
-            return fail!(:invalid_credentials, InvalidCredentialsError.new("Invalid credentials for #{request.params["username"]}"))
+            return fail!(:invalid_credentials, InvalidCredentialsError.new("Invalid credentials for #{request_data["username"]}"))
           end
 
           # Optionally attach policy info even on success (e.g., timeBeforeExpiration)
@@ -121,10 +121,10 @@ module OmniAuth
       def filter(adaptor, username_override = nil)
         flt = adaptor.filter
         if flt && !flt.to_s.empty?
-          username = Net::LDAP::Filter.escape(@options[:name_proc].call(username_override || request.params["username"]))
+          username = Net::LDAP::Filter.escape(@options[:name_proc].call(username_override || request_data["username"]))
           Net::LDAP::Filter.construct(flt % {username: username})
         else
-          Net::LDAP::Filter.equals(adaptor.uid, @options[:name_proc].call(username_override || request.params["username"]))
+          Net::LDAP::Filter.equals(adaptor.uid, @options[:name_proc].call(username_override || request_data["username"]))
         end
       end
 
@@ -182,7 +182,11 @@ module OmniAuth
       end
 
       def missing_credentials?
-        request.params["username"].nil? || request.params["username"].empty? || request.params["password"].nil? || request.params["password"].empty?
+        request_data["username"].nil? || request_data["username"].empty? || request_data["password"].nil? || request_data["password"].empty?
+      end
+
+      def request_data
+        @env['action_dispatch.request.request_parameters'] || request.params
       end
 
       # Extract a normalized username from a trusted header when enabled.
