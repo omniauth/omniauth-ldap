@@ -92,7 +92,7 @@ module OmniAuth
       protected
 
       def missing_credentials?
-        requestData['username'].nil? or requestData['username'].empty? or requestData['password'].nil? or requestData['password'].empty?
+        requestData['username'].blank? or requestData['password'].blank?
       end # missing_credentials?
 
       def requestData
