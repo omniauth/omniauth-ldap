@@ -1,6 +1,6 @@
 # OmniAuth LDAP
 
-== Changes in this fork
+## Changes in this fork
 This fork is for compatibility with JSON-encoded POST bodies instead of form-encoded.
 
 Set header `Content-Type` to `application/json`
@@ -8,7 +8,7 @@ Set header `Content-Type` to `application/json`
 Send your credentials similar to below to use this gem:
 `{"username":"USERNAME","password":"PASSWORD"}`
 
-== LDAP
+## LDAP
 
 Use the LDAP strategy as a middleware in your application:
 
