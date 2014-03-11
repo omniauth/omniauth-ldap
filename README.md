@@ -329,6 +329,15 @@ end
 
 Then link users to `/auth/ldap` in your app (for example, in a Devise sign-in page).
 
+### Use JSON Body
+
+This gem is compatible with JSON-encoded POST bodies as well as traditional form-encoded.
+
+Set header `Content-Type` to `application/json`
+
+Send your credentials similar to below to use this gem:
+`{"username":"USERNAME","password":"PASSWORD"}`
+
 ### Using a custom filter
 
 If you need to restrict authentication to a group or use a more complex lookup, pass `:filter`. Use `%{username}` — it will be replaced with the processed username (after `:name_proc`).
@@ -707,6 +716,9 @@ See [LICENSE.txt][📄license] for the official [Copyright Notice][📄copyright
               <img src="https://logos.galtzo.com/assets/images/galtzo-floss/avatar-128px-blank.svg" alt="Galtzo.com Logo (Wordless) by Aboling0, CC BY-SA 4.0" width="24">
             </picture>
         </a>, and omniauth-ldap contributors.
+    </li>
+    <li>
+        Copyright (C) 2014 David Benko
     </li>
     <li>
         Copyright (c) 2011 by Ping Yu and Intridea, Inc.
