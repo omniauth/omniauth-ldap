@@ -96,7 +96,7 @@ module OmniAuth
       end # missing_credentials?
 
       def requestData
-        @env['action_dispatch.request.request_parameters']
+        @env['action_dispatch.request.request_parameters'] || request
       end
     end
   end
