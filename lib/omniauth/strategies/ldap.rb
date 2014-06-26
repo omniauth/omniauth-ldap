@@ -121,6 +121,10 @@ module OmniAuth
 
       def fix_encoding!(thing)
         case thing
+        when Net::LDAP::Entry
+          thing.each_attribute do |k|
+            fix_encoding!(thing[k])
+          end
         when Hash
           thing.each_pair do |k, v|
             fix_encoding!(v)
@@ -130,7 +134,7 @@ module OmniAuth
             fix_encoding!(v)
           end
         when String
-          thing.replace(sanitize_utf8!(thing))
+          thing.replace(sanitize_utf8(thing))
         end
       end
 
