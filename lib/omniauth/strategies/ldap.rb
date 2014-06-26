@@ -44,6 +44,12 @@ module OmniAuth
           @ldap_user_info = @adaptor.bind_as(:filter => filter(@adaptor), :size => 1, :password => request['password'])
           return fail!(:invalid_credentials) if !@ldap_user_info
 
+          # I [aocole] believe there is a bug in the Net::LDAP library that
+          # improperly encodes utf_8 as ASCII-8BIT when it receives unicode
+          # from the LDAP server. Fix it up here because I don't have time
+          # to track it down in Net::LDAP
+          fix_encoding!(@ldap_user_info)
+
           # execute groups query
           @groups = group_query(@adaptor, @ldap_user_info)
           
@@ -111,6 +117,36 @@ module OmniAuth
       def missing_credentials?
         request['username'].nil? or request['username'].empty? or request['password'].nil? or request['password'].empty?
       end # missing_credentials?
+
+
+      def fix_encoding!(thing)
+        case thing
+        when Hash
+          thing.each_pair do |k, v|
+            fix_encoding!(v)
+          end
+        when Array
+          thing.each do |v|
+            fix_encoding!(v)
+          end
+        when String
+          sanitize_utf8(thing)
+        end
+      end
+
+      def sanitize_utf8(str)
+        orig = str.dup
+        if str.force_encoding(Encoding::UTF_8).valid_encoding?
+          return str # has been forced to utf-8
+        end
+
+        sanitized_str = orig.encode(Encoding::UTF_8, "binary",
+                                           :invalid => :replace,
+                                           :undef   => :replace,
+                                           :replace => "")
+        return sanitized_str
+      end
+
     end
   end
 end
