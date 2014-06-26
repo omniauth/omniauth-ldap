@@ -44,6 +44,12 @@ module OmniAuth
           @ldap_user_info = @adaptor.bind_as(:filter => filter(@adaptor), :size => 1, :password => request['password'])
           return fail!(:invalid_credentials) if !@ldap_user_info
 
+          # I [aocole] believe there is a bug in the Net::LDAP library that
+          # improperly encodes utf_8 as ASCII-8BIT when it receives unicode
+          # from the LDAP server. Fix it up here because I don't have time
+          # to track it down in Net::LDAP
+          fix_encoding!(@ldap_user_info)
+
           # execute groups query
           @groups = group_query(@adaptor, @ldap_user_info)
           
@@ -111,6 +117,42 @@ module OmniAuth
       def missing_credentials?
         request['username'].nil? or request['username'].empty? or request['password'].nil? or request['password'].empty?
       end # missing_credentials?
+
+
+      # This is written a little strangely because we can't modify the object in-place due
+      # to frozen strings used in rspec stubs. Thus, the Hash and Array cases re-assign their
+      # contents, while the String case returns a new String.
+      def fix_encoding!(thing)
+        case thing
+        when Net::LDAP::Entry
+          thing.each_attribute do |k|
+            fix_encoding!(thing[k])
+          end
+        when Hash
+          thing.each_pair do |k, v|
+            thing[k] = fix_encoding!(v)
+          end
+        when Array
+          thing.collect! do |v|
+            fix_encoding!(v)
+          end
+        when String
+          sanitize_utf8(thing)
+        end
+      end
+
+      def sanitize_utf8(str)
+        str = str.dup
+        if str.force_encoding(Encoding::UTF_8).valid_encoding?
+          return str # has been forced to utf-8
+        end
+
+        return str.encode(Encoding::UTF_8, "binary",
+                           :invalid => :replace,
+                           :undef   => :replace,
+                           :replace => "")
+      end
+
     end
   end
 end
