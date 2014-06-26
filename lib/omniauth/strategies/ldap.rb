@@ -130,21 +130,20 @@ module OmniAuth
             fix_encoding!(v)
           end
         when String
-          sanitize_utf8(thing)
+          thing.replace(sanitize_utf8!(thing))
         end
       end
 
       def sanitize_utf8(str)
-        orig = str.dup
+        str = str.dup
         if str.force_encoding(Encoding::UTF_8).valid_encoding?
           return str # has been forced to utf-8
         end
 
-        sanitized_str = orig.encode(Encoding::UTF_8, "binary",
-                                           :invalid => :replace,
-                                           :undef   => :replace,
-                                           :replace => "")
-        return sanitized_str
+        return str.encode(Encoding::UTF_8, "binary",
+                           :invalid => :replace,
+                           :undef   => :replace,
+                           :replace => "")
       end
 
     end
