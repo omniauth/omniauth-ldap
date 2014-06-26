@@ -14,7 +14,7 @@ describe "OmniAuth::Strategies::LDAP" do
   let(:app) do
     Rack::Builder.new {
       use OmniAuth::Test::PhonySession
-      use MyLdapProvider, :name => 'ldap', :title => 'MyLdap Form', :host => '192.168.1.145', :base => 'dc=score, dc=local', :name_proc => Proc.new {|name| name.gsub(/@.*$/,'')}
+      use MyLdapProvider, :uid => 'uid', :name => 'ldap', :title => 'MyLdap Form', :host => '192.168.1.145', :base => 'dc=score, dc=local', :name_proc => Proc.new {|name| name.gsub(/@.*$/,'')}
       run lambda { |env| [404, {'Content-Type' => 'text/plain'}, [env.key?('omniauth.auth').to_s]] }
     }.to_app
   end

@@ -119,6 +119,9 @@ module OmniAuth
       end # missing_credentials?
 
 
+      # This is written a little strangely because we can't modify the object in-place due
+      # to frozen strings used in rspec stubs. Thus, the Hash and Array cases re-assign their
+      # contents, while the String case returns a new String.
       def fix_encoding!(thing)
         case thing
         when Net::LDAP::Entry
@@ -127,14 +130,14 @@ module OmniAuth
           end
         when Hash
           thing.each_pair do |k, v|
-            fix_encoding!(v)
+            thing[k] = fix_encoding!(v)
           end
         when Array
-          thing.each do |v|
+          thing.collect! do |v|
             fix_encoding!(v)
           end
         when String
-          thing.replace(sanitize_utf8(thing))
+          sanitize_utf8(thing)
         end
       end
 
