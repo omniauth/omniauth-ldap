@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    gitlab_omniauth-ldap (1.1.0)
+    gitlab_omniauth-ldap (1.2.0)
       net-ldap (~> 0.9)
       omniauth (~> 1.0)
       pyu-ruby-sasl (~> 0.0.3.1)
