@@ -31,6 +31,8 @@ Please file a bug if you notice a violation of semantic versioning.
   - https://datatracker.ietf.org/doc/html/draft-behera-ldap-password-policy-11
 - Support for JSON bodies
 - Support custom LDAP attributes mapping
+- Raise a distinct error when LDAP server is unreachable
+  - Previously raised an invalid credentials authentication failure error, which is technically incorrect 
 
 ### Changed
 
