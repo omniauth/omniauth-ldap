@@ -71,7 +71,9 @@ module OmniAuth
         result = false
         @connection.open do |me|
           rs = me.search args
-          if rs and rs.first and dn = rs.first.dn
+          raise ConnectionError.new("bind failed") unless rs
+
+          if rs.first and dn = rs.first.dn
             password = args[:password]
             method = args[:method] || @method
             password = password.call if password.respond_to?(:call)
