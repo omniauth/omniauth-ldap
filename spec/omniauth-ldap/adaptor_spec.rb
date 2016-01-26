@@ -52,6 +52,11 @@ describe "OmniAuth::LDAP::Adaptor" do
       adaptor.connection.instance_variable_get('@auth')[:initial_credential].should =~ /^NTLMSSP/
       adaptor.connection.instance_variable_get('@auth')[:challenge_response].should_not be_nil
     end
+
+    it 'should set the encryption method correctly' do
+      adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", method: 'tls', base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName'})
+      adaptor.connection.instance_variable_get('@encryption').should include method: :start_tls
+    end
   end
 
   describe 'bind_as' do
