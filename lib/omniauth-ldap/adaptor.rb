@@ -60,7 +60,6 @@ module OmniAuth
           hosts: @hosts,
           host: @host,
           port: @port,
-          method: @method
         }
         @bind_method = @try_sasl ? :sasl : (@allow_anonymous||!@bind_dn||!@password ? :anonymous : :simple)
 
@@ -72,6 +71,7 @@ module OmniAuth
                   }
         config[:auth] = @auth
         @connection = Net::LDAP.new(config)
+        @connection.encryption(method)
       end
 
       #:base => "dc=yourcompany, dc=com",

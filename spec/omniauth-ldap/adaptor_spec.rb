@@ -90,6 +90,11 @@ describe OmniAuth::LDAP::Adaptor do
       expect(adapter.connection.port).to eq(389)
       expect(adapter.connection.hosts).to match_array([['192.168.1.145', 636], ['192.168.1.146', 636]])
     end
+
+    it 'should set the encryption method correctly' do
+      adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", method: 'tls', base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName'})
+      adaptor.connection.instance_variable_get('@encryption').should include method: :start_tls
+    end
   end
 
   describe 'bind_as' do
