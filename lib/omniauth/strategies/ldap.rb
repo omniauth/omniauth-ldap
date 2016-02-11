@@ -35,7 +35,26 @@ module OmniAuth
       end
 
       def callback_phase
-        @adaptor = OmniAuth::LDAP::Adaptor.new @options
+        username_elems = @options[:name_proc].call(request['username']).split('\\')
+        options = @options.dup
+        if (username_elems.length == 2)
+          # Create a shallow copy of the options
+          options = @options.dup
+          # In our copy of the hash, we modify the base DN; we prefix a DC=subdomain string
+          # An example would be : 
+          #     for  base: DC=example,DC=com and usename emea\user1  this would become
+          #          base: DC=emea,DC=example,DC=com and we would authenticate username user1 
+          #                on the emea subdomain.
+          # This would allow for the same username across multiple subdomains,
+          # something unhealthy but which seems to occur.
+          # For example emea\user1 and us\user1 to work across a higher level domain controller.
+          options[:base] = 'DC=%s,%s' % [ username_elems[0], @options[:base] ]
+          username = username_elems[1]
+        else
+          # Fallback to the standard behavior here
+          username = request['username']
+        end
+        @adaptor = OmniAuth::LDAP::Adaptor.new options
 
         return fail!(:missing_credentials) if missing_credentials?
         begin
