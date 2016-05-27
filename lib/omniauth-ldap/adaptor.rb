@@ -15,7 +15,7 @@ module OmniAuth
 
       VALID_ADAPTER_CONFIGURATION_KEYS = [
         :hosts, :host, :port, :method, :disable_verify_certificates, :bind_dn, :password, :try_sasl,
-        :sasl_mechanisms, :uid, :base, :allow_anonymous, :filter
+        :sasl_mechanisms, :uid, :base, :allow_anonymous, :filter, :ca_file, :ssl_version
       ]
 
       # A list of needed keys. Possible alternatives are specified using sub-lists.
@@ -72,7 +72,7 @@ module OmniAuth
                   }
         config[:auth] = @auth
         @connection = Net::LDAP.new(config)
-        @connection.encryption(encryption_options(@method, @disable_verify_certificates))
+        @connection.encryption(encryption_options)
       end
 
       #:base => "dc=yourcompany, dc=com",
@@ -99,16 +99,17 @@ module OmniAuth
 
       private
 
-      def encryption_options(method, disable_verify_certificates)
-        method = translate_method(method)
+      def encryption_options
+        translated_method = translate_method
 
         {
-          method: method,
-          tls_options: tls_options(method, disable_verify_certificates)
+          method: translated_method,
+          tls_options: tls_options(translated_method)
         }
       end
 
-      def translate_method(method)
+      def translate_method
+        method = @method
         method ||= "plain"
         normalized_method = method.to_s.downcase.to_sym
 
@@ -121,16 +122,22 @@ module OmniAuth
         METHOD[normalized_method]
       end
 
-      def tls_options(method, disable_verify_certificates)
-        return {} if method == nil # (plain)
+      def tls_options(translated_method)
+        return {} if translated_method == nil # (plain)
 
-        # It is important to explicitly set verify_mode for two reasons:
-        # 1. The behavior of OpenSSL is undefined when verify_mode is not set.
-        # 2. The net-ldap gem implementation verifies the certificate hostname
-        #    unless verify_mode is set to VERIFY_NONE.
-        return { verify_mode: OpenSSL::SSL::VERIFY_NONE } if disable_verify_certificates
+        tls_options = if @disable_verify_certificates
+                        # It is important to explicitly set verify_mode for two reasons:
+                        # 1. The behavior of OpenSSL is undefined when verify_mode is not set.
+                        # 2. The net-ldap gem implementation verifies the certificate hostname
+                        #    unless verify_mode is set to VERIFY_NONE.
+                        { verify_mode: OpenSSL::SSL::VERIFY_NONE }
+                      else
+                        OpenSSL::SSL::SSLContext::DEFAULT_PARAMS
+                      end
 
-        OpenSSL::SSL::SSLContext::DEFAULT_PARAMS
+        tls_options[:ca_file] = @ca_file if @ca_file
+        tls_options[:ssl_version] = @ssl_version if @ssl_version
+        tls_options
       end
 
       def sasl_auths(options={})
