@@ -1,10 +1,21 @@
 require 'spec_helper'
-describe "OmniAuth::LDAP::Adaptor" do
+describe OmniAuth::LDAP::Adaptor do
 
   describe 'initialize' do
     it 'should throw exception when must have field is not set' do
       #[:host, :port, :method, :bind_dn]
       lambda { OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", method: 'plain'})}.should raise_error(ArgumentError)
+    end
+
+    it 'should not throw an error if hosts is set but host and port are not' do
+      expect(
+        described_class.new(
+          hosts: [['192.168.1.145', 389], ['192.168.1.146', 389]],
+          method: 'plain',
+          base: 'dc=example,dc=com',
+          uid: 'uid'
+        )
+      ).not_to raise_error(ArgumentError)
     end
 
     it 'should throw exception when method is not supported' do
@@ -51,6 +62,33 @@ describe "OmniAuth::LDAP::Adaptor" do
       adaptor.connection.instance_variable_get('@auth')[:mechanism].should == 'GSS-SPNEGO'
       adaptor.connection.instance_variable_get('@auth')[:initial_credential].should =~ /^NTLMSSP/
       adaptor.connection.instance_variable_get('@auth')[:challenge_response].should_not be_nil
+    end
+
+    it 'sets up a connection with the proper host and port' do
+      adapter = described_class.new(
+        host: '192.168.1.145',
+        method: 'plain',
+        base: 'dc=example,dc=com',
+        port: 3890,
+        uid: 'uid'
+      )
+
+      expect(adapter.connection.host).to eq('192.168.1.145')
+      expect(adapter.connection.port).to eq(3890)
+      expect(adapter.connection.hosts).to be_nil
+    end
+
+    it 'sets up a connection with a enumerable pairs of hosts' do
+      adapter = described_class.new(
+        hosts: [['192.168.1.145', 636], ['192.168.1.146', 636]],
+        method: 'plain',
+        base: 'dc=example,dc=com',
+        uid: 'uid'
+      )
+
+      expect(adapter.connection.host).to eq('127.0.0.1')
+      expect(adapter.connection.port).to eq(389)
+      expect(adapter.connection.hosts).to match_array([['192.168.1.145', 636], ['192.168.1.146', 636]])
     end
   end
 

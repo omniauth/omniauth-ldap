@@ -13,10 +13,19 @@ module OmniAuth
       class AuthenticationError < StandardError; end
       class ConnectionError < StandardError; end
 
-      VALID_ADAPTER_CONFIGURATION_KEYS = [:host, :port, :method, :bind_dn, :password, :try_sasl, :sasl_mechanisms, :uid, :base, :allow_anonymous, :filter]
+      VALID_ADAPTER_CONFIGURATION_KEYS = [
+        :hosts, :host, :port, :method, :bind_dn, :password, :try_sasl,
+        :sasl_mechanisms, :uid, :base, :allow_anonymous, :filter
+      ]
 
       # A list of needed keys. Possible alternatives are specified using sub-lists.
-      MUST_HAVE_KEYS = [:host, :port, :method, [:uid, :filter], :base]
+      MUST_HAVE_KEYS = [
+        :base,
+        :method,
+        [:hosts, :host],
+        [:hosts, :port],
+        [:uid, :filter]
+      ]
 
       METHOD = {
         :ssl => :simple_tls,
@@ -47,12 +56,12 @@ module OmniAuth
         end
         method = ensure_method(@method)
         config = {
-          :host => @host,
-          :port => @port,
-          :encryption => method,
-          :base => @base
+          base: @base,
+          hosts: @hosts,
+          host: @host,
+          port: @port,
+          method: @method
         }
-
         @bind_method = @try_sasl ? :sasl : (@allow_anonymous||!@bind_dn||!@password ? :anonymous : :simple)
 
 
