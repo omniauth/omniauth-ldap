@@ -135,7 +135,7 @@ module OmniAuth
         nego = proc {|challenge|
           t2_msg = Net::NTLM::Message.parse( challenge )
           bind_dn, domain = bind_dn.split('\\').reverse
-          t2_msg.target_name = Net::NTLM::encode_utf16le(domain) if domain
+          t2_msg.target_name = Net::NTLM::EncodeUtil.encode_utf16le(domain) if domain
           t3_msg = t2_msg.response( {:user => bind_dn, :password => psw}, {:ntlmv2 => true} )
           t3_msg.serialize
         }
