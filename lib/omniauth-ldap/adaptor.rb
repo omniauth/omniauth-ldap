@@ -14,23 +14,31 @@ module OmniAuth
       class ConnectionError < StandardError; end
 
       VALID_ADAPTER_CONFIGURATION_KEYS = [
-        :hosts, :host, :port, :method, :disable_verify_certificates, :bind_dn, :password, :try_sasl,
-        :sasl_mechanisms, :uid, :base, :allow_anonymous, :filter, :ca_file, :ssl_version
+        :hosts, :host, :port, :encryption, :disable_verify_certificates, :bind_dn, :password, :try_sasl,
+        :sasl_mechanisms, :uid, :base, :allow_anonymous, :filter, :ca_file, :ssl_version,
+
+        # Deprecated
+        :method
       ]
 
       # A list of needed keys. Possible alternatives are specified using sub-lists.
       MUST_HAVE_KEYS = [
         :base,
-        :method,
+        [:encryption, :method], # :method is deprecated
         [:hosts, :host],
         [:hosts, :port],
         [:uid, :filter]
       ]
 
-      METHOD = {
+      ENCRYPTION_METHOD = {
+        :simple_tls => :simple_tls,
+        :start_tls => :start_tls,
+        :plain => nil,
+
+        # Deprecated. This mapping aimed to be user-friendly, but only caused
+        # confusion. Better to pass-through the actual `Net::LDAP` encryption type.
         :ssl => :simple_tls,
         :tls => :start_tls,
-        :plain => nil,
       }
 
       attr_accessor :bind_dn, :password
@@ -109,17 +117,17 @@ module OmniAuth
       end
 
       def translate_method
-        method = @method
+        method = @encryption || @method
         method ||= "plain"
         normalized_method = method.to_s.downcase.to_sym
 
-        unless METHOD.has_key?(normalized_method)
-          available_methods = METHOD.keys.collect {|m| m.inspect}.join(", ")
+        unless ENCRYPTION_METHOD.has_key?(normalized_method)
+          available_methods = ENCRYPTION_METHOD.keys.collect {|m| m.inspect}.join(", ")
           format = "%s is not one of the available connect methods: %s"
           raise ConfigurationError, format % [method.inspect, available_methods]
         end
 
-        METHOD[normalized_method]
+        ENCRYPTION_METHOD[normalized_method]
       end
 
       def tls_options(translated_method)
