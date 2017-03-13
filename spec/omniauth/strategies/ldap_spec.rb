@@ -138,6 +138,7 @@ describe "OmniAuth::Strategies::LDAP" do
 
       before(:each) do
         @adaptor.stub(:filter)
+        @adaptor.stub(:group_query)
         @adaptor.stub(:bind_as).and_return(Net::LDAP::Entry.from_single_ldif_string(
       %Q{dn: cn=ping, dc=intridea, dc=com
 mail: ping@intridea.com
@@ -171,6 +172,26 @@ description: omniauth-ldap
           post('/auth/ldap/callback', {:username => 'ping', :password => 'password'})
 
           last_response.should_not be_redirect
+        end
+      end
+
+      context 'with group_query set' do
+        def group_entry(name)
+          ldif = <<-END.gsub(/^\s*/, '')
+            dn: cn=#{name},ou=Groups,dc=local
+            objectClass: posixGroup
+            cn: #{name}
+            gidNumber: #{rand(10000)}
+            END
+          Net::LDAP::Entry.from_single_ldif_string(ldif)
+        end
+        it 'should return group info' do
+          @adaptor.stub(:group_query).and_return('(&(objectClass=posixGroup)(memberUid=%{username}))')
+          @adaptor.stub(:search).and_return([group_entry('developers'), group_entry('employees')])
+          post('/auth/ldap/callback', {:username => 'ping', :password => 'password'})
+
+          last_response.should_not be_redirect
+          auth_hash.extra.groups.sort.should eq(%W{developers employees})
         end
       end
 

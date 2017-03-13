@@ -13,7 +13,21 @@ module OmniAuth
       class AuthenticationError < StandardError; end
       class ConnectionError < StandardError; end
 
-      VALID_ADAPTER_CONFIGURATION_KEYS = [:host, :port, :method, :bind_dn, :password, :try_sasl, :sasl_mechanisms, :uid, :base, :allow_anonymous, :filter]
+      VALID_ADAPTER_CONFIGURATION_KEYS = [
+        :host, 
+        :port, 
+        :method, 
+        :bind_dn, 
+        :password, 
+        :try_sasl, 
+        :sasl_mechanisms, 
+        :uid, 
+        :base, 
+        :allow_anonymous, 
+        :filter, 
+        :group_query, 
+        :group_attribute
+      ]
 
       # A list of needed keys. Possible alternatives are specified using sub-lists.
       MUST_HAVE_KEYS = [:host, :port, :method, [:uid, :filter], :base]
@@ -25,7 +39,7 @@ module OmniAuth
       }
 
       attr_accessor :bind_dn, :password
-      attr_reader :connection, :uid, :base, :auth, :filter
+      attr_reader :connection, :uid, :base, :auth, :filter, :group_query
       def self.validate(configuration={})
         message = []
         MUST_HAVE_KEYS.each do |names|
@@ -84,6 +98,10 @@ module OmniAuth
           end
         end
         result
+      end
+
+      def search args = {}
+        @connection.search args
       end
 
       private
