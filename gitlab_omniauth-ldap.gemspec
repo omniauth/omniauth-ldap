@@ -10,7 +10,7 @@ Gem::Specification.new do |gem|
   gem.license       = "MIT"
 
   gem.add_runtime_dependency     'omniauth', '~> 1.3.1'
-  gem.add_runtime_dependency     'net-ldap', '~> 0.15'
+  gem.add_runtime_dependency     'net-ldap', '~> 0.16'
   gem.add_runtime_dependency     'pyu-ruby-sasl', '~> 0.0.3.3'
   gem.add_runtime_dependency     'rubyntlm', '~> 0.5.2'
   gem.add_development_dependency 'rspec', '~> 3.6.0'
