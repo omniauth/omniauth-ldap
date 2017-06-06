@@ -1,2 +1,4 @@
 .project
+.tags
 coverage
+Gemfile.lock

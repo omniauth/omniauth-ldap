@@ -8,14 +8,14 @@ describe OmniAuth::LDAP::Adaptor do
     end
 
     it 'should not throw an error if hosts is set but host and port are not' do
-      expect(
+      expect {
         described_class.new(
           hosts: [['192.168.1.145', 389], ['192.168.1.146', 389]],
           method: 'plain',
           base: 'dc=example,dc=com',
           uid: 'uid'
         )
-      ).not_to raise_error(ArgumentError)
+      }.not_to raise_error(ArgumentError)
     end
 
     it 'should throw exception when method is not supported' do
