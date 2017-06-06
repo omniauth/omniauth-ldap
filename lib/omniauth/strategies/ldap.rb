@@ -35,6 +35,11 @@ module OmniAuth
       end
 
       def callback_phase
+        if @options[:use_user_credential]
+          @options.bind_dn = "#{@options[:uid]}=#{request['username']},#{@options[:base]}"
+          @options.password = request['password']
+        end
+
         @adaptor = OmniAuth::LDAP::Adaptor.new @options
 
         return fail!(:missing_credentials) if missing_credentials?

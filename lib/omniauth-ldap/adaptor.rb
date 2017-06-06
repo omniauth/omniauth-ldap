@@ -13,7 +13,7 @@ module OmniAuth
       class AuthenticationError < StandardError; end
       class ConnectionError < StandardError; end
 
-      VALID_ADAPTER_CONFIGURATION_KEYS = [:host, :port, :method, :bind_dn, :password, :try_sasl, :sasl_mechanisms, :uid, :base, :allow_anonymous, :filter]
+      VALID_ADAPTER_CONFIGURATION_KEYS = [:host, :port, :method, :bind_dn, :password, :try_sasl, :sasl_mechanisms, :uid, :base, :allow_anonymous, :filter, :use_user_credential]
 
       # A list of needed keys. Possible alternatives are specified using sub-lists.
       MUST_HAVE_KEYS = [:host, :port, :method, [:uid, :filter], :base]
@@ -37,6 +37,7 @@ module OmniAuth
         end
         raise ArgumentError.new(message.join(",") +" MUST be provided") unless message.empty?
       end
+
       def initialize(configuration={})
         Adaptor.validate(configuration)
         @configuration = configuration.dup
@@ -78,8 +79,7 @@ module OmniAuth
             if method == 'sasl'
             result = rs.first if me.bind(sasl_auths({:username => dn, :password => password}).first)
             else
-            result = rs.first if me.bind(:method => :simple, :username => dn,
-                                :password => password)
+            result = rs.first if me.bind(:method => :simple, :username => dn, :password => password)
             end
           end
         end
