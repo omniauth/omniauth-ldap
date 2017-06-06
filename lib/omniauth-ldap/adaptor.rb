@@ -14,7 +14,7 @@ module OmniAuth
       class ConnectionError < StandardError; end
 
       VALID_ADAPTER_CONFIGURATION_KEYS = [
-        :hosts, :host, :port, :method, :bind_dn, :password, :try_sasl,
+        :hosts, :host, :port, :method, :disable_verify_certificates, :bind_dn, :password, :try_sasl,
         :sasl_mechanisms, :uid, :base, :allow_anonymous, :filter
       ]
 
@@ -35,6 +35,7 @@ module OmniAuth
 
       attr_accessor :bind_dn, :password
       attr_reader :connection, :uid, :base, :auth, :filter
+
       def self.validate(configuration={})
         message = []
         MUST_HAVE_KEYS.each do |names|
@@ -46,6 +47,7 @@ module OmniAuth
         end
         raise ArgumentError.new(message.join(",") +" MUST be provided") unless message.empty?
       end
+
       def initialize(configuration={})
         Adaptor.validate(configuration)
         @configuration = configuration.dup
@@ -54,7 +56,6 @@ module OmniAuth
         VALID_ADAPTER_CONFIGURATION_KEYS.each do |name|
           instance_variable_set("@#{name}", @configuration[name])
         end
-        method = ensure_method(@method)
         config = {
           base: @base,
           hosts: @hosts,
@@ -71,7 +72,7 @@ module OmniAuth
                   }
         config[:auth] = @auth
         @connection = Net::LDAP.new(config)
-        @connection.encryption(method)
+        @connection.encryption(encryption_options(@method, @disable_verify_certificates))
       end
 
       #:base => "dc=yourcompany, dc=com",
@@ -97,14 +98,39 @@ module OmniAuth
       end
 
       private
-      def ensure_method(method)
-          method ||= "plain"
-          normalized_method = method.to_s.downcase.to_sym
-          return METHOD[normalized_method] if METHOD.has_key?(normalized_method)
 
+      def encryption_options(method, disable_verify_certificates)
+        method = translate_method(method)
+
+        {
+          method: method,
+          tls_options: tls_options(method, disable_verify_certificates)
+        }
+      end
+
+      def translate_method(method)
+        method ||= "plain"
+        normalized_method = method.to_s.downcase.to_sym
+
+        unless METHOD.has_key?(normalized_method)
           available_methods = METHOD.keys.collect {|m| m.inspect}.join(", ")
           format = "%s is not one of the available connect methods: %s"
           raise ConfigurationError, format % [method.inspect, available_methods]
+        end
+
+        METHOD[normalized_method]
+      end
+
+      def tls_options(method, disable_verify_certificates)
+        return {} if method == nil # (plain)
+
+        # It is important to explicitly set verify_mode for two reasons:
+        # 1. The behavior of OpenSSL is undefined when verify_mode is not set.
+        # 2. The net-ldap gem implementation verifies the certificate hostname
+        #    unless verify_mode is set to VERIFY_NONE.
+        return { verify_mode: OpenSSL::SSL::VERIFY_NONE } if disable_verify_certificates
+
+        OpenSSL::SSL::SSLContext::DEFAULT_PARAMS
       end
 
       def sasl_auths(options={})

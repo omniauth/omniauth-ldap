@@ -5,6 +5,7 @@ describe "OmniAuth::Strategies::LDAP" do
   # :host => '10.101.10.1',
   # :port => 389,
   # :method => :plain,
+  # :verify_certificates => true,
   # :base => 'dc=intridea, dc=com',
   # :uid => 'sAMAccountName',
   # :name_proc => Proc.new {|name| name.gsub(/@.*$/,'')}
@@ -210,7 +211,7 @@ description: omniauth-ldap
         auth_hash.info.description.should == 'omniauth-ldap'
       end
     end
-    
+
     context 'alternate fields' do
       let(:auth_hash){ last_request.env['omniauth.auth'] }
 
