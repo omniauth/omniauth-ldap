@@ -3,27 +3,27 @@ describe OmniAuth::LDAP::Adaptor do
 
   describe 'initialize' do
     it 'should throw exception when must have field is not set' do
-      #[:host, :port, :method, :bind_dn]
-      lambda { OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", method: 'plain'})}.should raise_error(ArgumentError)
+      #[:host, :port, :encryption, :bind_dn]
+      lambda { OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", encryption: 'plain'})}.should raise_error(ArgumentError)
     end
 
     it 'should not throw an error if hosts is set but host and port are not' do
       expect {
         described_class.new(
           hosts: [['192.168.1.145', 389], ['192.168.1.146', 389]],
-          method: 'plain',
+          encryption: 'plain',
           base: 'dc=example,dc=com',
           uid: 'uid'
         )
       }.not_to raise_error(ArgumentError)
     end
 
-    it 'should throw exception when method is not supported' do
-      lambda { OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", method: 'myplain', uid: 'uid', port: 389, base: 'dc=com'})}.should raise_error(OmniAuth::LDAP::Adaptor::ConfigurationError)
+    it 'should throw exception when encryption method is not supported' do
+      lambda { OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", encryption: 'myplain', uid: 'uid', port: 389, base: 'dc=com'})}.should raise_error(OmniAuth::LDAP::Adaptor::ConfigurationError)
     end
 
     it 'should setup ldap connection with anonymous' do
-      adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", method: 'plain', base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName'})
+      adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", encryption: 'plain', base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName'})
       adaptor.connection.should_not == nil
       adaptor.connection.host.should == '192.168.1.145'
       adaptor.connection.port.should == 389
@@ -32,7 +32,7 @@ describe OmniAuth::LDAP::Adaptor do
     end
 
     it 'should setup ldap connection with simple' do
-      adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", method: 'plain', base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName', bind_dn: 'bind_dn', password: 'password'})
+      adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", encryption: 'plain', base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName', bind_dn: 'bind_dn', password: 'password'})
       adaptor.connection.should_not == nil
       adaptor.connection.host.should == '192.168.1.145'
       adaptor.connection.port.should == 389
@@ -42,7 +42,7 @@ describe OmniAuth::LDAP::Adaptor do
     end
 
     it 'should setup ldap connection with sasl-md5' do
-      adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", method: 'plain', base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName', try_sasl: true, sasl_mechanisms: ["DIGEST-MD5"], bind_dn: 'bind_dn', password: 'password'})
+      adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", encryption: 'plain', base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName', try_sasl: true, sasl_mechanisms: ["DIGEST-MD5"], bind_dn: 'bind_dn', password: 'password'})
       adaptor.connection.should_not == nil
       adaptor.connection.host.should == '192.168.1.145'
       adaptor.connection.port.should == 389
@@ -54,7 +54,7 @@ describe OmniAuth::LDAP::Adaptor do
     end
 
     it 'should setup ldap connection with sasl-gss' do
-      adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", method: 'plain', base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName', try_sasl: true, sasl_mechanisms: ["GSS-SPNEGO"], bind_dn: 'bind_dn', password: 'password'})
+      adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", encryption: 'plain', base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName', try_sasl: true, sasl_mechanisms: ["GSS-SPNEGO"], bind_dn: 'bind_dn', password: 'password'})
       adaptor.connection.should_not == nil
       adaptor.connection.host.should == '192.168.1.145'
       adaptor.connection.port.should == 389
@@ -68,7 +68,7 @@ describe OmniAuth::LDAP::Adaptor do
     it 'sets up a connection with the proper host and port' do
       adapter = described_class.new(
         host: '192.168.1.145',
-        method: 'plain',
+        encryption: 'plain',
         base: 'dc=example,dc=com',
         port: 3890,
         uid: 'uid'
@@ -82,7 +82,7 @@ describe OmniAuth::LDAP::Adaptor do
     it 'sets up a connection with a enumerable pairs of hosts' do
       adapter = described_class.new(
         hosts: [['192.168.1.145', 636], ['192.168.1.146', 636]],
-        method: 'plain',
+        encryption: 'plain',
         base: 'dc=example,dc=com',
         uid: 'uid'
       )
@@ -92,85 +92,92 @@ describe OmniAuth::LDAP::Adaptor do
       expect(adapter.connection.hosts).to match_array([['192.168.1.145', 636], ['192.168.1.146', 636]])
     end
 
-    context 'when method is plain' do
+    context 'when encryption is plain' do
       it 'should set the encryption method to nil' do
-        adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", method: 'plain', base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName'})
+        adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", encryption: 'plain', base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName'})
         adaptor.connection.instance_variable_get('@encryption').should include method: nil
       end
 
       it 'should set the encryption tls_options to empty' do
-        adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", method: 'plain', base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName'})
+        adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", encryption: 'plain', base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName'})
         adaptor.connection.instance_variable_get('@encryption').should include tls_options: {}
       end
     end
 
-    context 'when method is ssl' do
+    context 'when encryption is ssl' do
       it 'should set the encryption method to simple_tls' do
-        adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", method: 'ssl', base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName'})
+        adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", encryption: 'ssl', base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName'})
         adaptor.connection.instance_variable_get('@encryption').should include method: :simple_tls
       end
 
       context 'when disable_verify_certificates is not specified' do
         it 'should set the encryption tls_options to OpenSSL default params' do
-          adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", method: 'ssl', base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName'})
+          adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", encryption: 'ssl', base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName'})
           adaptor.connection.instance_variable_get('@encryption').should include tls_options: OpenSSL::SSL::SSLContext::DEFAULT_PARAMS
         end
       end
 
       context 'when disable_verify_certificates is true' do
         it 'should set the encryption tls_options verify_mode explicitly to verify none' do
-          adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", method: 'ssl', disable_verify_certificates: true, base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName'})
+          adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", encryption: 'ssl', disable_verify_certificates: true, base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName'})
           adaptor.connection.instance_variable_get('@encryption').should include tls_options: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
         end
       end
 
       context 'when disable_verify_certificates is false' do
         it 'should set the encryption tls_options to OpenSSL default params' do
-          adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", method: 'ssl', disable_verify_certificates: false, base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName'})
+          adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", encryption: 'ssl', disable_verify_certificates: false, base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName'})
           adaptor.connection.instance_variable_get('@encryption').should include tls_options: OpenSSL::SSL::SSLContext::DEFAULT_PARAMS
         end
       end
 
       context 'when ca_file is specified' do
         it 'should set the encryption tls_options ca_file' do
-          adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", method: 'ssl', base: 'dc=intridea, dc=com', port: 636, uid: 'sAMAccountName', bind_dn: 'bind_dn', password: 'password', ca_file: '/etc/ca.pem'})
+          adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", encryption: 'ssl', base: 'dc=intridea, dc=com', port: 636, uid: 'sAMAccountName', bind_dn: 'bind_dn', password: 'password', ca_file: '/etc/ca.pem'})
           adaptor.connection.instance_variable_get('@encryption').should include tls_options: OpenSSL::SSL::SSLContext::DEFAULT_PARAMS.merge(ca_file: '/etc/ca.pem')
         end
       end
 
       context 'when ssl_version is specified' do
         it 'should overwrite the encryption tls_options ssl_version' do
-          adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", method: 'ssl', base: 'dc=intridea, dc=com', port: 636, uid: 'sAMAccountName', bind_dn: 'bind_dn', password: 'password', ssl_version: 'TLSv1_2'})
+          adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", encryption: 'ssl', base: 'dc=intridea, dc=com', port: 636, uid: 'sAMAccountName', bind_dn: 'bind_dn', password: 'password', ssl_version: 'TLSv1_2'})
           adaptor.connection.instance_variable_get('@encryption').should include tls_options: OpenSSL::SSL::SSLContext::DEFAULT_PARAMS.merge(ssl_version: 'TLSv1_2')
         end
       end
     end
 
-    context 'when method is tls' do
+    context 'when encryption is tls' do
       it 'should set the encryption method to start_tls' do
-        adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", method: 'tls', base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName'})
+        adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", encryption: 'tls', base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName'})
         adaptor.connection.instance_variable_get('@encryption').should include method: :start_tls
       end
 
       context 'when disable_verify_certificates is not specified' do
         it 'should set the encryption tls_options to OpenSSL default params' do
-          adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", method: 'tls', base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName'})
+          adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", encryption: 'tls', base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName'})
           adaptor.connection.instance_variable_get('@encryption').should include tls_options: OpenSSL::SSL::SSLContext::DEFAULT_PARAMS
         end
       end
 
       context 'when disable_verify_certificates is true' do
         it 'should set the encryption tls_options verify_mode explicitly to verify none' do
-          adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", method: 'tls', disable_verify_certificates: true, base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName'})
+          adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", encryption: 'tls', disable_verify_certificates: true, base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName'})
           adaptor.connection.instance_variable_get('@encryption').should include tls_options: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
         end
       end
 
       context 'when disable_verify_certificates is false' do
         it 'should set the encryption tls_options to OpenSSL default params' do
-          adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", method: 'tls', disable_verify_certificates: false, base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName'})
+          adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", encryption: 'tls', disable_verify_certificates: false, base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName'})
           adaptor.connection.instance_variable_get('@encryption').should include tls_options: OpenSSL::SSL::SSLContext::DEFAULT_PARAMS
         end
+      end
+    end
+
+    context 'when method is set instead of encryption' do
+      it 'should set the encryption method for backwards-compatibility' do
+        adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", method: 'tls', base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName'})
+        adaptor.connection.instance_variable_get('@encryption').should include method: :start_tls
       end
     end
   end
@@ -180,7 +187,7 @@ describe OmniAuth::LDAP::Adaptor do
     let(:rs) { Struct.new(:dn).new('new dn') }
 
     it 'should bind simple' do
-      adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.126", method: 'plain', base: 'dc=score, dc=local', port: 389, uid: 'sAMAccountName', bind_dn: 'bind_dn', password: 'password'})
+      adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.126", encryption: 'plain', base: 'dc=score, dc=local', port: 389, uid: 'sAMAccountName', bind_dn: 'bind_dn', password: 'password'})
       adaptor.connection.should_receive(:open).and_yield(adaptor.connection)
       adaptor.connection.should_receive(:search).with(args).and_return([rs])
       adaptor.connection.should_receive(:bind).with({:username => 'new dn', :password => args[:password], :method => :simple}).and_return(true)
@@ -188,7 +195,7 @@ describe OmniAuth::LDAP::Adaptor do
     end
 
     it 'should bind sasl' do
-      adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", method: 'plain', base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName', try_sasl: true, sasl_mechanisms: ["GSS-SPNEGO"], bind_dn: 'bind_dn', password: 'password'})
+      adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", encryption: 'plain', base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName', try_sasl: true, sasl_mechanisms: ["GSS-SPNEGO"], bind_dn: 'bind_dn', password: 'password'})
       adaptor.connection.should_receive(:open).and_yield(adaptor.connection)
       adaptor.connection.should_receive(:search).with(args).and_return([rs])
       adaptor.connection.should_receive(:bind).and_return(true)
