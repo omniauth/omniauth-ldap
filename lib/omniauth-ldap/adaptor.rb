@@ -109,6 +109,7 @@ module OmniAuth
 
       def encryption_options
         translated_method = translate_method
+        return nil unless translated_method
 
         {
           method: translated_method,
