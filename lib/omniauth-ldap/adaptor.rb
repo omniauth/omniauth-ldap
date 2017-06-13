@@ -69,6 +69,7 @@ module OmniAuth
           hosts: @hosts,
           host: @host,
           port: @port,
+          encryption: encryption_options
         }
         @bind_method = @try_sasl ? :sasl : (@allow_anonymous||!@bind_dn||!@password ? :anonymous : :simple)
 
@@ -80,7 +81,6 @@ module OmniAuth
                   }
         config[:auth] = @auth
         @connection = Net::LDAP.new(config)
-        @connection.encryption(encryption_options)
       end
 
       #:base => "dc=yourcompany, dc=com",
@@ -109,6 +109,7 @@ module OmniAuth
 
       def encryption_options
         translated_method = translate_method
+        return nil unless translated_method
 
         {
           method: translated_method,

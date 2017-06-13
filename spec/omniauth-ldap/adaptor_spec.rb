@@ -38,7 +38,7 @@ describe OmniAuth::LDAP::Adaptor do
       adaptor.connection.port.should == 389
       adaptor.connection.base.should == 'dc=intridea, dc=com'
       adaptor.connection.instance_variable_get('@auth').should == {:method => :simple, :username => 'bind_dn', :password => 'password'}
-      adaptor.connection.instance_variable_get('@encryption').should == {:method => nil, :tls_options => {}}
+      adaptor.connection.instance_variable_get('@encryption').should == nil
     end
 
     it 'should setup ldap connection with sasl-md5' do
@@ -93,14 +93,9 @@ describe OmniAuth::LDAP::Adaptor do
     end
 
     context 'when encryption is plain' do
-      it 'should set the encryption method to nil' do
+      it 'should set encryption to nil' do
         adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", encryption: 'plain', base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName'})
-        adaptor.connection.instance_variable_get('@encryption').should include method: nil
-      end
-
-      it 'should set the encryption tls_options to empty' do
-        adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", encryption: 'plain', base: 'dc=intridea, dc=com', port: 389, uid: 'sAMAccountName'})
-        adaptor.connection.instance_variable_get('@encryption').should include tls_options: {}
+        adaptor.connection.instance_variable_get('@encryption').should eq(nil)
       end
     end
 
