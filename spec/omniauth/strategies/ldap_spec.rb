@@ -80,6 +80,15 @@ describe "OmniAuth::Strategies::LDAP" do
         last_response.headers['Location'].should =~ %r{ldap_error}
       end
 
+      context 'wrong request method' do
+        it 'redirects to error page' do
+          get('/auth/ldap/callback', { username: 'ping', password: 'password' })
+
+          expect(last_response).to be_redirect
+          expect(last_response.headers['Location']).to match('invalid_request_method')
+        end
+      end
+
       context "when username is not preset" do
         it 'should redirect to error page' do
           post('/auth/ldap/callback', {})

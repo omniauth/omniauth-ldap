@@ -40,6 +40,7 @@ module OmniAuth
       def callback_phase
         @adaptor = OmniAuth::LDAP::Adaptor.new @options
 
+        return fail!(:invalid_request_method) unless valid_request_method?
         return fail!(:missing_credentials) if missing_credentials?
         begin
           @ldap_user_info = @adaptor.bind_as(:filter => filter(@adaptor), :size => 1, :password => request['password'])
@@ -95,6 +96,10 @@ module OmniAuth
       end
 
       protected
+
+      def valid_request_method?
+        request.env['REQUEST_METHOD'] == 'POST'
+      end
 
       def missing_credentials?
         request['username'].nil? or request['username'].empty? or request['password'].nil? or request['password'].empty?
