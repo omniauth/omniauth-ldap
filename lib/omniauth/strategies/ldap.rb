@@ -4,6 +4,9 @@ module OmniAuth
   module Strategies
     class LDAP
       include OmniAuth::Strategy
+
+      InvalidCredentialsError = Class.new(StandardError)
+
       @@config = {
         'name' => 'cn',
         'first_name' => 'givenName',
@@ -45,7 +48,9 @@ module OmniAuth
         begin
           @ldap_user_info = @adaptor.bind_as(:filter => filter(@adaptor), :size => 1, :password => request['password'])
 
-          return fail!(:invalid_credentials) if !@ldap_user_info
+          unless @ldap_user_info
+            return fail!(:invalid_credentials, InvalidCredentialsError.new("Invalid credentials for #{request['username']}"))
+          end
 
           @user_info = self.class.map_user(@@config, @ldap_user_info)
           super
@@ -54,7 +59,7 @@ module OmniAuth
         end
       end
 
-      def filter adaptor
+      def filter(adaptor)
         if adaptor.filter and !adaptor.filter.empty?
           username = Net::LDAP::Filter.escape(@options[:name_proc].call(request['username']))
           Net::LDAP::Filter.construct(adaptor.filter % { username: username })

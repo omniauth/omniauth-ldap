@@ -1,2 +1,5 @@
+## 2.0.4
+  - Improve log message when invalid credentials are used
+
 ## 2.0.3
   - Protects against wrong request method call to callback

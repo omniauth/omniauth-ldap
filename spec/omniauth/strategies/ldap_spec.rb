@@ -69,8 +69,10 @@ describe "OmniAuth::Strategies::LDAP" do
 
       it 'should redirect to error page' do
         post('/auth/ldap/callback', {:username => 'ping', :password => 'password'})
-        last_response.should be_redirect
-        last_response.headers['Location'].should =~ %r{invalid_credentials}
+
+        expect(last_response).to be_redirect
+        expect(last_response.headers['Location']).to match('invalid_credentials')
+        expect(last_request.env['omniauth.error'].message).to eq('Invalid credentials for ping')
       end
 
       it 'should redirect to error page when there is exception' do
@@ -132,8 +134,9 @@ describe "OmniAuth::Strategies::LDAP" do
           it 'should redirect to error page' do
             post('/auth/ldap/callback', {:username => 'ping', :password => 'password'})
 
-            last_response.should be_redirect
-            last_response.headers['Location'].should =~ %r{invalid_credentials}
+            expect(last_response).to be_redirect
+            expect(last_response.headers['Location']).to match('invalid_credentials')
+            expect(last_request.env['omniauth.error'].message).to eq('Invalid credentials for ping')
           end
           context 'and filter is set' do
             it 'should bind with filter' do
@@ -141,8 +144,9 @@ describe "OmniAuth::Strategies::LDAP" do
               Net::LDAP::Filter.should_receive(:construct).with('uid=ping')
               post('/auth/ldap/callback', {:username => 'ping', :password => 'password'})
 
-              last_response.should be_redirect
-              last_response.headers['Location'].should =~ %r{invalid_credentials}
+              expect(last_response).to be_redirect
+              expect(last_response.headers['Location']).to match('invalid_credentials')
+              expect(last_request.env['omniauth.error'].message).to eq('Invalid credentials for ping')
             end
           end
 
