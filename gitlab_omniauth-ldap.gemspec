@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["ping@intridea.com"]
   gem.description   = %q{A LDAP strategy for OmniAuth.}
   gem.summary       = %q{A LDAP strategy for OmniAuth.}
-  gem.homepage      = "https://github.com/gitlabhq/omniauth-ldap"
+  gem.homepage      = "https://gitlab.com/gitlab-org/omniauth-ldap"
   gem.license       = "MIT"
 
   gem.add_runtime_dependency     'omniauth', '~> 1.3'
