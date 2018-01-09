@@ -13,7 +13,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency     'net-ldap', '~> 0.16'
   gem.add_runtime_dependency     'pyu-ruby-sasl', '~> 0.0.3.2'#0.0.3.1 has been yanked
   gem.add_runtime_dependency     'rubyntlm', '~> 0.3.4'
-  gem.add_development_dependency 'rspec', '~> 2.7'
+  gem.add_development_dependency 'rspec', '~> 3.0'
   gem.add_development_dependency 'simplecov'
   gem.add_development_dependency 'rack-test'
 
