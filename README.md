@@ -18,6 +18,10 @@ Use the LDAP strategy as a middleware in your application:
         :name_proc    => Proc.new {|name| name.gsub(/@.*$/,'')}
         :bind_dn      => 'default_bind_dn'
         :password     => 'password'
+        :tls_options  => {
+          :ssl_version => 'TLSv1_2',
+          :ciphers     => ["AES-128-CBC", "AES-128-CBC-HMAC-SHA1", "AES-128-CBC-HMAC-SHA256"]
+        }
 
 All of the listed options are required, with the exception of :title, :name_proc, :bind_dn, and :password.
 
@@ -47,6 +51,10 @@ All of the listed options are required, with the exception of :title, :name_proc
 - `:try_sasl` and `:sasl_mechanisms` are optional. `:try_sasl` [`true` | `false`], `:sasl_mechanisms` [`'DIGEST-MD5'` | `'GSS-SPNEGO'`]
   Use them to initialize a SASL connection to server. If you are not familiar with these authentication methods, 
   please just avoid them.
+
+- `:tls_options` allows you to pass in OpenSSL options like `:ssl_version`,
+  `:ciphers` and more. See http://ruby-doc.org/stdlib-2.0.0/libdoc/openssl/rdoc/OpenSSL/SSL/SSLContext.html
+  for all available options and values.
 
 Direct users to '/auth/ldap' to have them authenticated via your company's LDAP server.
 

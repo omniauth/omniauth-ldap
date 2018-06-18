@@ -126,6 +126,19 @@ describe OmniAuth::LDAP::Adaptor do
         end
       end
 
+      context 'when tls_options are specified' do
+        it 'should pass the values along with defaults' do
+          adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", encryption: 'ssl', base: 'dc=intridea, dc=com', port: 636, uid: 'sAMAccountName', bind_dn: 'bind_dn', password: 'password', tls_options: { ca_file: '/etc/ca.pem', ssl_version: 'TLSv1_2' }})
+          adaptor.connection.instance_variable_get('@encryption').should include tls_options: OpenSSL::SSL::SSLContext::DEFAULT_PARAMS.merge(ca_file: '/etc/ca.pem', ssl_version: 'TLSv1_2')
+        end
+
+        it 'does not pass nil or blank values' do
+          adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", encryption: 'ssl', base: 'dc=intridea, dc=com', port: 636, uid: 'sAMAccountName', bind_dn: 'bind_dn', password: 'password', tls_options: { ca_file: nil, ssl_version: ' ' }})
+          adaptor.connection.instance_variable_get('@encryption').should include tls_options: OpenSSL::SSL::SSLContext::DEFAULT_PARAMS
+        end
+      end
+
+      # DEPRECATED
       context 'when ca_file is specified' do
         it 'should set the encryption tls_options ca_file' do
           adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", encryption: 'ssl', base: 'dc=intridea, dc=com', port: 636, uid: 'sAMAccountName', bind_dn: 'bind_dn', password: 'password', ca_file: '/etc/ca.pem'})
@@ -133,6 +146,7 @@ describe OmniAuth::LDAP::Adaptor do
         end
       end
 
+      # DEPRECATED
       context 'when ssl_version is specified' do
         it 'should overwrite the encryption tls_options ssl_version' do
           adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.145", encryption: 'ssl', base: 'dc=intridea, dc=com', port: 636, uid: 'sAMAccountName', bind_dn: 'bind_dn', password: 'password', ssl_version: 'TLSv1_2'})

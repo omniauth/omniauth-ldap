@@ -15,10 +15,12 @@ module OmniAuth
 
       VALID_ADAPTER_CONFIGURATION_KEYS = [
         :hosts, :host, :port, :encryption, :disable_verify_certificates, :bind_dn, :password, :try_sasl,
-        :sasl_mechanisms, :uid, :base, :allow_anonymous, :filter, :ca_file, :ssl_version,
+        :sasl_mechanisms, :uid, :base, :allow_anonymous, :filter, :tls_options,
 
         # Deprecated
-        :method
+        :method,
+        :ca_file,
+        :ssl_version
       ]
 
       # A list of needed keys. Possible alternatives are specified using sub-lists.
@@ -134,19 +136,21 @@ module OmniAuth
       def tls_options(translated_method)
         return {} if translated_method == nil # (plain)
 
-        tls_options = if @disable_verify_certificates
-                        # It is important to explicitly set verify_mode for two reasons:
-                        # 1. The behavior of OpenSSL is undefined when verify_mode is not set.
-                        # 2. The net-ldap gem implementation verifies the certificate hostname
-                        #    unless verify_mode is set to VERIFY_NONE.
-                        { verify_mode: OpenSSL::SSL::VERIFY_NONE }
-                      else
-                        OpenSSL::SSL::SSLContext::DEFAULT_PARAMS
-                      end
+        options = default_options
 
-        tls_options[:ca_file] = @ca_file if @ca_file
-        tls_options[:ssl_version] = @ssl_version if @ssl_version
-        tls_options
+        if @tls_options
+          # Prevent blank config values from overwriting SSL defaults
+          configured_options = sanitize_hash_values(@tls_options)
+          configured_options = symbolize_hash_keys(configured_options)
+
+          options.merge!(configured_options)
+        end
+
+        # Retain backward compatibility until deprecated configs are removed.
+        options[:ca_file] = @ca_file if @ca_file
+        options[:ssl_version] = @ssl_version if @ssl_version
+
+        options
       end
 
       def sasl_auths(options={})
@@ -194,6 +198,32 @@ module OmniAuth
         [Net::NTLM::Message::Type1.new.serialize, nego]
       end
 
+      private
+
+      def default_options
+        if @disable_verify_certificates
+          # It is important to explicitly set verify_mode for two reasons:
+          # 1. The behavior of OpenSSL is undefined when verify_mode is not set.
+          # 2. The net-ldap gem implementation verifies the certificate hostname
+          #    unless verify_mode is set to VERIFY_NONE.
+          { verify_mode: OpenSSL::SSL::VERIFY_NONE }
+        else
+          OpenSSL::SSL::SSLContext::DEFAULT_PARAMS.dup
+        end
+      end
+
+      # Removes keys that have blank values
+      def sanitize_hash_values(hash)
+        hash.delete_if { |_, value| value.nil? || value !~ /\S/ }
+      end
+
+      def symbolize_hash_keys(hash)
+        hash.keys.each do |key|
+          hash[key.to_sym] = hash[key]
+        end
+
+        hash
+      end
     end
   end
 end
