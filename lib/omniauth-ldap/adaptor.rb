@@ -213,8 +213,14 @@ module OmniAuth
       end
 
       # Removes keys that have blank values
+      #
+      # This gem may not always be in the context of Rails so we
+      # do this rather than `.blank?`.
       def sanitize_hash_values(hash)
-        hash.delete_if { |_, value| value.nil? || value !~ /\S/ }
+        hash.delete_if do |_, value|
+          value.nil? ||
+          (value.is_a?(String) && value !~ /\S/)
+        end
       end
 
       def symbolize_hash_keys(hash)
