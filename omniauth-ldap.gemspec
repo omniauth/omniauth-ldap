@@ -14,8 +14,8 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency     'pyu-ruby-sasl', '~> 0.0.3.3'
   gem.add_runtime_dependency     'rubyntlm', '~> 0.6.2'
   gem.add_development_dependency 'rspec', '~> 3.0'
-  gem.add_development_dependency 'simplecov'
-  gem.add_development_dependency 'rack-test'
+  gem.add_development_dependency 'simplecov', '~> 0.11'
+  gem.add_development_dependency 'rack-test', '~> 0.6', '>= 0.6.3'
 
   gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   gem.files         = `git ls-files`.split("\n")
