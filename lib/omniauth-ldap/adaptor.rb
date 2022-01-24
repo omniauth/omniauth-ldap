@@ -60,8 +60,8 @@ module OmniAuth
                     :password => @password
                   }
         config[:auth] = @auth
+        config[:encryption] = method
         @connection = Net::LDAP.new(config)
-        @connection.encryption(method)
       end
 
       #:base => "dc=yourcompany, dc=com",
