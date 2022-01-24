@@ -27,8 +27,17 @@ describe "OmniAuth::Strategies::LDAP" do
     expect(OmniAuth::Utils.camelize('ldap')).to eq 'LDAP'
   end
 
-  describe '/auth/ldap' do
+  describe 'get /auth/ldap' do
     before(:each){ get '/auth/ldap' }
+
+    it 'should return 404' do
+      expect(last_response.status).to eq 404
+      expect(last_response.body).to_not include("<form")
+    end
+  end
+
+  describe '/auth/ldap' do
+    before(:each){ post('/auth/ldap', {}) }
 
     it 'should display a form' do
       expect(last_response.status).to eq 200
