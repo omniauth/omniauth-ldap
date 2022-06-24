@@ -30,7 +30,20 @@ describe "OmniAuth::Strategies::LDAP" do
   end
 
   describe '/auth/ldap' do
-    before(:each){ get '/auth/ldap' }
+    let!(:csrf_token) { SecureRandom.base64(32) }
+    let(:post_env) { make_env('/auth/ldap', 'rack.session' => { csrf: csrf_token }, 'rack.input' => StringIO.new("authenticity_token=#{escaped_token}")) }
+    let(:escaped_token) { URI.encode_www_form_component(csrf_token, Encoding::UTF_8) }
+
+    before(:each) { post '/auth/ldap', nil, post_env }
+
+    def make_env(path = '/auth/ldap', props = {})
+      {
+        'REQUEST_METHOD' => 'POST',
+        'PATH_INFO' => path,
+        'rack.session' => {},
+        'rack.input' => StringIO.new('test=true')
+      }.merge(props)
+    end
 
     it 'should display a form' do
       last_response.status.should == 200
