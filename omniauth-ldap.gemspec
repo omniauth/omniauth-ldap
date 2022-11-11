@@ -9,7 +9,7 @@ Gem::Specification.new do |gem|
   gem.homepage      = "https://github.com/intridea/omniauth-ldap"
   gem.license       = "MIT"
 
-  gem.add_runtime_dependency     'omniauth', '~> 1.8.1'
+  # gem.add_runtime_dependency     'omniauth', '~> 1.8.1'
   gem.add_runtime_dependency     'net-ldap', '~> 0.16'
   gem.add_runtime_dependency     'pyu-ruby-sasl', '~> 0.0.3.3'
   gem.add_runtime_dependency     'rubyntlm', '~> 0.6.2'
