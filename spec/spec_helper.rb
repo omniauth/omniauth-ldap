@@ -7,6 +7,10 @@ require 'rack/test'
 require 'omniauth'
 require 'omniauth-ldap'
 
+TEST_LOGGER = Logger.new(StringIO.new)
+OmniAuth.config.logger = TEST_LOGGER
+OmniAuth.config.request_validation_phase = proc {}
+
 RSpec.configure do |config|
   config.include Rack::Test::Methods
   config.extend  OmniAuth::Test::StrategyMacros, :type => :strategy
