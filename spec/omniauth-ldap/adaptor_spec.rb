@@ -82,5 +82,14 @@ describe "OmniAuth::LDAP::Adaptor" do
       expect(adaptor.connection).to receive(:bind).and_return(true)
       expect(adaptor.bind_as(args)).to eq rs
     end
+
+    it "should raise a ConnectionError if the bind fails" do
+      adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.126", method: 'plain', base: 'dc=score, dc=local', port: 389, uid: 'sAMAccountName', bind_dn: 'bind_dn', password: 'password'})
+      adaptor.connection.should_receive(:open).and_yield(adaptor.connection)
+      # Net::LDAP#search returns nil if the operation was not successful
+      adaptor.connection.should_receive(:search).with(args).and_return(nil)
+      adaptor.connection.should_receive(:bind).never
+      lambda { adaptor.bind_as(args) }.should raise_error OmniAuth::LDAP::Adaptor::ConnectionError
+    end
   end
 end
