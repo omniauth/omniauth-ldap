@@ -39,7 +39,7 @@ module OmniAuth
 
         return fail!(:missing_credentials) if missing_credentials?
         begin
-          @ldap_user_info = @adaptor.bind_as(:filter => filter(@adaptor), :size => 1, :password => request['password'])
+          @ldap_user_info = @adaptor.bind_as(:filter => filter(@adaptor), :size => 1, :password => requestData['password'])
           return fail!(:invalid_credentials) if !@ldap_user_info
 
           @user_info = self.class.map_user(@@config, @ldap_user_info)
@@ -51,9 +51,9 @@ module OmniAuth
 
       def filter adaptor
         if adaptor.filter and !adaptor.filter.empty?
-          Net::LDAP::Filter.construct(adaptor.filter % {username: @options[:name_proc].call(request['username'])})
+          Net::LDAP::Filter.construct(adaptor.filter % {username: @options[:name_proc].call(requestData['username'])})
         else
-          Net::LDAP::Filter.eq(adaptor.uid, @options[:name_proc].call(request['username']))
+          Net::LDAP::Filter.eq(adaptor.uid, @options[:name_proc].call(requestData['username']))
         end
       end
 
@@ -92,8 +92,12 @@ module OmniAuth
       protected
 
       def missing_credentials?
-        request['username'].nil? or request['username'].empty? or request['password'].nil? or request['password'].empty?
+        requestData['username'].blank? or requestData['password'].blank?
       end # missing_credentials?
+
+      def requestData
+        @env['action_dispatch.request.request_parameters'] || request
+      end
     end
   end
 end
