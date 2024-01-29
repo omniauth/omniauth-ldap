@@ -17,9 +17,10 @@ Use the LDAP strategy as a middleware in your application:
         #:filter => '(&(uid=%{username})(memberOf=cn=myapp-users,ou=groups,dc=example,dc=com))'
         :name_proc => Proc.new {|name| name.gsub(/@.*$/,'')}
         :bind_dn => 'default_bind_dn'
-        :password => 'password'
+        :password => 'password',
+        :group => 'group'
 
-All of the listed options are required, with the exception of :title, :name_proc, :bind_dn, and :password.
+All of the listed options are required, with the exception of :title, :name_proc, :bind_dn, :password and :group.
 Allowed values of :method are: :plain, :ssl, :tls.
 
 :bind_dn and :password is the default credentials to perform user lookup.
@@ -45,6 +46,10 @@ Allowed values of :method are: :plain, :ssl, :tls.
   Use them to initialize a SASL connection to server. If you are not familiar with these authentication methods, 
   please just avoid them.
 
+:group will additionally allow users to check whether the user belongs to a specific group. After a user has been
+  authenticated, group will be checked.  If the user does not belong to the specified group, the user will be redirected 
+  to /auth/failure with the message, :invalid_group
+  
 Direct users to '/auth/ldap' to have them authenticated via your company's LDAP server.
 
 

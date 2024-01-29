@@ -24,6 +24,7 @@ module OmniAuth
       option :method, :plain
       option :uid, 'sAMAccountName'
       option :name_proc, lambda {|n| n}
+      option :group
 
       def request_phase
         OmniAuth::LDAP::Adaptor.validate @options
@@ -41,6 +42,11 @@ module OmniAuth
         begin
           @ldap_user_info = @adaptor.bind_as(:filter => filter(@adaptor), :size => 1, :password => request['password'])
           return fail!(:invalid_credentials) if !@ldap_user_info
+
+          # If group is specified in options, validate membership
+          if @options[:group]
+            return fail!(:invalid_group) unless is_member?(@ldap_user_info)
+          end
 
           @user_info = self.class.map_user(@@config, @ldap_user_info)
           super
@@ -94,6 +100,15 @@ module OmniAuth
       def missing_credentials?
         request['username'].nil? or request['username'].empty? or request['password'].nil? or request['password'].empty?
       end # missing_credentials?
+
+      def is_member?(ldap_user_info)
+        ldap_user_info.memberof.each do |value|
+          group_parts = value.split(',')
+          expected_group = group_parts[0].match(/CN=(.+)/)
+          return true if expected_group[1] == options[:group]
+        end
+        return false
+      end # is_member?(Net::LDAP::Entry)
     end
   end
 end
