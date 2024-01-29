@@ -10,16 +10,19 @@ Use the LDAP strategy as a middleware in your application:
         :port => 389,
         :method => :plain,
         :base => 'dc=intridea, dc=com',
-        :uid => 'sAMAccountName',
         :name_proc => Proc.new {|name| name.gsub(/@.*$/,'')},
         :bind_dn => 'default_bind_dn',
+        :password => 'password',
+        :uid => 'sAMAccountName',
         # Or, alternatively:
         #:filter => '(&(uid=%{username})(memberOf=cn=myapp-users,ou=groups,dc=example,dc=com))'
-        :name_proc => Proc.new {|name| name.gsub(/@.*$/,'')}
-        :bind_dn => 'default_bind_dn'
-        :password => 'password'
+        :mapping => {
+          'name' => 'cn;lang-en',
+          'email' => ['preferredEmail', 'mail'],
+          'nickname' => ['uid', 'userid', 'sAMAccountName']
+        }
 
-All of the listed options are required, with the exception of :title, :name_proc, :bind_dn, and :password.
+All of the listed options are required, with the exception of :title, :name_proc, :bind_dn, :password, and :mapping.
 Allowed values of :method are: :plain, :ssl, :tls.
 
 :bind_dn and :password is the default credentials to perform user lookup.
@@ -45,12 +48,15 @@ Allowed values of :method are: :plain, :ssl, :tls.
   Use them to initialize a SASL connection to server. If you are not familiar with these authentication methods, 
   please just avoid them.
 
+:mapping allows you to customize mapping of LDAP attributes to the returned user info hash. The default mappings are
+  defined in [ldap.rb](lib/omniauth/strategies/ldap.rb#L7), it will be merged with yours.
+
 Direct users to '/auth/ldap' to have them authenticated via your company's LDAP server.
 
 
 ## License
 
-Copyright (C) 2011 by Ping Yu and Intridea, Inc.
+Copyright (C) 2011-2014 by Ping Yu and Intridea, Inc.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
