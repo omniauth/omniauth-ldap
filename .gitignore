@@ -1,3 +1,5 @@
 .project
 coverage
 /Gemfile.lock
+.tools-version
+.idea
