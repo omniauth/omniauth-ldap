@@ -20,4 +20,4 @@ rspec:
 include:
   - component: gitlab.com/gitlab-org/components/gem-release/gem-release@main
     inputs:
-      - gem_name: gitlab_omniauth-ldap
+      gem_name: gitlab_omniauth-ldap
