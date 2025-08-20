@@ -3,6 +3,7 @@ default:
 
 stages:
   - test
+  - deploy
 
 .test-template: &test
   before_script:
@@ -15,3 +16,6 @@ rspec:
     matrix:
       - RUBY_VERSION: [ "2.7", "3.0", "3.1", "3.2", "3.3", "3.4"]
   <<: *test
+
+include:
+  - component: gitlab.com/gitlab-org/components/gem-release/gem-release@main
