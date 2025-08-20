@@ -3,6 +3,7 @@ default:
 
 stages:
   - test
+  - deploy
 
 .test-template: &test
   before_script:
