@@ -50,6 +50,9 @@ Direct users to '/auth/ldap' to have them authenticated via your company's LDAP 
 
 ## License
 
+MIT License
+
+Copyright (c) 2025 Peter H. Boling, and omniauth-ldap contributors
 Copyright (C) 2011 by Ping Yu and Intridea, Inc.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
