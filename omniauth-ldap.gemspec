@@ -23,4 +23,6 @@ Gem::Specification.new do |spec|
   spec.name          = "omniauth-ldap"
   spec.require_paths = ["lib"]
   spec.version       = OmniAuth::LDAP::VERSION
+
+  spec.add_development_dependency("kettle-dev", "~> 1.1")
 end
