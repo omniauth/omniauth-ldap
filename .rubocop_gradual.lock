@@ -1,0 +1,36 @@
+{
+  "README.md:3434634895": [
+    [68, 14, 2, "Lint/Syntax: unexpected token tASSOC\n(Using Ruby 2.0 parser; configure using `TargetRubyVersion` parameter, under `AllCops`)", 5859494],
+    [69, 15, 2, "Lint/Syntax: unexpected token tASSOC\n(Using Ruby 2.0 parser; configure using `TargetRubyVersion` parameter, under `AllCops`)", 5859494]
+  ],
+  "lib/omniauth-ldap/adaptor.rb:1489268298": [
+    [29, 7, 413, "Style/ClassMethodsDefinitions: Use `class << self` to define a class method.", 105664470],
+    [79, 17, 3, "Style/AndOr: Use `&&` instead of `and`.", 193409806],
+    [79, 30, 3, "Style/AndOr: Use `&&` instead of `and`.", 193409806],
+    [79, 37, 1, "Lint/AssignmentInCondition: Wrap assignment in parentheses if intentional", 177560]
+  ],
+  "lib/omniauth/strategies/ldap.rb:356253354": [
+    [48, 9, 53, "Lint/RescueException: Avoid rescuing the `Exception` class. Perhaps you meant to rescue `StandardError`?", 4018396070],
+    [54, 27, 3, "Style/AndOr: Use `&&` instead of `and`.", 193409806],
+    [71, 7, 970, "Style/ClassMethodsDefinitions: Use `class << self` to define a class method.", 3995669691]
+  ],
+  "spec/omniauth-ldap/adaptor_spec.rb:3932937965": [
+    [71, 7, 26, "RSpec/StubbedMock: Prefer `allow` over `expect` when configuring a response.", 1924417310],
+    [72, 7, 26, "RSpec/StubbedMock: Prefer `allow` over `expect` when configuring a response.", 1924417310],
+    [73, 7, 26, "RSpec/StubbedMock: Prefer `allow` over `expect` when configuring a response.", 1924417310],
+    [79, 7, 26, "RSpec/StubbedMock: Prefer `allow` over `expect` when configuring a response.", 1924417310],
+    [80, 7, 26, "RSpec/StubbedMock: Prefer `allow` over `expect` when configuring a response.", 1924417310],
+    [81, 7, 26, "RSpec/StubbedMock: Prefer `allow` over `expect` when configuring a response.", 1924417310]
+  ],
+  "spec/omniauth/strategies/ldap_spec.rb:438668078": [
+    [12, 3, 54, "RSpec/LeakyConstantDeclaration: Stub class constant instead of declaring explicitly.", 2419068710],
+    [68, 13, 9, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 1130140517],
+    [93, 17, 28, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 3444838747],
+    [102, 17, 23, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 1584148894],
+    [113, 17, 32, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 1515076977],
+    [121, 19, 19, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 2526348694],
+    [133, 17, 56, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 2413495789],
+    [148, 13, 9, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 3182939526],
+    [181, 15, 19, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 2526348694]
+  ]
+}

@@ -13,11 +13,11 @@ git_source(:gitlab) { |repo_name| "https://gitlab.com/#{repo_name}" }
 gemspec
 
 group :development, :test do
-  gem 'guard'
-  gem 'guard-rspec'
-  gem 'guard-bundler'
-  gem 'growl'
-  gem 'rb-fsevent'
+  gem "guard"
+  gem "guard-rspec"
+  gem "guard-bundler"
+  gem "growl"
+  gem "rb-fsevent"
 end
 
 # Debugging

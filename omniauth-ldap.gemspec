@@ -97,6 +97,13 @@ Gem::Specification.new do |spec|
   # Listed files are the relative paths from bindir above.
   spec.executables = []
 
+  spec.add_dependency("net-ldap")
+  spec.add_dependency("nkf")
+  spec.add_dependency("omniauth")
+  spec.add_dependency("rack")
+  spec.add_dependency("rubyntlm")
+  spec.add_dependency("ruby-sasl")
+
   # Utilities
   spec.add_dependency("version_gem", "~> 1.1", ">= 1.1.9")              # ruby >= 2.2.0
 
@@ -128,6 +135,7 @@ Gem::Specification.new do |spec|
   # Testing
   spec.add_development_dependency("appraisal2", "~> 3.0")                           # ruby >= 1.8.7, for testing against multiple versions of dependencies
   spec.add_development_dependency("kettle-test", "~> 1.0", ">= 1.0.6")              # ruby >= 2.3
+  spec.add_development_dependency("rack-test", "~> 2.2")                            # ruby >= 2.0
 
   # Releasing
   spec.add_development_dependency("ruby-progressbar", "~> 1.13")                    # ruby >= 0
