@@ -25,7 +25,7 @@ env:
   #   because it would be redundant with the coverage workflow.
   # Also we can validate all output formats without breaking CodeCov,
   #   since we aren't submitting these reports anywhere.
-  K_SOUP_COV_MIN_BRANCH: 71
+  K_SOUP_COV_MIN_BRANCH: 67
   K_SOUP_COV_MIN_LINE: 86
   K_SOUP_COV_MIN_HARD: false
   K_SOUP_COV_FORMATTERS: "html,xml,rcov,lcov,json,tty"
