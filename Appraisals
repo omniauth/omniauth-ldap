@@ -54,7 +54,7 @@ appraise "dep-heads" do
 end
 
 appraise "ruby-2-3" do
-  eval_gemfile "modular/omniauth/r2/v1.0.gemfile"
+  eval_gemfile "modular/omniauth/r2/v1.1.gemfile"
   eval_gemfile "modular/rack/r2.1/v1.6.gemfile"
   eval_gemfile "modular/x_std_libs/r2.3/libs.gemfile"
 end

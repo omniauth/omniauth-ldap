@@ -4,7 +4,7 @@ source "https://gem.coop"
 
 gemspec :path => "../"
 
-eval_gemfile("modular/omniauth/r2/v1.0.gemfile")
+eval_gemfile("modular/omniauth/r2/v1.1.gemfile")
 
 eval_gemfile("modular/rack/r2.1/v1.6.gemfile")
 

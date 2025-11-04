@@ -22,7 +22,8 @@ Dir.glob(Pathname.new(__dir__).join("support/**/", "*.rb")).each { |f| require f
 
 TEST_LOGGER = Logger.new(StringIO.new)
 OmniAuth.config.logger = TEST_LOGGER
-OmniAuth.config.request_validation_phase = proc {}
+# New config for OmniAuth 2.0+
+OmniAuth.config.request_validation_phase = proc {} if OmniAuth.config.respond_to?(:request_validation_phase=)
 
 RSpec.configure do |config|
   config.include Rack::Test::Methods
