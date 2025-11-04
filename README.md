@@ -1,7 +1,6 @@
 | 📍 NOTE                                                                                                                                                           |
 |-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | RubyGems (the [GitHub org][rubygems-org], not the website) [suffered][draper-security] a [hostile takeover][ellen-takeover] in September 2025.                    |
-| Ultimately [4 maintainers][simi-removed] were [hard removed][martin-removed] and a reason has been given for only 1 of those, while 2 others resigned in protest. |
 | It is a [complicated story][draper-takeover] which is difficult to [parse quickly][draper-lies].                                                                  |
 | I'm adding notes like this to gems because I [don't condone theft][draper-theft] of repositories or gems from their rightful owners.                              |
 | If a similar theft happened with my repos/gems, I'd hope some would stand up for me.                                                                              |
@@ -38,7 +37,6 @@
 
 # 📁 OmniAuth LDAP
 
-[![Version][👽versioni]][👽version] [![GitHub tag (latest SemVer)][⛳️tag-img]][⛳️tag] [![License: MIT][📄license-img]][📄license-ref] [![Downloads Rank][👽dl-ranki]][👽dl-rank] [![Open Source Helpers][👽oss-helpi]][👽oss-help] [![CodeCov Test Coverage][🏀codecovi]][🏀codecov] [![Coveralls Test Coverage][🏀coveralls-img]][🏀coveralls] [![QLTY Test Coverage][🏀qlty-covi]][🏀qlty-cov] [![QLTY Maintainability][🏀qlty-mnti]][🏀qlty-mnt] [![CI Heads][🚎3-hd-wfi]][🚎3-hd-wf] [![CI Runtime Dependencies @ HEAD][🚎12-crh-wfi]][🚎12-crh-wf] [![CI Current][🚎11-c-wfi]][🚎11-c-wf] [![CI Truffle Ruby][🚎9-t-wfi]][🚎9-t-wf] [![CI JRuby][🚎10-j-wfi]][🚎10-j-wf] [![Deps Locked][🚎13-🔒️-wfi]][🚎13-🔒️-wf] [![Deps Unlocked][🚎14-🔓️-wfi]][🚎14-🔓️-wf] [![CI Supported][🚎6-s-wfi]][🚎6-s-wf] [![CI Legacy][🚎4-lg-wfi]][🚎4-lg-wf] [![CI Unsupported][🚎7-us-wfi]][🚎7-us-wf] [![CI Ancient][🚎1-an-wfi]][🚎1-an-wf] [![CI Test Coverage][🚎2-cov-wfi]][🚎2-cov-wf] [![CI Style][🚎5-st-wfi]][🚎5-st-wf] [![CodeQL][🖐codeQL-img]][🖐codeQL] [![Apache SkyWalking Eyes License Compatibility Check][🚎15-🪪-wfi]][🚎15-🪪-wf]
 
 `if ci_badges.map(&:color).detect { it != "green"}` ☝️ [let me know][🖼️galtzo-discord], as I may have missed the [discord notification][🖼️galtzo-discord].
 
@@ -54,19 +52,17 @@ Use the LDAP strategy as a middleware in your application:
 
 ```ruby
 use OmniAuth::Strategies::LDAP, 
-    :title => "My LDAP", 
+    :title => "My LDAP",
     :host => '10.101.10.1',
     :port => 389,
     :method => :plain,
-    :base => 'dc=intridea, dc=com',
+    :base => 'dc=intridea,dc=com',
     :uid => 'sAMAccountName',
-    :name_proc => Proc.new {|name| name.gsub(/@.*$/,'')},
+    :name_proc => Proc.new { |name| name.gsub(/@.*$/, '') },
     :bind_dn => 'default_bind_dn',
-    # Or, alternatively:
-    #:filter => '(&(uid=%{username})(memberOf=cn=myapp-users,ou=groups,dc=example,dc=com))'
-    :name_proc => Proc.new {|name| name.gsub(/@.*$/,'')}
-    :bind_dn => 'default_bind_dn'
     :password => 'password'
+# Or, alternatively:
+# use OmniAuth::Strategies::LDAP, filter: '(&(uid=%{username})(memberOf=cn=myapp-users,ou=groups,dc=example,dc=com))'
 ```
 
 All of the listed options are required, with the exception of `:title`, `:name_proc`, `:bind_dn`, and `:password`.
@@ -92,7 +88,6 @@ All of the listed options are required, with the exception of `:title`, `:name_p
 
 Compatible with MRI Ruby 0+, and concordant releases of JRuby, and TruffleRuby.
 
-| 🚚 _Amazing_ test matrix was brought to you by | 🔎 appraisal2 🔎 and the color 💚 green 💚             |
 |------------------------------------------------|--------------------------------------------------------|
 | 👟 Check it out!                               | ✨ [github.com/appraisal-rb/appraisal2][💎appraisal2] ✨ |
 
@@ -170,38 +165,144 @@ NOTE: Be prepared to track down certs for signed gems and add them the same way 
 
 ## ⚙️ Configuration
 
+The following options are available for configuring the OmniAuth LDAP strategy:
 
+### Required Options
+
+- `:host` - The hostname or IP address of the LDAP server.
+- `:port` - The port number of the LDAP server (default: 389).
+- `:method` - The connection method. Allowed values: `:plain`, `:ssl`, `:tls` (default: `:plain`).
+- `:base` - The base DN for the LDAP search.
+- `:uid` or `:filter` - Either `:uid` (the LDAP attribute for username, default: "sAMAccountName") or `:filter` (LDAP filter for searching user entries). If `:filter` is provided, `:uid` is not required.
+
+### Optional Options
+
+- `:title` - The title for the authentication form (default: "LDAP Authentication").
+- `:bind_dn` - The DN to bind with for searching users (required if anonymous access is not allowed).
+- `:password` - The password for the bind DN.
+- `:name_proc` - A proc to process the username before using it in the search (default: identity proc that returns the username unchanged).
+- `:try_sasl` - Whether to use SASL authentication (default: false).
+- `:sasl_mechanisms` - Array of SASL mechanisms to use (e.g., ["DIGEST-MD5", "GSS-SPNEGO"]).
+- `:allow_anonymous` - Whether to allow anonymous binding (default: false).
+- `:logger` - A logger instance for debugging (optional, for internal use).
 
 ## 🔧 Basic Usage
 
-Allowed values of `:method` are: `:plain`, `:ssl`, `:tls`.
+The strategy exposes a simple Rack middleware and can be used in plain Rack apps, Sinatra, or Rails.
+Direct users to `/auth/ldap` to start authentication and handle the callback at `/auth/ldap/callback`.
 
-`:bind_dn` and `:password` is the default credentials to perform user lookup.
-Most LDAP servers require that you supply a complete DN as a binding-credential, along with an authenticator
-such as a password. But for many applications, you often don’t have a full DN to identify the user.
-You usually get a simple identifier like a username or an email address, along with a password.
-Since many LDAP servers don't allow anonymous access, search function will require a bound connection,
-`:bind_dn` and `:password` will be required for searching on the username or email to retrieve the DN attribute
-for the user. If the LDAP server allows anonymous access, you don't need to provide these two parameters.
+Below are several concrete examples to get you started.
 
-`:uid` is the LDAP attribute name for the username in the login form.
-typically AD would be 'sAMAccountName' or 'UserPrincipalName', while OpenLDAP is 'uid'.
+### Minimal Rack setup
 
-`:filter` is the LDAP filter used to search the user entry. It can be used in place of :uid for more flexibility.
-`%{username}` will be replaced by the username processed by `:name_proc`.
+```ruby
+# config.ru
+require 'rack'
+require 'omniauth-ldap'
 
-`:name_proc` allows you to match the username entered with the format of the `:uid` attributes.
-For example, value of 'sAMAccountName' in AD contains only the windows username. If your user prefers using
-email to login, a `:name_proc` as above will trim the email string down to just the windows login name.
-In summary, use `:name_proc` to fill the gap between the submitted username and LDAP uid attribute value.
+use Rack::Session::Cookie, secret: 'change_me'
+use OmniAuth::Builder do
+  provider :ldap,
+    host: 'ldap.example.com',
+    port: 389,
+    method: :plain,
+    base: 'dc=example,dc=com',
+    uid: 'uid',
+    title: 'Example LDAP'
+end
 
-`:try_sasl` and `:sasl_mechanisms` are optional. Valid values are: 
-- `:try_sasl` => `true` or `false`
-- `:sasl_mechanisms` => `"DIGEST-MD5"` or `"GSS-SPNEGO"`
-Use them to initialize a SASL connection to server. If you are not familiar with these authentication methods,
-please just avoid them.
+run lambda { |env| [404, {'Content-Type' => 'text/plain'}, [env.key?('omniauth.auth').to_s]] }
+```
 
-Direct users to `/auth/ldap` to have them authenticated via your company's LDAP server.
+Visit `GET /auth/ldap` to initiate authentication (the middleware will render a login form unless you POST to `/auth/ldap`).
+
+### Sinatra example
+
+```ruby
+require 'sinatra'
+require 'omniauth-ldap'
+
+use Rack::Session::Cookie, secret: 'change_me'
+use OmniAuth::Builder do
+  provider :ldap,
+    title: 'Company LDAP',
+    host: 'ldap.company.internal',
+    base: 'dc=company,dc=local',
+    uid: 'sAMAccountName',
+    name_proc: proc { |username| username.gsub(/@.*$/, '') }
+end
+
+get '/' do
+  '<a href="/auth/ldap">Sign in with LDAP</a>'
+end
+
+get '/auth/ldap/callback' do
+  auth = request.env['omniauth.auth']
+  "Hello, #{auth.info['name']}"
+end
+```
+
+### Rails (initializer) example
+
+Create `config/initializers/omniauth.rb`:
+
+```ruby
+Rails.application.config.middleware.use OmniAuth::Builder do
+  provider :ldap,
+    title: 'Acme LDAP',
+    host: 'ldap.acme.internal',
+    port: 389,
+    base: 'dc=acme,dc=corp',
+    uid: 'uid',
+    bind_dn: 'cn=search,dc=acme,dc=corp',
+    password: ENV['LDAP_SEARCH_PASSWORD'],
+    name_proc: proc { |n| n.split('@').first }
+end
+```
+
+Then link users to `/auth/ldap` in your app (for example, in a Devise sign-in page).
+
+### Using a custom filter
+
+If you need to restrict authentication to a group or use a more complex lookup, pass `:filter`. Use `%{username}` — it will be replaced with the processed username (after `:name_proc`).
+
+```ruby
+provider :ldap,
+  host: 'ldap.example.com',
+  base: 'dc=example,dc=com',
+  filter: '(&(uid=%{username})(memberOf=cn=myapp-users,ou=groups,dc=example,dc=com))',
+  bind_dn: 'cn=search,dc=example,dc=com',
+  password: ENV['LDAP_SEARCH_PASSWORD']
+```
+
+### SASL (advanced)
+
+SASL enables alternative bind mechanisms. Only enable if you understand the server-side requirements.
+
+```ruby
+provider :ldap,
+  host: 'ldap.example.com',
+  base: 'dc=example,dc=com',
+  try_sasl: true,
+  sasl_mechanisms: ['DIGEST-MD5'],
+  uid: 'uid'
+```
+
+Supported mechanisms include `"DIGEST-MD5"` and `"GSS-SPNEGO"` depending on your environment and gems.
+
+### Name processing and examples
+
+If users log in with an email but LDAP expects a short username, use `:name_proc` to normalize the submitted value:
+
+```ruby
+provider :ldap,
+  host: 'ldap.example.com',
+  base: 'dc=example,dc=com',
+  uid: 'sAMAccountName',
+  name_proc: proc { |name| name.gsub(/@.*$/, '') }
+```
+
+This trims `alice@example.com` to `alice` before searching.
 
 ## 🦷 FLOSS Funding
 
@@ -529,7 +630,7 @@ Thanks for RTFM. ☺️
 [📗keep-changelog]: https://keepachangelog.com/en/1.0.0/
 [📗keep-changelog-img]: https://img.shields.io/badge/keep--a--changelog-1.0.0-34495e.svg?style=flat
 [📌gitmoji]:https://gitmoji.dev
-[📌gitmoji-img]:https://img.shields.io/badge/gitmoji_commits-%20%F0%9F%98%9C%20%F0%9F%98%8D-34495e.svg?style=flat-square
+[📌gitmoji-img]: https://img.shields.io/badge/gitmoji_commits-%20%F0%9F%98%9C%20%F0%9F%98%8D-34495e.svg?style=flat-square
 [🧮kloc]: https://www.youtube.com/watch?v=dQw4w9WgXcQ
 [🧮kloc-img]: https://img.shields.io/badge/KLOC-4.076-FFDD67.svg?style=for-the-badge&logo=YouTube&logoColor=blue
 [🔐security]: SECURITY.md
