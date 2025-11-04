@@ -18,5 +18,5 @@ end
 # - https://github.com/lsegal/yard/blob/main/lib/yard/templates/helpers/markup_helper.rb
 YARD::Templates::Helpers::MarkupHelper::MARKUP_PROVIDERS[:markdown].insert(
   0,
-  {:const => "KramdownGfmDocument"},
+  {const: "KramdownGfmDocument"},
 )

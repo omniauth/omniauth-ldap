@@ -51,16 +51,16 @@
 Use the LDAP strategy as a middleware in your application:
 
 ```ruby
-use OmniAuth::Strategies::LDAP, 
-    :title => "My LDAP",
-    :host => '10.101.10.1',
-    :port => 389,
-    :method => :plain,
-    :base => 'dc=intridea,dc=com',
-    :uid => 'sAMAccountName',
-    :name_proc => Proc.new { |name| name.gsub(/@.*$/, '') },
-    :bind_dn => 'default_bind_dn',
-    :password => 'password'
+use OmniAuth::Strategies::LDAP,
+  title: "My LDAP",
+  host: "10.101.10.1",
+  port: 389,
+  method: :plain,
+  base: "dc=intridea,dc=com",
+  uid: "sAMAccountName",
+  name_proc: proc { |name| name.gsub(/@.*$/, "") },
+  bind_dn: "default_bind_dn",
+  password: "password"
 # Or, alternatively:
 # use OmniAuth::Strategies::LDAP, filter: '(&(uid=%{username})(memberOf=cn=myapp-users,ou=groups,dc=example,dc=com))'
 ```
@@ -86,10 +86,25 @@ All of the listed options are required, with the exception of `:title`, `:name_p
 
 ### Compatibility
 
-Compatible with MRI Ruby 0+, and concordant releases of JRuby, and TruffleRuby.
+Compatible with MRI Ruby 2.0+, and concordant releases of JRuby, and TruffleRuby.
 
+| 🚚 _Amazing_ test matrix was brought to you by | 🔎 appraisal2 🔎 and the color 💚 green 💚             |
 |------------------------------------------------|--------------------------------------------------------|
 | 👟 Check it out!                               | ✨ [github.com/appraisal-rb/appraisal2][💎appraisal2] ✨ |
+
+### Ruby 3.4
+
+nkf/kconv has been part of Ruby since long ago.
+Eventually it became a standard gem, but was changed to a bundled gem in Ruby 3.4.
+In general, kconv and iconv have been superseded since Ruby 1.9 by the built-in
+encoding support provided by String#encode, String#force_encoding, and similar methods.
+But this gem has not yet been updated to remove its dependency on nkf/kconv.
+
+As a result of all this you should add `nkf` to your Gemfile if you are using Ruby 3.4 or later.
+
+```ruby
+gem "nkf", "~> 0.1"
+```
 
 ### Enterprise Support [![Tidelift](https://tidelift.com/badges/package/rubygems/omniauth-ldap)](https://tidelift.com/subscription/pkg/rubygems-omniauth-ldap?utm_source=rubygems-omniauth-ldap&utm_medium=referral&utm_campaign=readme)
 
@@ -197,21 +212,21 @@ Below are several concrete examples to get you started.
 
 ```ruby
 # config.ru
-require 'rack'
-require 'omniauth-ldap'
+require "rack"
+require "omniauth-ldap"
 
-use Rack::Session::Cookie, secret: 'change_me'
+use Rack::Session::Cookie, secret: "change_me"
 use OmniAuth::Builder do
   provider :ldap,
-    host: 'ldap.example.com',
+    host: "ldap.example.com",
     port: 389,
     method: :plain,
-    base: 'dc=example,dc=com',
-    uid: 'uid',
-    title: 'Example LDAP'
+    base: "dc=example,dc=com",
+    uid: "uid",
+    title: "Example LDAP"
 end
 
-run lambda { |env| [404, {'Content-Type' => 'text/plain'}, [env.key?('omniauth.auth').to_s]] }
+run lambda { |env| [404, {"Content-Type" => "text/plain"}, [env.key?("omniauth.auth").to_s]] }
 ```
 
 Visit `GET /auth/ldap` to initiate authentication (the middleware will render a login form unless you POST to `/auth/ldap`).
@@ -219,26 +234,26 @@ Visit `GET /auth/ldap` to initiate authentication (the middleware will render a 
 ### Sinatra example
 
 ```ruby
-require 'sinatra'
-require 'omniauth-ldap'
+require "sinatra"
+require "omniauth-ldap"
 
-use Rack::Session::Cookie, secret: 'change_me'
+use Rack::Session::Cookie, secret: "change_me"
 use OmniAuth::Builder do
   provider :ldap,
-    title: 'Company LDAP',
-    host: 'ldap.company.internal',
-    base: 'dc=company,dc=local',
-    uid: 'sAMAccountName',
-    name_proc: proc { |username| username.gsub(/@.*$/, '') }
+    title: "Company LDAP",
+    host: "ldap.company.internal",
+    base: "dc=company,dc=local",
+    uid: "sAMAccountName",
+    name_proc: proc { |username| username.gsub(/@.*$/, "") }
 end
 
-get '/' do
+get "/" do
   '<a href="/auth/ldap">Sign in with LDAP</a>'
 end
 
-get '/auth/ldap/callback' do
-  auth = request.env['omniauth.auth']
-  "Hello, #{auth.info['name']}"
+get "/auth/ldap/callback" do
+  auth = request.env["omniauth.auth"]
+  "Hello, #{auth.info["name"]}"
 end
 ```
 
@@ -247,16 +262,16 @@ end
 Create `config/initializers/omniauth.rb`:
 
 ```ruby
-Rails.application.config.middleware.use OmniAuth::Builder do
+Rails.application.config.middleware.use(OmniAuth::Builder) do
   provider :ldap,
-    title: 'Acme LDAP',
-    host: 'ldap.acme.internal',
+    title: "Acme LDAP",
+    host: "ldap.acme.internal",
     port: 389,
-    base: 'dc=acme,dc=corp',
-    uid: 'uid',
-    bind_dn: 'cn=search,dc=acme,dc=corp',
-    password: ENV['LDAP_SEARCH_PASSWORD'],
-    name_proc: proc { |n| n.split('@').first }
+    base: "dc=acme,dc=corp",
+    uid: "uid",
+    bind_dn: "cn=search,dc=acme,dc=corp",
+    password: ENV["LDAP_SEARCH_PASSWORD"],
+    name_proc: proc { |n| n.split("@").first }
 end
 ```
 
@@ -268,11 +283,11 @@ If you need to restrict authentication to a group or use a more complex lookup, 
 
 ```ruby
 provider :ldap,
-  host: 'ldap.example.com',
-  base: 'dc=example,dc=com',
-  filter: '(&(uid=%{username})(memberOf=cn=myapp-users,ou=groups,dc=example,dc=com))',
-  bind_dn: 'cn=search,dc=example,dc=com',
-  password: ENV['LDAP_SEARCH_PASSWORD']
+  host: "ldap.example.com",
+  base: "dc=example,dc=com",
+  filter: "(&(uid=%{username})(memberOf=cn=myapp-users,ou=groups,dc=example,dc=com))",
+  bind_dn: "cn=search,dc=example,dc=com",
+  password: ENV["LDAP_SEARCH_PASSWORD"]
 ```
 
 ### SASL (advanced)
@@ -281,11 +296,11 @@ SASL enables alternative bind mechanisms. Only enable if you understand the serv
 
 ```ruby
 provider :ldap,
-  host: 'ldap.example.com',
-  base: 'dc=example,dc=com',
+  host: "ldap.example.com",
+  base: "dc=example,dc=com",
   try_sasl: true,
-  sasl_mechanisms: ['DIGEST-MD5'],
-  uid: 'uid'
+  sasl_mechanisms: ["DIGEST-MD5"],
+  uid: "uid"
 ```
 
 Supported mechanisms include `"DIGEST-MD5"` and `"GSS-SPNEGO"` depending on your environment and gems.
@@ -296,10 +311,10 @@ If users log in with an email but LDAP expects a short username, use `:name_proc
 
 ```ruby
 provider :ldap,
-  host: 'ldap.example.com',
-  base: 'dc=example,dc=com',
-  uid: 'sAMAccountName',
-  name_proc: proc { |name| name.gsub(/@.*$/, '') }
+  host: "ldap.example.com",
+  base: "dc=example,dc=com",
+  uid: "sAMAccountName",
+  name_proc: proc { |name| name.gsub(/@.*$/, "") }
 ```
 
 This trims `alice@example.com` to `alice` before searching.

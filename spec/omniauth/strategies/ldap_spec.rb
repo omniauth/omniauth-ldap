@@ -15,7 +15,7 @@ RSpec.describe "OmniAuth::Strategies::LDAP" do
   let(:app) do
     Rack::Builder.new {
       use OmniAuth::Test::PhonySession
-      use MyLdapProvider, :name => "ldap", :title => "MyLdap Form", :host => "192.168.1.145", :base => "dc=score, dc=local", :name_proc => proc { |name| name.gsub(/@.*$/, "") }
+      use MyLdapProvider, name: "ldap", title: "MyLdap Form", host: "192.168.1.145", base: "dc=score, dc=local", name_proc: proc { |name| name.gsub(/@.*$/, "") }
       run lambda { |env| [404, {"Content-Type" => "text/plain"}, [env.key?("omniauth.auth").to_s]] }
     }.to_app
   end
@@ -67,7 +67,7 @@ RSpec.describe "OmniAuth::Strategies::LDAP" do
 
   describe "post /auth/ldap/callback" do
     before do
-      @adaptor = double(OmniAuth::LDAP::Adaptor, {:uid => "ping"})
+      @adaptor = double(OmniAuth::LDAP::Adaptor, {uid: "ping"})
 
       allow(@adaptor).to receive(:filter)
       allow(OmniAuth::LDAP::Adaptor).to receive(:new) { @adaptor }
@@ -90,7 +90,7 @@ RSpec.describe "OmniAuth::Strategies::LDAP" do
 
       context "when username is empty" do
         it "redirects to error page" do
-          post("/auth/ldap/callback", {:username => ""})
+          post("/auth/ldap/callback", {username: ""})
 
           expect(last_response).to be_redirect
           expect(last_response.headers["Location"]).to match %r{missing_credentials}
@@ -100,7 +100,7 @@ RSpec.describe "OmniAuth::Strategies::LDAP" do
       context "when username is present" do
         context "and password is not preset" do
           it "redirects to error page" do
-            post("/auth/ldap/callback", {:username => "ping"})
+            post("/auth/ldap/callback", {username: "ping"})
 
             expect(last_response).to be_redirect
             expect(last_response.headers["Location"]).to match %r{missing_credentials}
@@ -109,7 +109,7 @@ RSpec.describe "OmniAuth::Strategies::LDAP" do
 
         context "and password is empty" do
           it "redirects to error page" do
-            post("/auth/ldap/callback", {:username => "ping", :password => ""})
+            post("/auth/ldap/callback", {username: "ping", password: ""})
 
             expect(last_response).to be_redirect
             expect(last_response.headers["Location"]).to match %r{missing_credentials}
@@ -120,7 +120,7 @@ RSpec.describe "OmniAuth::Strategies::LDAP" do
       context "when username and password are present" do
         context "and bind on LDAP server failed" do
           it "redirects to error page" do
-            post("/auth/ldap/callback", {:username => "ping", :password => "password"})
+            post("/auth/ldap/callback", {username: "ping", password: "password"})
 
             expect(last_response).to be_redirect
             expect(last_response.headers["Location"]).to match %r{invalid_credentials}
@@ -130,7 +130,7 @@ RSpec.describe "OmniAuth::Strategies::LDAP" do
             it "binds with filter" do
               allow(@adaptor).to receive(:filter).and_return("uid=%{username}")
               expect(Net::LDAP::Filter).to receive(:construct).with("uid=ping")
-              post("/auth/ldap/callback", {:username => "ping", :password => "password"})
+              post("/auth/ldap/callback", {username: "ping", password: "password"})
 
               expect(last_response).to be_redirect
               expect(last_response.headers["Location"]).to match %r{invalid_credentials}
@@ -144,7 +144,7 @@ RSpec.describe "OmniAuth::Strategies::LDAP" do
           end
 
           it "redirects to error page" do
-            post("/auth/ldap/callback", {:username => "ping", :password => "password"})
+            post("/auth/ldap/callback", {username: "ping", password: "password"})
 
             expect(last_response).to be_redirect
             expect(last_response.headers["Location"]).to match %r{ldap_error}
@@ -182,7 +182,7 @@ description: omniauth-ldap
       end
 
       it "does not redirect to error page" do
-        post("/auth/ldap/callback", {:username => "ping", :password => "password"})
+        post("/auth/ldap/callback", {username: "ping", password: "password"})
         expect(last_response).not_to be_redirect
       end
 
@@ -190,14 +190,14 @@ description: omniauth-ldap
         it "binds with filter" do
           allow(@adaptor).to receive(:filter).and_return("uid=%{username}")
           expect(Net::LDAP::Filter).to receive(:construct).with("uid=ping")
-          post("/auth/ldap/callback", {:username => "ping", :password => "password"})
+          post("/auth/ldap/callback", {username: "ping", password: "password"})
 
           expect(last_response).not_to be_redirect
         end
       end
 
       it "maps user info to Auth Hash" do
-        post("/auth/ldap/callback", {:username => "ping", :password => "password"})
+        post("/auth/ldap/callback", {username: "ping", password: "password"})
 
         expect(auth_hash.uid).to eq "cn=ping, dc=intridea, dc=com"
 

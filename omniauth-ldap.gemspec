@@ -27,7 +27,7 @@ Gem::Specification.new do |spec|
   spec.description = "📁 LDAP strategy for OmniAuth."
   spec.homepage = "https://github.com/omniauth/omniauth-ldap"
   spec.licenses = ["MIT"]
-  spec.required_ruby_version = ">= 0"
+  spec.required_ruby_version = ">= 2.0"
 
   # Linux distros often package gems and securely certify them independent
   #   of the official RubyGem certification process. Allowed via ENV["SKIP_GEM_SIGNING"]
@@ -99,7 +99,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency("net-ldap", "~> 0.16")          # ruby >= 2.0
   # nkf/kconv has been part of Ruby since long ago.
-  # Eventually it became a standard gem, but was removed from stdlib in Ruby 3.4.
+  # Eventually it became a standard gem, but was changed to a bundled gem in Ruby 3.4.
   # In general, kconv and iconv have been superseded since Ruby 1.9 by the built-in
   #   encoding support provided by String#encode, String#force_encoding, and similar methods.
   # spec.add_dependency("nkf")                        # ruby >= 2.3

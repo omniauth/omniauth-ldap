@@ -1,1 +1,1 @@
-gem "rack", :github => "rack/rack", :branch => "main"
+gem "rack", github: "rack/rack", branch: "main"
