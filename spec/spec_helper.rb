@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require "logger"
+require "rack/test"
+
 # External RSpec & related config
 require "kettle/test/rspec"
 
@@ -12,8 +15,6 @@ require "config/debug"
 require "config/omniauth"
 require "config/rspec/rack_test"
 require "config/vcr"
-
-require "rack/test"
 
 # RSpec Support
 spec_root_matcher = %r{#{__dir__}/(.+)\.rb\Z}
