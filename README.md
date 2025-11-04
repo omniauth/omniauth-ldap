@@ -27,14 +27,14 @@
 [gem-server]: https://github.com/galtzo-floss/gem-server
 [reinteractive-podcast]: https://youtu.be/_H4qbtC5qzU?si=BvuBU90R2wAqD2E6
 
-[![Galtzo FLOSS Logo by Aboling0, CC BY-SA 4.0][🖼️galtzo-i]][🖼️galtzo-discord] [![ruby-lang Logo, Yukihiro Matsumoto, Ruby Visual Identity Team, CC BY-SA 2.5][🖼️ruby-lang-i]][🖼️ruby-lang] [![omniauth-ldap Logo by Aboling0, CC BY-SA 4.0][🖼️omniauth-ldap-i]][🖼️omniauth-ldap]
+[![Galtzo FLOSS Logo by Aboling0, CC BY-SA 4.0][🖼️galtzo-i]][🖼️galtzo-discord] [![ruby-lang Logo, Yukihiro Matsumoto, Ruby Visual Identity Team, CC BY-SA 2.5][🖼️ruby-lang-i]][🖼️ruby-lang] [![omniauth Logo (presumed to be) by tomeara, (presumed to be) MIT License][🖼️omniauth-i]][🖼️omniauth]
 
 [🖼️galtzo-i]: https://logos.galtzo.com/assets/images/galtzo-floss/avatar-192px.svg
 [🖼️galtzo-discord]: https://discord.gg/3qme4XHNKN
 [🖼️ruby-lang-i]: https://logos.galtzo.com/assets/images/ruby-lang/avatar-192px.svg
 [🖼️ruby-lang]: https://www.ruby-lang.org/
-[🖼️omniauth-ldap-i]: https://logos.galtzo.com/assets/images/omniauth/omniauth-ldap/avatar-192px.svg
-[🖼️omniauth-ldap]: https://github.com/omniauth/omniauth-ldap
+[🖼️omniauth-i]: https://logos.galtzo.com/assets/images/omniauth/avatar-192px.png
+[🖼️omniauth]: https://github.com/omniauth/omniauth-ldap
 
 # 📁 OmniAuth LDAP
 
