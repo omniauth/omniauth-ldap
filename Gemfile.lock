@@ -14,12 +14,11 @@ PATH
   remote: .
   specs:
     omniauth-ldap (2.0.0)
-      net-ldap
-      nkf
+      net-ldap (~> 0.16)
       omniauth (>= 1)
+      pyu-ruby-sasl (~> 0.0.3.3)
       rack (>= 1)
-      ruby-sasl
-      rubyntlm
+      rubyntlm (~> 0.6.2)
       version_gem (~> 1.1, >= 1.1.9)
 
 GEM
@@ -115,7 +114,7 @@ GEM
     hashdiff (1.2.1)
     hashie (5.0.0)
     io-console (0.8.1)
-    irb (1.15.2)
+    irb (1.15.3)
       pp (>= 0.6.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
@@ -185,8 +184,9 @@ GEM
       date
       stringio
     public_suffix (6.0.2)
+    pyu-ruby-sasl (0.0.3.3)
     racc (1.8.1)
-    rack (3.2.3)
+    rack (3.2.4)
     rack-protection (4.2.1)
       base64 (>= 0.1.0)
       logger (>= 1.6.0)
@@ -297,7 +297,6 @@ GEM
       rubocop (~> 1.72, >= 1.72.1)
       rubocop-ast (>= 1.44.0, < 2.0)
     ruby-progressbar (1.13.0)
-    ruby-sasl (0.0.3)
     ruby_engine (2.0.3)
     ruby_version (1.0.3)
     rubyntlm (0.6.5)
@@ -392,6 +391,7 @@ DEPENDENCIES
   kramdown-parser-gfm (~> 1.1)
   logger (~> 1.7)
   mutex_m (~> 0.2)
+  nkf
   omniauth-ldap!
   rack-test (~> 2.2)
   rake (~> 13.0)

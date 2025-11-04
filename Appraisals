@@ -34,6 +34,7 @@ appraise "head" do
   #  gem "cgi", ">= 0.5"
   gem "benchmark", "~> 0.4", ">= 0.4.1"
   eval_gemfile "modular/omniauth/vHEAD.gemfile"
+  eval_gemfile "modular/optional.gemfile"
   eval_gemfile "modular/rack/vHEAD.gemfile"
   eval_gemfile "modular/x_std_libs.gemfile"
 end
@@ -42,6 +43,7 @@ end
 # Split into discrete appraisals if one of them needs a dependency locked discretely.
 appraise "current" do
   eval_gemfile "modular/omniauth/r3/v2.1.gemfile"
+  eval_gemfile "modular/optional.gemfile"
   eval_gemfile "modular/rack/r3/v3.2.gemfile"
   eval_gemfile "modular/x_std_libs.gemfile"
 end
@@ -49,6 +51,7 @@ end
 # Test current Rubies against head versions of runtime dependencies
 appraise "dep-heads" do
   eval_gemfile "modular/omniauth/vHEAD.gemfile"
+  eval_gemfile "modular/optional.gemfile"
   eval_gemfile "modular/rack/vHEAD.gemfile"
   eval_gemfile "modular/runtime_heads.gemfile"
 end

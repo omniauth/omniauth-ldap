@@ -1,7 +1,12 @@
 # this code borrowed pieces from activeldap and net-ldap
 
+# nkf/kconv has been part of Ruby since long ago.
+# Eventually it became a standard gem, but was removed from stdlib in Ruby 3.4.
+# In general, kconv and iconv have been superseded since Ruby 1.9 by the built-in
+#   encoding support provided by String#encode, String#force_encoding, and similar methods.
+require "nkf"
+
 # External Gems
-require "kconv"
 require "net/ldap"
 require "net/ntlm"
 require "rack"

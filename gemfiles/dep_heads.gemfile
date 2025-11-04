@@ -6,6 +6,8 @@ gemspec :path => "../"
 
 eval_gemfile("modular/omniauth/vHEAD.gemfile")
 
+eval_gemfile("modular/optional.gemfile")
+
 eval_gemfile("modular/rack/vHEAD.gemfile")
 
 eval_gemfile("modular/runtime_heads.gemfile")

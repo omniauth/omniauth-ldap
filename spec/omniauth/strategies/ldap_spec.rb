@@ -31,9 +31,16 @@ RSpec.describe "OmniAuth::Strategies::LDAP" do
   describe "get /auth/ldap" do
     before { get "/auth/ldap" }
 
-    it "returns 404" do
-      expect(last_response.status).to eq 404
-      expect(last_response.body).not_to include("<form")
+    if Gem::Version.new(OmniAuth::VERSION) >= Gem::Version.new("2.0.0")
+      it "returns 404" do
+        expect(last_response.status).to eq 404
+        expect(last_response.body).not_to include("<form")
+      end
+    else
+      it "returns 200 and displays a form on OmniAuth < 2.0" do
+        expect(last_response.status).to eq 200
+        expect(last_response.body).to include("<form")
+      end
     end
   end
 
