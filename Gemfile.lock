@@ -16,8 +16,8 @@ PATH
     omniauth-ldap (2.0.0)
       net-ldap
       nkf
-      omniauth
-      rack
+      omniauth (>= 1)
+      rack (>= 1)
       ruby-sasl
       rubyntlm
       version_gem (~> 1.1, >= 1.1.9)
@@ -42,6 +42,9 @@ GEM
       thor (~> 1.0)
     coderay (1.1.3)
     concurrent-ruby (1.3.5)
+    crack (1.0.1)
+      bigdecimal
+      rexml
     date (3.5.0)
     debug (1.11.0)
       irb (~> 1.10)
@@ -109,6 +112,7 @@ GEM
       guard (~> 2.1)
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
+    hashdiff (1.2.1)
     hashie (5.0.0)
     io-console (0.8.1)
     irb (1.15.2)
@@ -351,7 +355,13 @@ GEM
     unicode-display_width (3.2.0)
       unicode-emoji (~> 4.1)
     unicode-emoji (4.1.0)
+    vcr (6.3.1)
+      base64
     version_gem (1.1.9)
+    webmock (3.26.1)
+      addressable (>= 2.8.0)
+      crack (>= 0.3.2)
+      hashdiff (>= 0.4.0, < 2.0.0)
     yard (0.9.37)
     yard-relative_markdown_links (0.5.0)
       nokogiri (>= 1.14.3, < 2)
@@ -397,6 +407,8 @@ DEPENDENCIES
   standard (>= 1.50)
   stone_checksums (~> 1.0, >= 1.0.2)
   stringio (>= 3.0)
+  vcr (>= 4)
+  webmock (>= 3)
   yard (~> 0.9, >= 0.9.37)
   yard-junk (~> 0.0, >= 0.0.10)!
   yard-relative_markdown_links (~> 0.5.0)

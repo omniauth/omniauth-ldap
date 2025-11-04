@@ -4,4 +4,8 @@ source "https://gem.coop"
 
 gemspec :path => "../"
 
+eval_gemfile("modular/omniauth/vHEAD.gemfile")
+
+eval_gemfile("modular/rack/vHEAD.gemfile")
+
 eval_gemfile("modular/runtime_heads.gemfile")

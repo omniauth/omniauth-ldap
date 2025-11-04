@@ -1,5 +1,6 @@
-require "spec_helper"
-describe "OmniAuth::Strategies::LDAP" do
+# frozen_string_literal: true
+
+RSpec.describe "OmniAuth::Strategies::LDAP" do
   # :title => "My LDAP",
   # :host => '10.101.10.1',
   # :port => 389,

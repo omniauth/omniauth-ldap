@@ -9,16 +9,14 @@
     [81, 30, 3, "Style/AndOr: Use `&&` instead of `and`.", 193409806],
     [81, 37, 1, "Lint/AssignmentInCondition: Wrap assignment in parentheses if intentional", 177560]
   ],
-  "lib/omniauth/strategies/ldap.rb:356253354": [
+  "lib/omniauth/strategies/ldap.rb:3702989656": [
     [48, 9, 53, "Lint/RescueException: Avoid rescuing the `Exception` class. Perhaps you meant to rescue `StandardError`?", 4018396070],
     [54, 27, 3, "Style/AndOr: Use `&&` instead of `and`.", 193409806],
     [71, 7, 970, "Style/ClassMethodsDefinitions: Use `class << self` to define a class method.", 3995669691]
   ],
-  "omniauth-ldap.gemspec:2458519129": [
+  "omniauth-ldap.gemspec:2957894489": [
     [100, 3, 31, "Gemspec/DependencyVersion: Dependency version specification is required.", 1863578069],
     [101, 3, 26, "Gemspec/DependencyVersion: Dependency version specification is required.", 1276340125],
-    [102, 3, 31, "Gemspec/DependencyVersion: Dependency version specification is required.", 354037683],
-    [103, 3, 27, "Gemspec/DependencyVersion: Dependency version specification is required.", 2688832005],
     [104, 3, 31, "Gemspec/DependencyVersion: Dependency version specification is required.", 2110985977],
     [105, 3, 32, "Gemspec/DependencyVersion: Dependency version specification is required.", 3005951394]
   ],

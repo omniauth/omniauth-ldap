@@ -1,5 +1,6 @@
-require "spec_helper"
-describe "OmniAuth::LDAP::Adaptor" do
+# frozen_string_literal: true
+
+RSpec.describe "OmniAuth::LDAP::Adaptor" do
   describe "initialize" do
     it "throws exception when must have field is not set" do
       #[:host, :port, :method, :bind_dn]
