@@ -1,18 +1,45 @@
-$:.unshift File.expand_path('..', __FILE__)
-$:.unshift File.expand_path('../../lib', __FILE__)
-require 'simplecov'
-SimpleCov.start
-require 'rspec'
-require 'rack/test'
-require 'omniauth'
-require 'omniauth-ldap'
+# frozen_string_literal: true
+
+require "logger"
+require "rack/test"
+
+# External RSpec & related config
+require "kettle/test/rspec"
+
+# External library dependencies
+require "omniauth"
+require "omniauth/version"
+
+# RSpec Configs
+require "config/debug"
+require "config/omniauth"
+require "config/rspec/rack_test"
+require "config/vcr"
+
+# RSpec Support
+spec_root_matcher = %r{#{__dir__}/(.+)\.rb\Z}
+Dir.glob(Pathname.new(__dir__).join("support/**/", "*.rb")).each { |f| require f.match(spec_root_matcher)[1] }
 
 TEST_LOGGER = Logger.new(StringIO.new)
 OmniAuth.config.logger = TEST_LOGGER
-OmniAuth.config.request_validation_phase = proc {}
+# New config for OmniAuth 2.0+
+OmniAuth.config.request_validation_phase = proc {} if OmniAuth.config.respond_to?(:request_validation_phase=)
 
 RSpec.configure do |config|
   config.include Rack::Test::Methods
-  config.extend  OmniAuth::Test::StrategyMacros, :type => :strategy
+  config.extend OmniAuth::Test::StrategyMacros, :type => :strategy
 end
 
+# The last thing before loading this gem is to set up code coverage
+begin
+  # This does not require "simplecov", but
+  require "kettle-soup-cover"
+  #   this next line has a side effect of running `.simplecov`
+  require "simplecov" if defined?(Kettle::Soup::Cover) && Kettle::Soup::Cover::DO_COV
+rescue LoadError => error
+  # check the error message and conditionally re-raise
+  raise error unless error.message.include?("kettle")
+end
+
+# This gem
+require "omniauth-ldap"

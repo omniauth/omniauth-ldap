@@ -1,5 +1,8 @@
 module OmniAuth
   module LDAP
-    VERSION = "2.0.0"
+    module Version
+      VERSION = "2.0.0"
+    end
+    VERSION = Version::VERSION # Make VERSION available in traditional way
   end
 end
