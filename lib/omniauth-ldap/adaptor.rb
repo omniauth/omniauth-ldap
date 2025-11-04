@@ -1,7 +1,7 @@
 # this code borrowed pieces from activeldap and net-ldap
 
 # nkf/kconv has been part of Ruby since long ago.
-# Eventually it became a standard gem, but was removed from stdlib in Ruby 3.4.
+# Eventually it became a standard gem, but was changed to a bundled gem in Ruby 3.4.
 # In general, kconv and iconv have been superseded since Ruby 1.9 by the built-in
 #   encoding support provided by String#encode, String#force_encoding, and similar methods.
 require "nkf"
@@ -26,9 +26,9 @@ module OmniAuth
       MUST_HAVE_KEYS = [:host, :port, :method, [:uid, :filter], :base]
 
       METHOD = {
-        :ssl => :simple_tls,
-        :tls => :start_tls,
-        :plain => nil,
+        ssl: :simple_tls,
+        tls: :start_tls,
+        plain: nil,
       }
 
       attr_accessor :bind_dn, :password
@@ -55,9 +55,9 @@ module OmniAuth
         end
         method = ensure_method(@method)
         config = {
-          :host => @host,
-          :port => @port,
-          :base => @base,
+          host: @host,
+          port: @port,
+          base: @base,
         }
         @bind_method = if @try_sasl
           :sasl
@@ -65,11 +65,11 @@ module OmniAuth
           ((@allow_anonymous || !@bind_dn || !@password) ? :anonymous : :simple)
         end
 
-        @auth = sasl_auths({:username => @bind_dn, :password => @password}).first if @bind_method == :sasl
+        @auth = sasl_auths({username: @bind_dn, password: @password}).first if @bind_method == :sasl
         @auth ||= {
-          :method => @bind_method,
-          :username => @bind_dn,
-          :password => @password,
+          method: @bind_method,
+          username: @bind_dn,
+          password: @password,
         }
         config[:auth] = @auth
         config[:encryption] = method
@@ -88,11 +88,11 @@ module OmniAuth
             method = args[:method] || @method
             password = password.call if password.respond_to?(:call)
             if method == "sasl"
-              result = rs.first if me.bind(sasl_auths({:username => dn, :password => password}).first)
+              result = rs.first if me.bind(sasl_auths({username: dn, password: password}).first)
             elsif me.bind(
-              :method => :simple,
-              :username => dn,
-              :password => password,
+              method: :simple,
+              username: dn,
+              password: password,
             )
               result = rs.first
             end
@@ -122,10 +122,10 @@ module OmniAuth
           next unless respond_to?(sasl_bind_setup, true)
           initial_credential, challenge_response = send(sasl_bind_setup, options)
           auths << {
-            :method => :sasl,
-            :initial_credential => initial_credential,
-            :mechanism => mechanism,
-            :challenge_response => challenge_response,
+            method: :sasl,
+            initial_credential: initial_credential,
+            mechanism: mechanism,
+            challenge_response: challenge_response,
           }
         end
         auths
@@ -135,7 +135,7 @@ module OmniAuth
         bind_dn = options[:username]
         initial_credential = ""
         challenge_response = proc do |cred|
-          pref = SASL::Preferences.new(:digest_uri => "ldap/#{@host}", :username => bind_dn, :has_password? => true, :password => options[:password])
+          pref = SASL::Preferences.new(digest_uri: "ldap/#{@host}", username: bind_dn, has_password?: true, password: options[:password])
           sasl = SASL.new("DIGEST-MD5", pref)
           response = sasl.receive("challenge", cred)
           response[1]
@@ -152,7 +152,7 @@ module OmniAuth
           t2_msg = Net::NTLM::Message.parse(challenge)
           bind_dn, domain = bind_dn.split("\\").reverse
           t2_msg.target_name = Net::NTLM.encode_utf16le(domain) if domain
-          t3_msg = t2_msg.response({:user => bind_dn, :password => psw}, {:ntlmv2 => true})
+          t3_msg = t2_msg.response({user: bind_dn, password: psw}, {ntlmv2: true})
           t3_msg.serialize
         }
         [Net::NTLM::Message::Type1.new.serialize, nego]

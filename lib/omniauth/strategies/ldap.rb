@@ -28,7 +28,7 @@ module OmniAuth
 
       def request_phase
         OmniAuth::LDAP::Adaptor.validate(@options)
-        f = OmniAuth::Form.new(:title => options[:title] || "LDAP Authentication", :url => callback_path)
+        f = OmniAuth::Form.new(title: options[:title] || "LDAP Authentication", url: callback_path)
         f.text_field("Login", "username")
         f.password_field("Password", "password")
         f.button("Sign In")
@@ -40,7 +40,7 @@ module OmniAuth
 
         return fail!(:missing_credentials) if missing_credentials?
         begin
-          @ldap_user_info = @adaptor.bind_as(:filter => filter(@adaptor), :size => 1, :password => request.params["password"])
+          @ldap_user_info = @adaptor.bind_as(filter: filter(@adaptor), size: 1, password: request.params["password"])
           return fail!(:invalid_credentials) if !@ldap_user_info
 
           @user_info = self.class.map_user(@@config, @ldap_user_info)
@@ -52,7 +52,7 @@ module OmniAuth
 
       def filter adaptor
         if adaptor.filter and !adaptor.filter.empty?
-          Net::LDAP::Filter.construct(adaptor.filter % {:username => @options[:name_proc].call(request.params["username"])})
+          Net::LDAP::Filter.construct(adaptor.filter % {username: @options[:name_proc].call(request.params["username"])})
         else
           Net::LDAP::Filter.eq(adaptor.uid, @options[:name_proc].call(request.params["username"]))
         end
@@ -65,7 +65,7 @@ module OmniAuth
         @user_info
       }
       extra {
-        {:raw_info => @ldap_user_info}
+        {raw_info: @ldap_user_info}
       }
 
       def self.map_user(mapper, object)

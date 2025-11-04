@@ -1,4 +1,4 @@
 # frozen_string_literal: true
 
 # Ruby >= 2.2
-gem "omniauth", :github => "omniauth/omniauth", :branch => "master"
+gem "omniauth", github: "omniauth/omniauth", branch: "master"

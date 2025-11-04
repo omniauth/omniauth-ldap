@@ -27,7 +27,7 @@ OmniAuth.config.request_validation_phase = proc {} if OmniAuth.config.respond_to
 
 RSpec.configure do |config|
   config.include Rack::Test::Methods
-  config.extend OmniAuth::Test::StrategyMacros, :type => :strategy
+  config.extend OmniAuth::Test::StrategyMacros, type: :strategy
 end
 
 # The last thing before loading this gem is to set up code coverage
