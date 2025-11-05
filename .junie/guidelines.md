@@ -12,7 +12,7 @@ This document captures project-specific knowledge to streamline setup, testing, 
     - See .env.local.example for an example of what to put in .env.local.
     - See CONTRIBUTING.md for details on how to set up your local environment.
 - Ruby and Bundler
-  - Runtime supports Ruby >= 0
+  - Runtime supports Ruby >= 2.0
   - Development tooling targets Ruby >= 2.3 (minimum supported by setup-ruby GHA).
   - Use a recent Ruby (>= 3.4 recommended) for fastest setup and to exercise modern coverage behavior.
   - Install dependencies via Bundler in project root:
