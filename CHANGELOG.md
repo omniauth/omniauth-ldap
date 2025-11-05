@@ -41,6 +41,8 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Fixed
 
+- Prevent key duplication in symbolize_hash_keys
+
 ### Security
 
 ## [2.3.0-gl] (gitlab fork) - 2025-08-20

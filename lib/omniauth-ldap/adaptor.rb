@@ -246,11 +246,9 @@ module OmniAuth
       end
 
       def symbolize_hash_keys(hash)
-        hash.keys.each do |key|
-          hash[key.to_sym] = hash[key]
+        hash.each_with_object({}) do |(key, value), result|
+          result[key.to_sym] = value
         end
-
-        hash
       end
     end
   end
