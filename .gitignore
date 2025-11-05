@@ -1,3 +1,6 @@
+.project
+.tags
+
 # Build Artifacts
 /pkg/
 /tmp/

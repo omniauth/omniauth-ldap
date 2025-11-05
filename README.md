@@ -57,12 +57,16 @@ use OmniAuth::Strategies::LDAP,
   title: "My LDAP",
   host: "10.101.10.1",
   port: 389,
-  method: :plain,
+  encryption: :plain,
   base: "dc=intridea,dc=com",
   uid: "sAMAccountName",
   name_proc: proc { |name| name.gsub(/@.*$/, "") },
   bind_dn: "default_bind_dn",
-  password: "password"
+  password: "password",
+  tls_options: {
+    ssl_version: "TLSv1_2",
+    ciphers: ["AES-128-CBC", "AES-128-CBC-HMAC-SHA1", "AES-128-CBC-HMAC-SHA256"],
+  }
 # Or, alternatively:
 # use OmniAuth::Strategies::LDAP, filter: '(&(uid=%{username})(memberOf=cn=myapp-users,ou=groups,dc=example,dc=com))'
 ```
@@ -92,20 +96,6 @@ Compatible with MRI Ruby 2.0+, and concordant releases of JRuby, and TruffleRuby
 | 🚚 _Amazing_ test matrix was brought to you by | 🔎 appraisal2 🔎 and the color 💚 green 💚             |
 |------------------------------------------------|--------------------------------------------------------|
 | 👟 Check it out!                               | ✨ [github.com/appraisal-rb/appraisal2][💎appraisal2] ✨ |
-
-#### Ruby 3.4
-
-nkf/kconv has been part of Ruby since long ago.
-Eventually it became a standard gem, but was changed to a bundled gem in Ruby 3.4.
-In general, kconv and iconv have been superseded since Ruby 1.9 by the built-in
-encoding support provided by String#encode, String#force_encoding, and similar methods.
-But this gem has not yet been updated to remove its dependency on nkf/kconv.
-
-As a result of all this you should add `nkf` to your Gemfile if you are using Ruby 3.4 or later.
-
-```ruby
-gem "nkf", "~> 0.1"
-```
 
 ### Enterprise Support [![Tidelift](https://tidelift.com/badges/package/rubygems/omniauth-ldap)](https://tidelift.com/subscription/pkg/rubygems-omniauth-ldap?utm_source=rubygems-omniauth-ldap&utm_medium=referral&utm_campaign=readme)
 
@@ -642,8 +632,8 @@ Thanks for RTFM. ☺️
 [📌changelog]: CHANGELOG.md
 [📗keep-changelog]: https://keepachangelog.com/en/1.0.0/
 [📗keep-changelog-img]: https://img.shields.io/badge/keep--a--changelog-1.0.0-34495e.svg?style=flat
-[📌gitmoji]:https://gitmoji.dev
-[📌gitmoji-img]:https://img.shields.io/badge/gitmoji_commits-%20%F0%9F%98%9C%20%F0%9F%98%8D-34495e.svg?style=flat-square
+[📌gitmoji]: https://gitmoji.dev
+[📌gitmoji-img]: https://img.shields.io/badge/gitmoji_commits-%20%F0%9F%98%9C%20%F0%9F%98%8D-34495e.svg?style=flat-square
 [🧮kloc]: https://www.youtube.com/watch?v=dQw4w9WgXcQ
 [🧮kloc-img]: https://img.shields.io/badge/KLOC-4.076-FFDD67.svg?style=for-the-badge&logo=YouTube&logoColor=blue
 [🔐security]: SECURITY.md
