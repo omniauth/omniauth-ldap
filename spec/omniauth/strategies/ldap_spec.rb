@@ -308,4 +308,53 @@ description: omniauth-ldap
       end
     end
   end
+
+  # Validate uid behavior specifically when using sAMAccountName
+  describe "uid behavior with sAMAccountName option" do
+    let(:app) do
+      Rack::Builder.new do
+        use OmniAuth::Test::PhonySession
+        use MySamaccountnameProvider,
+          name: "ldap",
+          title: "My LDAP",
+          host: "1.2.3.4",
+          port: 636,
+          method: "ssl",
+          base: "ou=snip,dc=snip,dc=example,dc=com",
+          uid: "sAMAccountName",
+          bind_dn: "snip",
+          password: "snip"
+        run lambda { |env| [404, {"Content-Type" => "text/plain"}, [env.key?("omniauth.auth").to_s]] }
+      end.to_app
+    end
+
+    before do
+      ldap_strategy = Class.new(OmniAuth::Strategies::LDAP)
+      stub_const("MySamaccountnameProvider", ldap_strategy)
+      @adaptor = double(OmniAuth::LDAP::Adaptor, {uid: "sAMAccountName"})
+      allow(@adaptor).to receive(:filter)
+      allow(OmniAuth::LDAP::Adaptor).to receive(:new) { @adaptor }
+      # Return an entry that includes sAMAccountName but not uid, so nickname maps from sAMAccountName
+      allow(@adaptor).to receive(:bind_as).and_return(
+        Net::LDAP::Entry.from_single_ldif_string(
+          %{dn: cn=ping, dc=snip, dc=example, dc=com
+samaccountname: ping
+mail: ping@example.com
+givenname: Ping
+sn: User
+},
+        ),
+      )
+    end
+
+    it "sets auth.uid to the DN (not the sAMAccountName attribute) and maps nickname from sAMAccountName" do
+      post("/auth/ldap/callback", {username: "ping", password: "secret"})
+
+      expect(last_response).not_to be_redirect
+
+      auth = last_request.env["omniauth.auth"]
+      expect(auth.uid).to eq "cn=ping, dc=snip, dc=example, dc=com"
+      expect(auth.info.nickname).to eq "ping" # comes from sAMAccountName
+    end
+  end
 end

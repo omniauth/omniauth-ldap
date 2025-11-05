@@ -179,7 +179,7 @@ The following options are available for configuring the OmniAuth LDAP strategy:
 - `:port` - The port number of the LDAP server (default: 389).
 - `:method` - The connection method. Allowed values: `:plain`, `:ssl`, `:tls` (default: `:plain`).
 - `:base` - The base DN for the LDAP search.
-- `:uid` or `:filter` - Either `:uid` (the LDAP attribute for username, default: "sAMAccountName") or `:filter` (LDAP filter for searching user entries). If `:filter` is provided, `:uid` is not required.
+- `:uid` or `:filter` - Either `:uid` (the LDAP attribute for username, default: "sAMAccountName") or `:filter` (LDAP filter for searching user entries). If `:filter` is provided, `:uid` is not required. Note: This `:uid` option is the search attribute, not the top-level `auth.uid` in the OmniAuth result.
 
 ### Optional Options
 
@@ -191,6 +191,37 @@ The following options are available for configuring the OmniAuth LDAP strategy:
 - `:sasl_mechanisms` - Array of SASL mechanisms to use (e.g., ["DIGEST-MD5", "GSS-SPNEGO"]).
 - `:allow_anonymous` - Whether to allow anonymous binding (default: false).
 - `:logger` - A logger instance for debugging (optional, for internal use).
+
+### Auth Hash UID vs LDAP :uid (search attribute)
+
+- By design, the top-level `auth.uid` returned by this strategy is the entry's Distinguished Name (DN).
+- The configuration option `:uid` controls which LDAP attribute is used to locate the entry (or to build the filter), not the value exposed as `auth.uid`.
+- Your LDAP "account name" (for example, `sAMAccountName` on Active Directory or `uid` on many schemas) is exposed via `auth.info.nickname` and is also available in `auth.extra.raw_info`.
+
+Why DN for `auth.uid`?
+
+- DN is the canonical, globally unique identifier for an LDAP entry and is always present in search results. See LDAPv3 and DN syntax: RFC 4511 (LDAP protocol) and RFC 4514 (String Representation of Distinguished Names).
+- Attributes like `uid` (defined in RFC 4519) or `sAMAccountName` (Active Directory–specific) may be absent, duplicated across parts of the DIT, or vary between directories. Using DN ensures consistent behavior across AD, OpenLDAP, and other servers.
+- This trade-off favors cross-directory interoperability and stability for apps that need a unique identifier.
+
+Where to find the "username"-style value
+
+- `auth.info.nickname` maps from the first present of: `uid`, `userid`, or `sAMAccountName`.
+- You can also read the raw attribute from `auth.extra.raw_info` (a `Net::LDAP::Entry`):
+
+```ruby
+get "/auth/ldap/callback" do
+  auth = request.env["omniauth.auth"]
+  dn = auth.uid                                # => "cn=alice,ou=users,dc=example,dc=com"
+  username = auth.info.nickname                # => "alice" (from uid/sAMAccountName)
+  # Or, directly from raw_info (case-insensitive keys):
+  sams = auth.extra.raw_info[:samaccountname]
+  sam = sams.first if sams
+  # ...
+end
+```
+
+If you need top-level `auth.uid` to be something other than the DN (for example, `sAMAccountName`), you'll currently need to read it from `auth.info.nickname` (or `raw_info`) in your app. Changing the top-level `uid` mapping would be a breaking behavior change for existing users; if you have a use-case, please open an issue to discuss a configurable mapping.
 
 ## 🔧 Basic Usage
 
@@ -655,3 +686,8 @@ Thanks for RTFM. ☺️
 [💎appraisal2]: https://github.com/appraisal-rb/appraisal2
 [💎appraisal2-img]: https://img.shields.io/badge/appraised_by-appraisal2-34495e.svg?plastic&logo=ruby&logoColor=white
 [💎d-in-dvcs]: https://railsbling.com/posts/dvcs/put_the_d_in_dvcs/
+
+[//]: # (LDAP RFC references)
+[rfc4511]: https://datatracker.ietf.org/doc/html/rfc4511
+[rfc4514]: https://datatracker.ietf.org/doc/html/rfc4514
+[rfc4519]: https://datatracker.ietf.org/doc/html/rfc4519
