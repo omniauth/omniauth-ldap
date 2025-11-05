@@ -312,6 +312,66 @@ provider :ldap,
   password: ENV["LDAP_SEARCH_PASSWORD"]
 ```
 
+What `:filter` actually does
+
+- If `:filter` is provided, the strategy constructs an LDAP filter string by substituting `%{username}` with the submitted username after applying `:name_proc`, escaping special characters per RFC 4515, and passes it to the directory search.
+- In the normal password flow, a successful search returns the user's DN and we then bind as that DN with the submitted password.
+- In trusted header SSO flow (`header_auth: true`), we only perform the search and skip the user password bind; if the search returns no entry, authentication fails.
+- If `:filter` is not provided, the strategy falls back to a simple equality filter using `:uid` (e.g. `(uid=alice)`).
+
+Notes on escaping and safety
+
+- We escape the interpolated username with `Net::LDAP::Filter.escape`, which protects against LDAP injection and handles special characters like `(`, `)`, `*`, and `\`.
+- Your static filter text is used as-is — keep it to a valid LDAP filter expression and only use `%{username}` for substitution.
+
+Group-based recipes
+
+- Active Directory (simple group):
+
+  ```text
+  (&(sAMAccountName=%{username})(memberOf=cn=myapp-users,ou=groups,dc=example,dc=com))
+  ```
+
+- Active Directory (nested groups via matchingRuleInChain):
+
+  ```text
+  (&(sAMAccountName=%{username})(memberOf:1.2.840.113556.1.4.1941:=cn=myapp-users,ou=groups,dc=example,dc=com))
+  ```
+
+- OpenLDAP (groupOfNames):
+
+  ```text
+  (&(uid=%{username})(memberOf=cn=myapp-users,ou=groups,dc=example,dc=com))
+  ```
+
+  or, if you can't use `memberOf` overlays, filter on the group and member DN:
+
+  ```text
+  (&(uid=%{username})(|(uniqueMember=uid=%{username},ou=people,dc=example,dc=com)(member=uid=%{username},ou=people,dc=example,dc=com)))
+  ```
+
+Username normalization examples
+
+- If your users sign in with an email but the directory expects a short name, combine `:name_proc` with `:filter`:
+
+  ```ruby
+  provider :ldap,
+    name_proc: proc { |n| n.split("@").first },
+    filter: "(&(sAMAccountName=%{username})(memberOf=cn=myapp-users,ou=groups,dc=example,dc=com))"
+    # other settings...
+  ```
+
+Discourse plugin (jonmbake/discourse-ldap-auth)
+
+- That plugin forwards its `filter` setting to this gem. You can therefore paste the same filter strings shown above.
+- Example (allow only members of `forum-users`):
+
+  ```text
+  (&(uid=%{username})(memberOf=cn=forum-users,ou=groups,dc=example,dc=com))
+  ```
+
+- If users type an email address but your directory matches on a short user id, also configure `name_proc` accordingly in your app (or the plugin, if supported).
+
 ### SASL (advanced)
 
 SASL enables alternative bind mechanisms. Only enable if you understand the server-side requirements.
@@ -325,7 +385,7 @@ provider :ldap,
   uid: "uid"
 ```
 
-Supported mechanisms include `"DIGEST-MD5"` and `"GSS-SPNEGO"` depending on your environment and gems.
+Supported mechanisms include "DIGEST-MD5" and "GSS-SPNEGO" depending on your environment and gems.
 
 ### Name processing and examples
 

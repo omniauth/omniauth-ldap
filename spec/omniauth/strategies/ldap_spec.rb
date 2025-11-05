@@ -11,7 +11,10 @@ RSpec.describe "OmniAuth::Strategies::LDAP" do
   # :name_proc => Proc.new {|name| name.gsub(/@.*$/,'')}
   # :bind_dn => 'default_bind_dn'
   # :password => 'password'
-  class MyLdapProvider < OmniAuth::Strategies::LDAP; end
+  before do
+    ldap_strategy = Class.new(OmniAuth::Strategies::LDAP)
+    stub_const("MyLdapProvider", ldap_strategy)
+  end
 
   let(:app) do
     Rack::Builder.new {
@@ -181,6 +184,19 @@ RSpec.describe "OmniAuth::Strategies::LDAP" do
               expect(last_response.headers["Location"]).to match("invalid_credentials")
               expect(last_request.env["omniauth.error"].message).to eq("Invalid credentials for ping")
             end
+
+            it "supports group restriction filters and applies name_proc" do
+              # Complex filter with %{username} placeholder and group membership
+              group_filter = "(&(uid=%{username})(memberOf=cn=forum-users,ou=groups,dc=example,dc=com))"
+              allow(@adaptor).to receive(:filter).and_return(group_filter)
+              # username has a domain part; name_proc on strategy under test strips it
+              expect(Net::LDAP::Filter).to receive(:construct).with("(&(uid=alice)(memberOf=cn=forum-users,ou=groups,dc=example,dc=com))")
+
+              post("/auth/ldap/callback", {username: "alice@example.com", password: "password"})
+
+              expect(last_response).to be_redirect
+              expect(last_response.headers["Location"]).to match("invalid_credentials")
+            end
           end
         end
 
@@ -239,6 +255,29 @@ description: omniauth-ldap
           post("/auth/ldap/callback", {username: "ping", password: "password"})
 
           expect(last_response).not_to be_redirect
+        end
+
+        it "escapes special characters in username when building filter" do
+          allow(@adaptor).to receive(:filter).and_return("uid=%{username}")
+          # '(' => \28 and ')' => \29 per RFC 4515 escaping
+          expect(Net::LDAP::Filter).to receive(:construct).with("uid=al\\28ice\\29")
+          post("/auth/ldap/callback", {username: "al(ice)", password: "secret"})
+        end
+
+        it "binds with complex group filter and applies name_proc" do
+          allow(@adaptor).to receive(:bind_as) {
+            Net::LDAP::Entry.from_single_ldif_string(
+              %{dn: cn=alice, dc=example, dc=com
+uid: alice
+},
+            )
+          }
+          allow(@adaptor).to receive(:filter).and_return("(&(uid=%{username})(memberOf=cn=forum-users,ou=groups,dc=example,dc=com))")
+          expect(Net::LDAP::Filter).to receive(:construct).with("(&(uid=alice)(memberOf=cn=forum-users,ou=groups,dc=example,dc=com))")
+
+          post("/auth/ldap/callback", {username: "alice@example.com", password: "secret"})
+          expect(last_response).not_to be_redirect
+          expect(last_request.env["omniauth.auth"].info.nickname).to eq "alice"
         end
       end
 
@@ -440,11 +479,41 @@ uid: alice
       expect(last_response).not_to be_redirect
     end
 
+    it "escapes special characters in header SSO username when building filter" do
+      entry = Net::LDAP::Entry.from_single_ldif_string(%{dn: cn=al\\28ice\\29, dc=example, dc=com
+uid: al(ice)
+})
+      allow(@adaptor).to receive_messages(
+        connection: connection_returning(entry),
+        filter: "uid=%{username}",
+      )
+      expect(Net::LDAP::Filter).to receive(:construct).with("uid=al\\28ice\\29").and_call_original
+
+      post "/auth/ldap/callback", nil, {"REMOTE_USER" => "al(ice)"}
+      expect(last_response).not_to be_redirect
+    end
+
     it "fails when directory lookup returns no entry" do
       allow(@adaptor).to receive(:connection).and_return(connection_returning(nil))
       post "/auth/ldap/callback", nil, {"REMOTE_USER" => "missing"}
       expect(last_response).to be_redirect
       expect(last_response.headers["Location"]).to match(/invalid_credentials/)
+    end
+
+    it "supports complex group filter with %{username} in header SSO path" do
+      # Expect that the complex filter string is constructed with the processed username
+      expect(Net::LDAP::Filter).to receive(:construct).with("(&(uid=alice)(memberOf=cn=forum-users,ou=groups,dc=example,dc=com))").and_call_original
+
+      entry = Net::LDAP::Entry.from_single_ldif_string(%{dn: cn=alice, dc=example, dc=com
+uid: alice
+})
+      allow(@adaptor).to receive_messages(
+        filter: "(&(uid=%{username})(memberOf=cn=forum-users,ou=groups,dc=example,dc=com))",
+        connection: connection_returning(entry),
+      )
+
+      post "/auth/ldap/callback", nil, {"REMOTE_USER" => "alice@example.com"}
+      expect(last_response).not_to be_redirect
     end
   end
 end
