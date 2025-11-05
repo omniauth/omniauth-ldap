@@ -13,7 +13,7 @@ RSpec.describe OmniAuth::LDAP::Adaptor do
     subject { described_class.new(valid_config) }
 
     it "raises ConfigurationError for unsupported connect method" do
-      expect { subject.send(:ensure_method, :bogus) }.to raise_error(OmniAuth::LDAP::Adaptor::ConfigurationError)
+      expect { described_class.new(valid_config.merge(method: :bogus)).send(:translate_method) }.to raise_error(OmniAuth::LDAP::Adaptor::ConfigurationError)
     end
 
     it "returns empty array for no sasl mechanisms" do
@@ -21,9 +21,13 @@ RSpec.describe OmniAuth::LDAP::Adaptor do
     end
 
     it "maps ssl/tls to Net::LDAP encryption symbols" do
-      expect(subject.send(:ensure_method, "ssl")).to eq(OmniAuth::LDAP::Adaptor::METHOD[:ssl])
-      expect(subject.send(:ensure_method, "tls")).to eq(OmniAuth::LDAP::Adaptor::METHOD[:tls])
-      expect(subject.send(:ensure_method, "plain")).to eq(OmniAuth::LDAP::Adaptor::METHOD[:plain])
+      ssl_adaptor = described_class.new(valid_config.merge(method: 'ssl'))
+      tls_adaptor = described_class.new(valid_config.merge(method: 'tls'))
+      plain_adaptor = described_class.new(valid_config.merge(method: 'plain'))
+
+      expect(ssl_adaptor.send(:translate_method)).to eq(OmniAuth::LDAP::Adaptor::ENCRYPTION_METHOD[:ssl])
+      expect(tls_adaptor.send(:translate_method)).to eq(OmniAuth::LDAP::Adaptor::ENCRYPTION_METHOD[:tls])
+      expect(plain_adaptor.send(:translate_method)).to eq(OmniAuth::LDAP::Adaptor::ENCRYPTION_METHOD[:plain])
     end
 
     it "initializes with try_sasl and sets bind_method to :sasl" do

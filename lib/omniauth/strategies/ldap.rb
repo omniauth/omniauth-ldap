@@ -1,10 +1,13 @@
 require "omniauth"
+require "omniauth/version"
 
 module OmniAuth
   module Strategies
     class LDAP
       OMNIAUTH_GTE_V2 = Gem::Version.new(OmniAuth::VERSION) >= Gem::Version.new("2.0.0")
       include OmniAuth::Strategy
+
+      InvalidCredentialsError = Class.new(StandardError)
 
       CONFIG = {
         "name" => "cn",
@@ -31,6 +34,9 @@ module OmniAuth
       end
       option :port, 389
       option :method, :plain
+      option :disable_verify_certificates, false
+      option :ca_file, nil
+      option :ssl_version, nil # use OpenSSL default if nil
       option :uid, "sAMAccountName"
       option :name_proc, lambda { |n| n }
 
@@ -59,10 +65,14 @@ module OmniAuth
       def callback_phase
         @adaptor = OmniAuth::LDAP::Adaptor.new(@options)
 
+        return fail!(:invalid_request_method) unless valid_request_method?
         return fail!(:missing_credentials) if missing_credentials?
         begin
           @ldap_user_info = @adaptor.bind_as(filter: filter(@adaptor), size: 1, password: request.params["password"])
-          return fail!(:invalid_credentials) unless @ldap_user_info
+
+          unless @ldap_user_info
+            return fail!(:invalid_credentials, InvalidCredentialsError.new("Invalid credentials for #{request.params['username']}"))
+          end
 
           @user_info = self.class.map_user(CONFIG, @ldap_user_info)
           super
@@ -73,9 +83,10 @@ module OmniAuth
 
       def filter(adaptor)
         if adaptor.filter && !adaptor.filter.empty?
-          Net::LDAP::Filter.construct(adaptor.filter % {username: @options[:name_proc].call(request.params["username"])})
+          username = Net::LDAP::Filter.escape(@options[:name_proc].call(request.params['username']))
+          Net::LDAP::Filter.construct(adaptor.filter % { username: username })
         else
-          Net::LDAP::Filter.eq(adaptor.uid, @options[:name_proc].call(request.params["username"]))
+          Net::LDAP::Filter.equals(adaptor.uid, @options[:name_proc].call(request.params["username"]))
         end
       end
 
@@ -127,6 +138,10 @@ module OmniAuth
       end
 
       protected
+
+      def valid_request_method?
+        request.env['REQUEST_METHOD'] == 'POST'
+      end
 
       def missing_credentials?
         request.params["username"].nil? || request.params["username"].empty? || request.params["password"].nil? || request.params["password"].empty?

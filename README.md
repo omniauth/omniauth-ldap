@@ -57,12 +57,16 @@ use OmniAuth::Strategies::LDAP,
   title: "My LDAP",
   host: "10.101.10.1",
   port: 389,
-  method: :plain,
+  encryption: :plain,
   base: "dc=intridea,dc=com",
   uid: "sAMAccountName",
   name_proc: proc { |name| name.gsub(/@.*$/, "") },
   bind_dn: "default_bind_dn",
-  password: "password"
+  password: "password",
+  tls_options: {
+    ssl_version: 'TLSv1_2',
+    ciphers: ["AES-128-CBC", "AES-128-CBC-HMAC-SHA1", "AES-128-CBC-HMAC-SHA256"]
+  }
 # Or, alternatively:
 # use OmniAuth::Strategies::LDAP, filter: '(&(uid=%{username})(memberOf=cn=myapp-users,ou=groups,dc=example,dc=com))'
 ```
@@ -642,8 +646,8 @@ Thanks for RTFM. ☺️
 [📌changelog]: CHANGELOG.md
 [📗keep-changelog]: https://keepachangelog.com/en/1.0.0/
 [📗keep-changelog-img]: https://img.shields.io/badge/keep--a--changelog-1.0.0-34495e.svg?style=flat
-[📌gitmoji]:https://gitmoji.dev
-[📌gitmoji-img]:https://img.shields.io/badge/gitmoji_commits-%20%F0%9F%98%9C%20%F0%9F%98%8D-34495e.svg?style=flat-square
+[📌gitmoji]: https://gitmoji.dev
+[📌gitmoji-img]: https://img.shields.io/badge/gitmoji_commits-%20%F0%9F%98%9C%20%F0%9F%98%8D-34495e.svg?style=flat-square
 [🧮kloc]: https://www.youtube.com/watch?v=dQw4w9WgXcQ
 [🧮kloc-img]: https://img.shields.io/badge/KLOC-4.076-FFDD67.svg?style=for-the-badge&logo=YouTube&logoColor=blue
 [🔐security]: SECURITY.md

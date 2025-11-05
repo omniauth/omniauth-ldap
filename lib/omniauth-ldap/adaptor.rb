@@ -20,19 +20,39 @@ module OmniAuth
       class AuthenticationError < StandardError; end
       class ConnectionError < StandardError; end
 
-      VALID_ADAPTER_CONFIGURATION_KEYS = [:host, :port, :method, :bind_dn, :password, :try_sasl, :sasl_mechanisms, :uid, :base, :allow_anonymous, :filter]
+      VALID_ADAPTER_CONFIGURATION_KEYS = [
+        :hosts, :host, :port, :encryption, :disable_verify_certificates, :bind_dn, :password, :try_sasl,
+        :sasl_mechanisms, :uid, :base, :allow_anonymous, :filter, :tls_options,
+
+        # Deprecated
+        :method,
+        :ca_file,
+        :ssl_version,
+      ]
 
       # A list of needed keys. Possible alternatives are specified using sub-lists.
-      MUST_HAVE_KEYS = [:host, :port, :method, [:uid, :filter], :base]
+      MUST_HAVE_KEYS = [
+        :base,
+        [:encryption, :method], # :method is deprecated
+        [:hosts, :host],
+        [:hosts, :port],
+        [:uid, :filter],
+      ]
 
-      METHOD = {
+      ENCRYPTION_METHOD = {
+        simple_tls: :simple_tls,
+        start_tls: :start_tls,
+        plain: nil,
+
+        # Deprecated. This mapping aimed to be user-friendly, but only caused
+        # confusion. Better to pass through the actual `Net::LDAP` encryption type.
         ssl: :simple_tls,
         tls: :start_tls,
-        plain: nil,
       }
 
       attr_accessor :bind_dn, :password
       attr_reader :connection, :uid, :base, :auth, :filter
+
       def self.validate(configuration = {})
         message = []
         MUST_HAVE_KEYS.each do |names|
@@ -53,17 +73,14 @@ module OmniAuth
         VALID_ADAPTER_CONFIGURATION_KEYS.each do |name|
           instance_variable_set("@#{name}", @configuration[name])
         end
-        method = ensure_method(@method)
         config = {
+          base: @base,
+          hosts: @hosts,
           host: @host,
           port: @port,
-          base: @base,
+          encryption: encryption_options
         }
-        @bind_method = if @try_sasl
-          :sasl
-        else
-          ((@allow_anonymous || !@bind_dn || !@password) ? :anonymous : :simple)
-        end
+        @bind_method = @try_sasl ? :sasl : (@allow_anonymous||!@bind_dn||!@password ? :anonymous : :simple)
 
         @auth = sasl_auths({username: @bind_dn, password: @password}).first if @bind_method == :sasl
         @auth ||= {
@@ -72,7 +89,6 @@ module OmniAuth
           password: @password,
         }
         config[:auth] = @auth
-        config[:encryption] = method
         @connection = Net::LDAP.new(config)
       end
 
@@ -103,14 +119,49 @@ module OmniAuth
 
       private
 
-      def ensure_method(method)
+      def encryption_options
+        translated_method = translate_method
+        return nil unless translated_method
+
+        {
+          method: translated_method,
+          tls_options: tls_options(translated_method)
+        }
+      end
+
+      def translate_method
+        method = @encryption || @method
         method ||= "plain"
         normalized_method = method.to_s.downcase.to_sym
-        return METHOD[normalized_method] if METHOD.has_key?(normalized_method)
 
-        available_methods = METHOD.keys.collect { |m| m.inspect }.join(", ")
-        format = "%s is not one of the available connect methods: %s"
-        raise ConfigurationError, format % [method.inspect, available_methods]
+        unless ENCRYPTION_METHOD.has_key?(normalized_method)
+          available_methods = ENCRYPTION_METHOD.keys.collect {|m| m.inspect}.join(", ")
+          format = "%s is not one of the available connect methods: %s"
+          raise ConfigurationError, format % [method.inspect, available_methods]
+        end
+
+        ENCRYPTION_METHOD[normalized_method]
+      end
+
+
+      def tls_options(translated_method)
+        return {} if translated_method == nil # (plain)
+
+        options = default_options
+
+        if @tls_options
+          # Prevent blank config values from overwriting SSL defaults
+          configured_options = sanitize_hash_values(@tls_options)
+          configured_options = symbolize_hash_keys(configured_options)
+
+          options.merge!(configured_options)
+        end
+
+        # Retain backward compatibility until deprecated configs are removed.
+        options[:ca_file] = @ca_file if @ca_file
+        options[:ssl_version] = @ssl_version if @ssl_version
+
+        options
       end
 
       def sasl_auths(options = {})
@@ -156,6 +207,39 @@ module OmniAuth
           t3_msg.serialize
         }
         [Net::NTLM::Message::Type1.new.serialize, nego]
+      end
+
+      private
+
+      def default_options
+        if @disable_verify_certificates
+          # It is important to explicitly set verify_mode for two reasons:
+          # 1. The behavior of OpenSSL is undefined when verify_mode is not set.
+          # 2. The net-ldap gem implementation verifies the certificate hostname
+          #    unless verify_mode is set to VERIFY_NONE.
+          { verify_mode: OpenSSL::SSL::VERIFY_NONE }
+        else
+          OpenSSL::SSL::SSLContext::DEFAULT_PARAMS.dup
+        end
+      end
+
+      # Removes keys that have blank values
+      #
+      # This gem may not always be in the context of Rails so we
+      # do this rather than `.blank?`.
+      def sanitize_hash_values(hash)
+        hash.delete_if do |_, value|
+          value.nil? ||
+          (value.is_a?(String) && value !~ /\S/)
+        end
+      end
+
+      def symbolize_hash_keys(hash)
+        hash.keys.each do |key|
+          hash[key.to_sym] = hash[key]
+        end
+
+        hash
       end
     end
   end

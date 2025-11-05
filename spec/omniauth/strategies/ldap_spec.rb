@@ -5,6 +5,7 @@ RSpec.describe "OmniAuth::Strategies::LDAP" do
   # :host => '10.101.10.1',
   # :port => 389,
   # :method => :plain,
+  # :verify_certificates => true,
   # :base => 'dc=intridea, dc=com',
   # :uid => 'sAMAccountName',
   # :name_proc => Proc.new {|name| name.gsub(/@.*$/,'')}
@@ -44,8 +45,21 @@ RSpec.describe "OmniAuth::Strategies::LDAP" do
     end
   end
 
-  describe "/auth/ldap" do
-    before { post("/auth/ldap", {}) }
+  describe '/auth/ldap' do
+    let!(:csrf_token) { SecureRandom.base64(32) }
+    let(:post_env) { make_env('/auth/ldap', 'rack.session' => { csrf: csrf_token }, 'rack.input' => StringIO.new("authenticity_token=#{escaped_token}")) }
+    let(:escaped_token) { URI.encode_www_form_component(csrf_token, Encoding::UTF_8) }
+
+    before(:each) { post '/auth/ldap', nil, post_env }
+
+    def make_env(path = '/auth/ldap', props = {})
+      {
+        'REQUEST_METHOD' => 'POST',
+        'PATH_INFO' => path,
+        'rack.session' => {},
+        'rack.input' => StringIO.new('test=true')
+      }.merge(props)
+    end
 
     it "displays a form" do
       expect(last_response.status).to eq 200
@@ -76,6 +90,36 @@ RSpec.describe "OmniAuth::Strategies::LDAP" do
     context "failure" do
       before do
         allow(@adaptor).to receive(:bind_as).and_return(false)
+      end
+
+      it 'should fail with missing_credentials' do
+        post('/auth/ldap/callback', {})
+        expect(last_response).to be_redirect
+        expect(last_response.headers['Location']).to match(%r{missing_credentials})
+      end
+
+      it 'should redirect to error page' do
+        post('/auth/ldap/callback', {:username => 'ping', :password => 'password'})
+
+        expect(last_response).to be_redirect
+        expect(last_response.headers['Location']).to match('invalid_credentials')
+        expect(last_request.env['omniauth.error'].message).to eq('Invalid credentials for ping')
+      end
+
+      it 'should redirect to error page when there is exception' do
+        allow(@adaptor).to receive(:bind_as).and_raise(StandardError.new('connection_error'))
+        post('/auth/ldap/callback', {:username => 'ping', :password => 'password'})
+        expect(last_response).to be_redirect
+        expect(last_response.headers['Location']).to match(%r{ldap_error})
+      end
+
+      context 'wrong request method' do
+        it 'redirects to error page' do
+          get('/auth/ldap/callback', { username: 'ping', password: 'password' })
+
+          expect(last_response).to be_redirect
+          expect(last_response.headers['Location']).to match('invalid_request_method')
+        end
       end
 
       context "when username is not preset" do
@@ -123,7 +167,8 @@ RSpec.describe "OmniAuth::Strategies::LDAP" do
             post("/auth/ldap/callback", {username: "ping", password: "password"})
 
             expect(last_response).to be_redirect
-            expect(last_response.headers["Location"]).to match %r{invalid_credentials}
+            expect(last_response.headers['Location']).to match('invalid_credentials')
+            expect(last_request.env['omniauth.error'].message).to eq('Invalid credentials for ping')
           end
 
           context "and filter is set" do
@@ -133,14 +178,15 @@ RSpec.describe "OmniAuth::Strategies::LDAP" do
               post("/auth/ldap/callback", {username: "ping", password: "password"})
 
               expect(last_response).to be_redirect
-              expect(last_response.headers["Location"]).to match %r{invalid_credentials}
+              expect(last_response.headers['Location']).to match('invalid_credentials')
+              expect(last_request.env['omniauth.error'].message).to eq('Invalid credentials for ping')
             end
           end
         end
 
         context "and communication with LDAP server caused an exception" do
           before do
-            allow(@adaptor).to receive(:bind_as).and_throw(Exception.new("connection_error"))
+            allow(@adaptor).to receive(:bind_as).and_raise(StandardError.new("connection_error"))
           end
 
           it "redirects to error page" do
@@ -196,9 +242,54 @@ description: omniauth-ldap
         end
       end
 
-      it "maps user info to Auth Hash" do
+      it 'maps user info to Auth Hash' do
         post("/auth/ldap/callback", {username: "ping", password: "password"})
+        expect(auth_hash.uid).to eq "cn=ping, dc=intridea, dc=com"
 
+        info = auth_hash.info
+
+        expect(info.email).to eq "ping@intridea.com"
+        expect(info.first_name).to eq "Ping"
+        expect(info.last_name).to eq "Yu"
+        expect(info.phone).to eq "555-555-5555"
+        expect(info.mobile).to eq "444-444-4444"
+        expect(info.nickname).to eq "ping"
+        expect(info.title).to eq "dev"
+        expect(info.location).to eq "k street, Washington, DC, U.S.A 20001"
+        expect(info.url).to eq "www.intridea.com"
+        expect(info.image).to eq "http://www.intridea.com/ping.jpg"
+        expect(info.description).to eq "omniauth-ldap"
+      end
+    end
+
+    context 'alternate fields' do
+      let(:auth_hash){ last_request.env['omniauth.auth'] }
+
+      before(:each) do
+        allow(@adaptor).to receive(:filter)
+        allow(@adaptor).to receive(:bind_as).and_return(Net::LDAP::Entry.from_single_ldif_string(
+%Q{dn: cn=ping, dc=intridea, dc=com
+userprincipalname: ping@intridea.com
+givenname: Ping
+sn: Yu
+telephonenumber: 555-555-5555
+mobile: 444-444-4444
+uid: ping
+title: dev
+address: k street
+l: Washington
+st: DC
+co: U.S.A
+postofficebox: 20001
+wwwhomepage: www.intridea.com
+jpegphoto: http://www.intridea.com/ping.jpg
+description: omniauth-ldap
+}
+    ))
+      end
+
+      it 'maps user info to Auth Hash' do
+        post("/auth/ldap/callback", {username: "ping", password: "password"})
         expect(auth_hash.uid).to eq "cn=ping, dc=intridea, dc=com"
 
         info = auth_hash.info
