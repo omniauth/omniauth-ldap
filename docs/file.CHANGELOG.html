@@ -61,14 +61,16 @@
 
 <p><a href="https://semver.org/spec/v2.0.0.html"><img src="https://img.shields.io/badge/semver-2.0.0-FFDD67.svg?style=flat" alt="SemVer 2.0.0"></a> <a href="https://keepachangelog.com/en/1.0.0/"><img src="https://img.shields.io/badge/keep--a--changelog-1.0.0-FFDD67.svg?style=flat" alt="Keep-A-Changelog 1.0.0"></a></p>
 
-<p>All notable changes to this project will be documented in this file.</p>
+<p>Since version v2.3.1, all notable changes to this project will be documented in this file.</p>
+
+<p>This changelog lists the releases of the original omniauth-ldap, and the GitLab forked versions, up until v2.3.0.</p>
 
 <p>The format is based on <a href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,<br>
 and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>,<br>
 and <a href="https://tom.preston-werner.com/2022/05/23/major-version-numbers-are-not-sacred.html">yes</a>, platform and engine support are part of the <a href="https://github.com/semver/semver/issues/716#issuecomment-869336139">public API</a>.<br>
 Please file a bug if you notice a violation of semantic versioning.</p>
 
-<h2 id="unreleased">[Unreleased]</h2>
+<h2 id="unreleased"><a href="https://github.com/omniauth/omniauth-ldap/compare/v2.3.1...HEAD">Unreleased</a></h2>
 
 <h3 id="added">Added</h3>
 
@@ -81,10 +83,208 @@ Please file a bug if you notice a violation of semantic versioning.</p>
 <h3 id="fixed">Fixed</h3>
 
 <h3 id="security">Security</h3>
+
+<h2 id="231---2025-11-05">
+<a href="https://github.com/omniauth/omniauth-ldap/compare/v2.0.0...v2.3.1">2.3.1</a> - 2025-11-05</h2>
+
+<ul>
+  <li>TAG: <a href="https://github.com/omniauth/omniauth-ldap/releases/tag/v2.3.1">v2.3.1</a>
+</li>
+  <li>COVERAGE: 97.85% – 228/233 lines in 4 files</li>
+  <li>BRANCH COVERAGE: 81.58% – 62/76 branches in 4 files</li>
+  <li>37.50% documented</li>
+</ul>
+
+<h3 id="added-1">Added</h3>
+
+<ul>
+  <li>Added RBS types</li>
+  <li>Upgraded RSpec tests to v3 syntax</li>
+  <li>Improved code coverage to 98% lines and 78% branches</li>
+  <li>Added integration tests with a complete Roda-based demo app for specs</li>
+  <li>Well tested support for all versions of OmniAuth &gt;= v1 and Rack &gt;= v1 via appraisals</li>
+  <li>Document why auth.uid == dn</li>
+  <li>Support for LDAP-based SSO identity via HTTP Header</li>
+  <li>Document how to use filter option</li>
+  <li>All fixes and updates from the GitLab fork since up to v2.3.0
+    <ul>
+      <li>https://github.com/omniauth/omniauth-ldap/pull/100</li>
+      <li>https://gitlab.com/gitlab-org/gitlab-ce/issues/13280</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="changed-1">Changed</h3>
+
+<ul>
+  <li>Make support for Ruby v2.0 explicit</li>
+  <li>Make support for OmniAuth v1+ explicit</li>
+  <li>Make support for Rack v1+ explicit</li>
+  <li>Modernize codebase to use more recent Ruby syntax (upgrade from Ruby v1 to v2 syntax) and conventions</li>
+</ul>
+
+<h3 id="fixed-1">Fixed</h3>
+
+<ul>
+  <li>Prevent key duplication in symbolize_hash_keys</li>
+</ul>
+
+<h2 id="230-gl-gitlab-fork---2025-08-20">
+<a href="https://gitlab.com/gitlab-org/ruby/gems/omniauth-ldap/-/compare/v2.2.0...v2.3.0">2.3.0-gl</a> (gitlab fork) - 2025-08-20</h2>
+
+<ul>
+  <li>TAG: <a href="https://gitlab.com/gitlab-org/ruby/gems/omniauth-ldap/-/tags/2.3.0">v2.3.0</a> (gitlab)</li>
+</ul>
+
+<h2 id="220-gl-gitlab-fork---2022-06-24">
+<a href="https://gitlab.com/gitlab-org/ruby/gems/omniauth-ldap/-/compare/v2.1.1...v2.2.0">2.2.0-gl</a> (gitlab fork) - 2022-06-24</h2>
+
+<ul>
+  <li>TAG: <a href="https://gitlab.com/gitlab-org/ruby/gems/omniauth-ldap/-/tags/2.2.0">v2.2.0</a> (gitlab)</li>
+</ul>
+
+<h2 id="211-gl-gitlab-fork---2019-02-22">
+<a href="https://gitlab.com/gitlab-org/ruby/gems/omniauth-ldap/-/compare/v2.1.0...v2.1.1">2.1.1-gl</a> (gitlab fork) - 2019-02-22</h2>
+
+<ul>
+  <li>TAG: <a href="https://gitlab.com/gitlab-org/ruby/gems/omniauth-ldap/-/tags/2.1.1">v2.1.1</a> (gitlab)</li>
+</ul>
+
+<h3 id="added-2">Added</h3>
+
+<ul>
+  <li>Add a String check to <code>tls_options</code> sanitization to allow other objects</li>
+</ul>
+
+<h2 id="210-gl-gitlab-fork---2018-06-18">
+<a href="https://gitlab.com/gitlab-org/ruby/gems/omniauth-ldap/-/compare/v2.0.4...v2.1.0">2.1.0-gl</a> (gitlab fork) - 2018-06-18</h2>
+
+<ul>
+  <li>TAG: <a href="https://gitlab.com/gitlab-org/ruby/gems/omniauth-ldap/-/tags/2.1.0">v2.1.0</a> (gitlab)</li>
+</ul>
+
+<h3 id="added-3">Added</h3>
+
+<ul>
+  <li>Expose <code>:tls_options</code> SSL configuration option.</li>
+</ul>
+
+<h3 id="deprecated-1">Deprecated</h3>
+
+<ul>
+  <li>Deprecate :ca_file, :ssl_version</li>
+</ul>
+
+<h2 id="204-gl-gitlab-fork---2017-08-10">
+<a href="https://gitlab.com/gitlab-org/ruby/gems/omniauth-ldap/-/compare/v2.0.2...v2.0.4">2.0.4-gl</a> (gitlab fork) - 2017-08-10</h2>
+
+<ul>
+  <li>
+    <p>TAG: <a href="https://gitlab.com/gitlab-org/ruby/gems/omniauth-ldap/-/tags/2.0.4">v2.0.4</a> (gitlab)</p>
+  </li>
+  <li>
+    <p>Improve log message when invalid credentials are used</p>
+  </li>
+</ul>
+
+<h2 id="203-gitlab-fork---2017-07-20">2.0.3 (gitlab fork) - 2017-07-20</h2>
+
+<ul>
+  <li>Protects against wrong request method call to callback</li>
+</ul>
+
+<h2 id="202-gl-gitlab-fork---2017-06-13">
+<a href="https://gitlab.com/gitlab-org/ruby/gems/omniauth-ldap/-/compare/v2.0.1...v2.0.2">2.0.2-gl</a> (gitlab fork) - 2017-06-13</h2>
+
+<ul>
+  <li>TAG: <a href="https://gitlab.com/gitlab-org/ruby/gems/omniauth-ldap/-/tags/2.0.2">v2.0.2</a> (gitlab)</li>
+</ul>
+
+<h2 id="201-gl-gitlab-fork---2017-06-09">
+<a href="https://gitlab.com/gitlab-org/ruby/gems/omniauth-ldap/-/compare/v2.0.0...v2.0.1">2.0.1-gl</a> (gitlab fork) - 2017-06-09</h2>
+
+<ul>
+  <li>TAG: <a href="https://gitlab.com/gitlab-org/ruby/gems/omniauth-ldap/-/tags/2.0.1">v2.0.1</a> (gitlab)</li>
+</ul>
+
+<h2 id="200-gl-gitlab-fork---2017-06-07">
+<a href="https://gitlab.com/gitlab-org/ruby/gems/omniauth-ldap/-/compare/v1.2.1...v2.0.0">2.0.0-gl</a> (gitlab fork) - 2017-06-07</h2>
+
+<ul>
+  <li>TAG: <a href="https://gitlab.com/gitlab-org/ruby/gems/omniauth-ldap/-/tags/2.0.0">v2.0.0</a> (gitlab)</li>
+</ul>
+
+<h2 id="200-intridea---2018-01-09">
+<a href="https://github.com/omniauth/omniauth-ldap/compare/v1.0.5...v2.0.0">2.0.0</a> (intridea) - 2018-01-09</h2>
+
+<ul>
+  <li>TAG: <a href="https://github.com/omniauth/omniauth-ldap/releases/tag/v2.0.0">v2.0.0</a> (github)</li>
+</ul>
+
+<h2 id="121-gl-gitlab-fork---2015-03-17">
+<a href="https://gitlab.com/gitlab-org/ruby/gems/omniauth-ldap/-/compare/v1.2.0...v1.2.1">1.2.1-gl</a> (gitlab fork) - 2015-03-17</h2>
+
+<ul>
+  <li>TAG: <a href="https://gitlab.com/gitlab-org/ruby/gems/omniauth-ldap/-/tags/1.2.1">v1.2.1</a> (gitlab)</li>
+</ul>
+
+<h2 id="120-gl-gitlab-fork---2014-10-29">
+<a href="https://gitlab.com/gitlab-org/ruby/gems/omniauth-ldap/-/compare/v1.1.0...v1.2.0">1.2.0-gl</a> (gitlab fork) - 2014-10-29</h2>
+
+<ul>
+  <li>TAG: <a href="https://gitlab.com/gitlab-org/ruby/gems/omniauth-ldap/-/tags/1.2.0">v1.2.0</a> (gitlab)</li>
+</ul>
+
+<h2 id="110-gl-gitlab-fork---2014-09-08">
+<a href="https://gitlab.com/gitlab-org/ruby/gems/omniauth-ldap/-/compare/v1.0.2...v1.1.0">1.1.0-gl</a> (gitlab fork) - 2014-09-08</h2>
+
+<ul>
+  <li>TAG: <a href="https://gitlab.com/gitlab-org/ruby/gems/omniauth-ldap/-/tags/1.1.0">v1.1.0</a> (gitlab)</li>
+</ul>
+
+<h2 id="105-gl---2016-02-17">
+<a href="https://gitlab.com/gitlab-org/ruby/gems/omniauth-ldap/-/compare/v1.0.2...v1.0.5">1.0.5-gl</a> - 2016-02-17</h2>
+
+<ul>
+  <li>TAG: <a href="https://gitlab.com/gitlab-org/ruby/gems/omniauth-ldap/-/tags/1.0.5">v1.0.5</a> (gitlab fork, gem not released)</li>
+  <li>TAG: <a href="https://github.com/omniauth/omniauth-ldap/releases/tag/v1.0.5">v1.0.5</a> (github)</li>
+</ul>
+
+<h2 id="104">1.0.4</h2>
+
+<ul>
+  <li>released 2014-02-03 (intridea)</li>
+  <li>released 2013-11-13 (gitlab fork)</li>
+</ul>
+
+<h2 id="103">1.0.3</h2>
+
+<ul>
+  <li>released 2013-01-23 (intridea)</li>
+  <li>released 2013-06-13 (gitlab fork)</li>
+</ul>
+
+<h2 id="102-gl"><a href="https://gitlab.com/gitlab-org/ruby/gems/omniauth-ldap/-/compare/v1.0.1...v1.0.2">1.0.2-gl</a></h2>
+
+<ul>
+  <li>TAG: <a href="https://gitlab.com/gitlab-org/ruby/gems/omniauth-ldap/-/tags/1.0.2">v1.0.2</a> (gitlab) - released 2012-12-30</li>
+  <li>TAG: <a href="https://github.com/omniauth/omniauth-ldap/releases/tag/v1.0.2">v1.0.2</a> (github) - released 2011-12-17</li>
+</ul>
+
+<h2 id="101---2011-11-02">1.0.1 - 2011-11-02</h2>
+
+<h2 id="100-gl---2011-11-02">
+<a href="https://gitlab.com/gitlab-org/ruby/gems/omniauth-ldap/-/compare/5656da80d4193e0d0584f44bac493a87695e580f...v1.0.0">1.0.0-gl</a> - 2011-11-02</h2>
+
+<ul>
+  <li>TAG: <a href="https://gitlab.com/gitlab-org/ruby/gems/omniauth-ldap/-/tags/1.0.0">v1.0.0</a> (gitlab)</li>
+  <li>TAG: <a href="https://github.com/omniauth/omniauth-ldap/releases/tag/v1.0.0">v1.0.0</a> (github)</li>
+</ul>
+
 </div></div>
 
       <div id="footer">
-  Generated on Tue Nov  4 04:52:55 2025 by
+  Generated on Wed Nov  5 04:33:15 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.7).
 </div>

@@ -97,7 +97,7 @@
   </tbody>
 </table>
 
-<p><a href="https://discord.gg/3qme4XHNKN"><img src="https://logos.galtzo.com/assets/images/galtzo-floss/avatar-192px.svg" alt="Galtzo FLOSS Logo by Aboling0, CC BY-SA 4.0"></a> <a href="https://www.ruby-lang.org/"><img src="https://logos.galtzo.com/assets/images/ruby-lang/avatar-192px.svg" alt="ruby-lang Logo, Yukihiro Matsumoto, Ruby Visual Identity Team, CC BY-SA 2.5"></a> <a href="https://github.com/omniauth/omniauth-ldap"><img src="https://logos.galtzo.com/assets/images/omniauth/omniauth-ldap/avatar-192px.svg" alt="omniauth-ldap Logo by Aboling0, CC BY-SA 4.0"></a></p>
+<p><a href="https://discord.gg/3qme4XHNKN"><img src="https://logos.galtzo.com/assets/images/galtzo-floss/avatar-192px.svg" alt="Galtzo FLOSS Logo by Aboling0, CC BY-SA 4.0"></a> <a href="https://www.ruby-lang.org/"><img src="https://logos.galtzo.com/assets/images/ruby-lang/avatar-192px.svg" alt="ruby-lang Logo, Yukihiro Matsumoto, Ruby Visual Identity Team, CC BY-SA 2.5"></a> <a href="https://github.com/omniauth/omniauth-ldap"><img src="https://logos.galtzo.com/assets/images/omniauth/avatar-192px.png" alt="omniauth Logo (presumed to be) by tomeara, (presumed to be) MIT License"></a></p>
 
 <h1 id="-omniauth-ldap">📁 OmniAuth LDAP</h1>
 
@@ -115,20 +115,22 @@
 
 <p>Use the LDAP strategy as a middleware in your application:</p>
 
-<pre class="code language-ruby"><code class="language-ruby">use OmniAuth::Strategies::LDAP, 
-    :title =&gt; &quot;My LDAP&quot;, 
-    :host =&gt; &#39;10.101.10.1&#39;,
-    :port =&gt; 389,
-    :method =&gt; :plain,
-    :base =&gt; &#39;dc=intridea, dc=com&#39;,
-    :uid =&gt; &#39;sAMAccountName&#39;,
-    :name_proc =&gt; Proc.new {|name| name.gsub(/@.*$/,&#39;&#39;)},
-    :bind_dn =&gt; &#39;default_bind_dn&#39;,
-    # Or, alternatively:
-    #:filter =&gt; &#39;(&amp;(uid=%{username})(memberOf=cn=myapp-users,ou=groups,dc=example,dc=com))&#39;
-    :name_proc =&gt; Proc.new {|name| name.gsub(/@.*$/,&#39;&#39;)}
-    :bind_dn =&gt; &#39;default_bind_dn&#39;
-    :password =&gt; &#39;password&#39;
+<pre class="code language-ruby"><code class="language-ruby">use OmniAuth::Strategies::LDAP,
+  title: &quot;My LDAP&quot;,
+  host: &quot;10.101.10.1&quot;,
+  port: 389,
+  encryption: :plain,
+  base: &quot;dc=intridea,dc=com&quot;,
+  uid: &quot;sAMAccountName&quot;,
+  name_proc: proc { |name| name.gsub(/@.*$/, &quot;&quot;) },
+  bind_dn: &quot;default_bind_dn&quot;,
+  password: &quot;password&quot;,
+  tls_options: {
+    ssl_version: &quot;TLSv1_2&quot;,
+    ciphers: [&quot;AES-128-CBC&quot;, &quot;AES-128-CBC-HMAC-SHA1&quot;, &quot;AES-128-CBC-HMAC-SHA256&quot;],
+  }
+# Or, alternatively:
+# use OmniAuth::Strategies::LDAP, filter: &#39;(&amp;(uid=%{username})(memberOf=cn=myapp-users,ou=groups,dc=example,dc=com))&#39;
 </code></pre>
 
 <p>All of the listed options are required, with the exception of <code>:title</code>, <code>:name_proc</code>, <code>:bind_dn</code>, and <code>:password</code>.</p>
@@ -170,12 +172,6 @@
 </td>
     </tr>
     <tr>
-      <td>Works with MRI Ruby 1</td>
-      <td>
-<img src="https://img.shields.io/badge/Ruby-1.8_(%F0%9F%9A%ABCI)-AABBCC?style=for-the-badge&amp;logo=ruby&amp;logoColor=white" alt="Ruby 1.8 Compat"> <img src="https://img.shields.io/badge/Ruby-1.9_(%F0%9F%9A%ABCI)-AABBCC?style=for-the-badge&amp;logo=ruby&amp;logoColor=white" alt="Ruby 1.9 Compat">
-</td>
-    </tr>
-    <tr>
       <td>Support &amp; Community</td>
       <td>
 <a href="https://app.daily.dev/squads/rubyfriends"><img src="https://img.shields.io/badge/daily.dev-%F0%9F%92%8E_Ruby_Friends-0A0A0A?style=for-the-badge&amp;logo=dailydotdev&amp;logoColor=white" alt="Join Me on Daily.dev's RubyFriends"></a> <a href="https://discord.gg/3qme4XHNKN"><img src="https://img.shields.io/discord/1373797679469170758?style=for-the-badge&amp;logo=discord" alt="Live Chat on Discord"></a> <a href="https://www.upwork.com/freelancers/~014942e9b056abdf86?mp_source=share"><img src="https://img.shields.io/badge/UpWork-13544E?style=for-the-badge&amp;logo=Upwork&amp;logoColor=white" alt="Get help from me on Upwork"></a> <a href="https://www.codementor.io/peterboling?utm_source=github&amp;utm_medium=button&amp;utm_term=peterboling&amp;utm_campaign=github"><img src="https://img.shields.io/badge/CodeMentor-Get_Help-1abc9c?style=for-the-badge&amp;logo=CodeMentor&amp;logoColor=white" alt="Get help from me on Codementor"></a>
@@ -184,7 +180,7 @@
     <tr>
       <td>Source</td>
       <td>
-<a href="https://github.com/omniauth/omniauth-ldap"><img src="https://img.shields.io/badge/GitHub-238636?style=for-the-badge&amp;logo=Github&amp;logoColor=green" alt="Source on Github.com"></a> <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"><img src="https://img.shields.io/badge/KLOC-4.076-FFDD67.svg?style=for-the-badge&amp;logo=YouTube&amp;logoColor=blue" alt="The best SHA: dQw4w9WgXcQ!"></a>
+<a href="https://github.com/omniauth/omniauth-ldap"><img src="https://img.shields.io/badge/GitHub-238636?style=for-the-badge&amp;logo=Github&amp;logoColor=green" alt="Source on Github.com"></a> <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"><img src="https://img.shields.io/badge/KLOC-0.233-FFDD67.svg?style=for-the-badge&amp;logo=YouTube&amp;logoColor=blue" alt="The best SHA: dQw4w9WgXcQ!"></a>
 </td>
     </tr>
     <tr>
@@ -223,7 +219,7 @@
 
 <h3 id="compatibility">Compatibility</h3>
 
-<p>Compatible with MRI Ruby 0+, and concordant releases of JRuby, and TruffleRuby.</p>
+<p>Compatible with MRI Ruby 2.0+, and concordant releases of JRuby, and TruffleRuby.</p>
 
 <table>
   <thead>
@@ -313,41 +309,331 @@ NOTE: Be prepared to track down certs for signed gems and add them the same way 
 
 <h2 id="️-configuration">⚙️ Configuration</h2>
 
-<h2 id="-basic-usage">🔧 Basic Usage</h2>
+<p>The following options are available for configuring the OmniAuth LDAP strategy:</p>
 
-<p>Allowed values of <code>:method</code> are: <code>:plain</code>, <code>:ssl</code>, <code>:tls</code>.</p>
+<h3 id="required-options">Required Options</h3>
 
-<p><code>:bind_dn</code> and <code>:password</code> is the default credentials to perform user lookup.<br>
-Most LDAP servers require that you supply a complete DN as a binding-credential, along with an authenticator<br>
-such as a password. But for many applications, you often don’t have a full DN to identify the user.<br>
-You usually get a simple identifier like a username or an email address, along with a password.<br>
-Since many LDAP servers don’t allow anonymous access, search function will require a bound connection,<br>
-<code>:bind_dn</code> and <code>:password</code> will be required for searching on the username or email to retrieve the DN attribute<br>
-for the user. If the LDAP server allows anonymous access, you don’t need to provide these two parameters.</p>
-
-<p><code>:uid</code> is the LDAP attribute name for the username in the login form.<br>
-typically AD would be ‘sAMAccountName’ or ‘UserPrincipalName’, while OpenLDAP is ‘uid’.</p>
-
-<p><code>:filter</code> is the LDAP filter used to search the user entry. It can be used in place of :uid for more flexibility.<br>
-<code>%{username}</code> will be replaced by the username processed by <code>:name_proc</code>.</p>
-
-<p><code>:name_proc</code> allows you to match the username entered with the format of the <code>:uid</code> attributes.<br>
-For example, value of ‘sAMAccountName’ in AD contains only the windows username. If your user prefers using<br>
-email to login, a <code>:name_proc</code> as above will trim the email string down to just the windows login name.<br>
-In summary, use <code>:name_proc</code> to fill the gap between the submitted username and LDAP uid attribute value.</p>
-
-<p><code>:try_sasl</code> and <code>:sasl_mechanisms</code> are optional. Valid values are:</p>
 <ul>
   <li>
-<code>:try_sasl</code> =&gt; <code>true</code> or <code>false</code>
-</li>
+<code>:host</code> - The hostname or IP address of the LDAP server.</li>
   <li>
-<code>:sasl_mechanisms</code> =&gt; <code>"DIGEST-MD5"</code> or <code>"GSS-SPNEGO"</code><br>
-Use them to initialize a SASL connection to server. If you are not familiar with these authentication methods,<br>
-please just avoid them.</li>
+<code>:port</code> - The port number of the LDAP server (default: 389).</li>
+  <li>
+<code>:method</code> - The connection method. Allowed values: <code>:plain</code>, <code>:ssl</code>, <code>:tls</code> (default: <code>:plain</code>).</li>
+  <li>
+<code>:base</code> - The base DN for the LDAP search.</li>
+  <li>
+<code>:uid</code> or <code>:filter</code> - Either <code>:uid</code> (the LDAP attribute for username, default: “sAMAccountName”) or <code>:filter</code> (LDAP filter for searching user entries). If <code>:filter</code> is provided, <code>:uid</code> is not required. Note: This <code>:uid</code> option is the search attribute, not the top-level <code>auth.uid</code> in the OmniAuth result.</li>
 </ul>
 
-<p>Direct users to <code>/auth/ldap</code> to have them authenticated via your company’s LDAP server.</p>
+<h3 id="optional-options">Optional Options</h3>
+
+<ul>
+  <li>
+<code>:title</code> - The title for the authentication form (default: “LDAP Authentication”).</li>
+  <li>
+<code>:bind_dn</code> - The DN to bind with for searching users (required if anonymous access is not allowed).</li>
+  <li>
+<code>:password</code> - The password for the bind DN.</li>
+  <li>
+<code>:name_proc</code> - A proc to process the username before using it in the search (default: identity proc that returns the username unchanged).</li>
+  <li>
+<code>:try_sasl</code> - Whether to use SASL authentication (default: false).</li>
+  <li>
+<code>:sasl_mechanisms</code> - Array of SASL mechanisms to use (e.g., [“DIGEST-MD5”, “GSS-SPNEGO”]).</li>
+  <li>
+<code>:allow_anonymous</code> - Whether to allow anonymous binding (default: false).</li>
+  <li>
+<code>:logger</code> - A logger instance for debugging (optional, for internal use).</li>
+</ul>
+
+<h3 id="auth-hash-uid-vs-ldap-uid-search-attribute">Auth Hash UID vs LDAP :uid (search attribute)</h3>
+
+<ul>
+  <li>By design, the top-level <code>auth.uid</code> returned by this strategy is the entry’s Distinguished Name (DN).</li>
+  <li>The configuration option <code>:uid</code> controls which LDAP attribute is used to locate the entry (or to build the filter), not the value exposed as <code>auth.uid</code>.</li>
+  <li>Your LDAP “account name” (for example, <code>sAMAccountName</code> on Active Directory or <code>uid</code> on many schemas) is exposed via <code>auth.info.nickname</code> and is also available in <code>auth.extra.raw_info</code>.</li>
+</ul>
+
+<p>Why DN for <code>auth.uid</code>?</p>
+
+<ul>
+  <li>DN is the canonical, globally unique identifier for an LDAP entry and is always present in search results. See LDAPv3 and DN syntax: <a href="https://datatracker.ietf.org/doc/html/rfc4511">RFC 4511</a> (LDAP protocol) and <a href="https://datatracker.ietf.org/doc/html/rfc4514">RFC 4514</a> (String Representation of Distinguished Names).</li>
+  <li>Attributes like <code>uid</code> (defined in <a href="https://datatracker.ietf.org/doc/html/rfc4519">RFC 4519</a>) or <code>sAMAccountName</code> (Active Directory–specific) may be absent, duplicated across parts of the DIT, or vary between directories. Using DN ensures consistent behavior across AD, OpenLDAP, and other servers.</li>
+  <li>This trade-off favors cross-directory interoperability and stability for apps that need a unique identifier.</li>
+</ul>
+
+<p>Where to find the “username”-style value</p>
+
+<ul>
+  <li>
+<code>auth.info.nickname</code> maps from the first present of: <code>uid</code>, <code>userid</code>, or <code>sAMAccountName</code>.</li>
+  <li>You can also read the raw attribute from <code>auth.extra.raw_info</code> (a <code>Net::LDAP::Entry</code>):</li>
+</ul>
+
+<pre class="code language-ruby"><code class="language-ruby">get &quot;/auth/ldap/callback&quot; do
+  auth = request.env[&quot;omniauth.auth&quot;]
+  dn = auth.uid                                # =&gt; &quot;cn=alice,ou=users,dc=example,dc=com&quot;
+  username = auth.info.nickname                # =&gt; &quot;alice&quot; (from uid/sAMAccountName)
+  # Or, directly from raw_info (case-insensitive keys):
+  sams = auth.extra.raw_info[:samaccountname]
+  sam = sams.first if sams
+  # ...
+end
+</code></pre>
+
+<p>If you need top-level <code>auth.uid</code> to be something other than the DN (for example, <code>sAMAccountName</code>), you’ll currently need to read it from <code>auth.info.nickname</code> (or <code>raw_info</code>) in your app. Changing the top-level <code>uid</code> mapping would be a breaking behavior change for existing users; if you have a use-case, please open an issue to discuss a configurable mapping.</p>
+
+<h2 id="-basic-usage">🔧 Basic Usage</h2>
+
+<p>The strategy exposes a simple Rack middleware and can be used in plain Rack apps, Sinatra, or Rails.<br>
+Direct users to <code>/auth/ldap</code> to start authentication and handle the callback at <code>/auth/ldap/callback</code>.</p>
+
+<p>Below are several concrete examples to get you started.</p>
+
+<h3 id="minimal-rack-setup">Minimal Rack setup</h3>
+
+<pre class="code language-ruby"><code class="language-ruby"># config.ru
+require &quot;rack&quot;
+require &quot;omniauth-ldap&quot;
+
+use Rack::Session::Cookie, secret: &quot;change_me&quot;
+use OmniAuth::Builder do
+  provider :ldap,
+    host: &quot;ldap.example.com&quot;,
+    port: 389,
+    method: :plain,
+    base: &quot;dc=example,dc=com&quot;,
+    uid: &quot;uid&quot;,
+    title: &quot;Example LDAP&quot;
+end
+
+run lambda { |env| [404, {&quot;Content-Type&quot; =&gt; &quot;text/plain&quot;}, [env.key?(&quot;omniauth.auth&quot;).to_s]] }
+</code></pre>
+
+<p>Visit <code>GET /auth/ldap</code> to initiate authentication (the middleware will render a login form unless you POST to <code>/auth/ldap</code>).</p>
+
+<h3 id="sinatra-example">Sinatra example</h3>
+
+<pre class="code language-ruby"><code class="language-ruby">require &quot;sinatra&quot;
+require &quot;omniauth-ldap&quot;
+
+use Rack::Session::Cookie, secret: &quot;change_me&quot;
+use OmniAuth::Builder do
+  provider :ldap,
+    title: &quot;Company LDAP&quot;,
+    host: &quot;ldap.company.internal&quot;,
+    base: &quot;dc=company,dc=local&quot;,
+    uid: &quot;sAMAccountName&quot;,
+    name_proc: proc { |username| username.gsub(/@.*$/, &quot;&quot;) }
+end
+
+get &quot;/&quot; do
+  &#39;&lt;a href=&quot;/auth/ldap&quot;&gt;Sign in with LDAP&lt;/a&gt;&#39;
+end
+
+get &quot;/auth/ldap/callback&quot; do
+  auth = request.env[&quot;omniauth.auth&quot;]
+  &quot;Hello, #{auth.info[&quot;name&quot;]}&quot;
+end
+</code></pre>
+
+<h3 id="rails-initializer-example">Rails (initializer) example</h3>
+
+<p>Create <code>config/initializers/omniauth.rb</code>:</p>
+
+<pre class="code language-ruby"><code class="language-ruby">Rails.application.config.middleware.use(OmniAuth::Builder) do
+  provider :ldap,
+    title: &quot;Acme LDAP&quot;,
+    host: &quot;ldap.acme.internal&quot;,
+    port: 389,
+    base: &quot;dc=acme,dc=corp&quot;,
+    uid: &quot;uid&quot;,
+    bind_dn: &quot;cn=search,dc=acme,dc=corp&quot;,
+    password: ENV[&quot;LDAP_SEARCH_PASSWORD&quot;],
+    name_proc: proc { |n| n.split(&quot;@&quot;).first }
+end
+</code></pre>
+
+<p>Then link users to <code>/auth/ldap</code> in your app (for example, in a Devise sign-in page).</p>
+
+<h3 id="using-a-custom-filter">Using a custom filter</h3>
+
+<p>If you need to restrict authentication to a group or use a more complex lookup, pass <code>:filter</code>. Use <code>%{username}</code> — it will be replaced with the processed username (after <code>:name_proc</code>).</p>
+
+<pre class="code language-ruby"><code class="language-ruby">provider :ldap,
+  host: &quot;ldap.example.com&quot;,
+  base: &quot;dc=example,dc=com&quot;,
+  filter: &quot;(&amp;(uid=%{username})(memberOf=cn=myapp-users,ou=groups,dc=example,dc=com))&quot;,
+  bind_dn: &quot;cn=search,dc=example,dc=com&quot;,
+  password: ENV[&quot;LDAP_SEARCH_PASSWORD&quot;]
+</code></pre>
+
+<p>What <code>:filter</code> actually does</p>
+
+<ul>
+  <li>If <code>:filter</code> is provided, the strategy constructs an LDAP filter string by substituting <code>%{username}</code> with the submitted username after applying <code>:name_proc</code>, escaping special characters per RFC 4515, and passes it to the directory search.</li>
+  <li>In the normal password flow, a successful search returns the user’s DN and we then bind as that DN with the submitted password.</li>
+  <li>In trusted header SSO flow (<code>header_auth: true</code>), we only perform the search and skip the user password bind; if the search returns no entry, authentication fails.</li>
+  <li>If <code>:filter</code> is not provided, the strategy falls back to a simple equality filter using <code>:uid</code> (e.g. <code>(uid=alice)</code>).</li>
+</ul>
+
+<p>Notes on escaping and safety</p>
+
+<ul>
+  <li>We escape the interpolated username with <code>Net::LDAP::Filter.escape</code>, which protects against LDAP injection and handles special characters like <code>(</code>, <code>)</code>, <code>*</code>, and <code>\</code>.</li>
+  <li>Your static filter text is used as-is — keep it to a valid LDAP filter expression and only use <code>%{username}</code> for substitution.</li>
+</ul>
+
+<p>Group-based recipes</p>
+
+<ul>
+  <li>
+    <p>Active Directory (simple group):</p>
+
+    <pre class="code language-text"><code class="language-text">(&amp;(sAMAccountName=%{username})(memberOf=cn=myapp-users,ou=groups,dc=example,dc=com))
+</code></pre>
+  </li>
+  <li>
+    <p>Active Directory (nested groups via matchingRuleInChain):</p>
+
+    <pre class="code language-text"><code class="language-text">(&amp;(sAMAccountName=%{username})(memberOf:1.2.840.113556.1.4.1941:=cn=myapp-users,ou=groups,dc=example,dc=com))
+</code></pre>
+  </li>
+  <li>
+    <p>OpenLDAP (groupOfNames):</p>
+
+    <pre class="code language-text"><code class="language-text">(&amp;(uid=%{username})(memberOf=cn=myapp-users,ou=groups,dc=example,dc=com))
+</code></pre>
+
+    <p>or, if you can’t use <code>memberOf</code> overlays, filter on the group and member DN:</p>
+
+    <pre class="code language-text"><code class="language-text">(&amp;(uid=%{username})(|(uniqueMember=uid=%{username},ou=people,dc=example,dc=com)(member=uid=%{username},ou=people,dc=example,dc=com)))
+</code></pre>
+  </li>
+</ul>
+
+<p>Username normalization examples</p>
+
+<ul>
+  <li>
+    <p>If your users sign in with an email but the directory expects a short name, combine <code>:name_proc</code> with <code>:filter</code>:</p>
+
+    <pre class="code language-ruby"><code class="language-ruby">provider :ldap,
+  name_proc: proc { |n| n.split(&quot;@&quot;).first },
+  filter: &quot;(&amp;(sAMAccountName=%{username})(memberOf=cn=myapp-users,ou=groups,dc=example,dc=com))&quot;
+  # other settings...
+</code></pre>
+  </li>
+</ul>
+
+<p>Discourse plugin (jonmbake/discourse-ldap-auth)</p>
+
+<ul>
+  <li>That plugin forwards its <code>filter</code> setting to this gem. You can therefore paste the same filter strings shown above.</li>
+  <li>
+    <p>Example (allow only members of <code>forum-users</code>):</p>
+
+    <pre class="code language-text"><code class="language-text">(&amp;(uid=%{username})(memberOf=cn=forum-users,ou=groups,dc=example,dc=com))
+</code></pre>
+  </li>
+  <li>If users type an email address but your directory matches on a short user id, also configure <code>name_proc</code> accordingly in your app (or the plugin, if supported).</li>
+</ul>
+
+<h3 id="sasl-advanced">SASL (advanced)</h3>
+
+<p>SASL enables alternative bind mechanisms. Only enable if you understand the server-side requirements.</p>
+
+<pre class="code language-ruby"><code class="language-ruby">provider :ldap,
+  host: &quot;ldap.example.com&quot;,
+  base: &quot;dc=example,dc=com&quot;,
+  try_sasl: true,
+  sasl_mechanisms: [&quot;DIGEST-MD5&quot;],
+  uid: &quot;uid&quot;
+</code></pre>
+
+<p>Supported mechanisms include “DIGEST-MD5” and “GSS-SPNEGO” depending on your environment and gems.</p>
+
+<h3 id="name-processing-and-examples">Name processing and examples</h3>
+
+<p>If users log in with an email but LDAP expects a short username, use <code>:name_proc</code> to normalize the submitted value:</p>
+
+<pre class="code language-ruby"><code class="language-ruby">provider :ldap,
+  host: &quot;ldap.example.com&quot;,
+  base: &quot;dc=example,dc=com&quot;,
+  uid: &quot;sAMAccountName&quot;,
+  name_proc: proc { |name| name.gsub(/@.*$/, &quot;&quot;) }
+</code></pre>
+
+<p>This trims <code>alice@example.com</code> to <code>alice</code> before searching.</p>
+
+<h3 id="trusted-header-sso-remote_user-and-friends">Trusted header SSO (REMOTE_USER and friends)</h3>
+
+<p>Some deployments terminate SSO at a reverse proxy or portal and forward the already-authenticated user identity via an HTTP header such as <code>REMOTE_USER</code>.<br>
+When you enable this mode, the LDAP strategy will trust the upstream header, perform a directory lookup for that user, and complete OmniAuth without asking the user for a password.</p>
+
+<p>Important: Only enable this behind a trusted front-end that strips and sets the header itself. Never enable on a public endpoint without such a gateway, or an attacker could spoof the header.</p>
+
+<p>Configuration options:</p>
+
+<ul>
+  <li>
+<code>:header_auth</code> (Boolean, default: false) — Enable trusted header SSO.</li>
+  <li>
+<code>:header_name</code> (String, default: “REMOTE_USER”) — The env/header key to read. The strategy checks both <code>env["REMOTE_USER"]</code> and the Rack variant <code>env["HTTP_REMOTE_USER"]</code>.</li>
+  <li>
+<code>:name_proc</code> is applied to the header value before search (e.g., to strip a domain part).</li>
+  <li>Search is done using your configured <code>:uid</code> or <code>:filter</code> and the service bind (<code>:bind_dn</code>/<code>:password</code>) or anonymous bind if allowed.</li>
+</ul>
+
+<p>Minimal Rack example:</p>
+
+<pre class="code language-ruby"><code class="language-ruby">use OmniAuth::Builder do
+  provider :ldap,
+    host: &quot;ldap.example.com&quot;,
+    base: &quot;dc=example,dc=com&quot;,
+    uid: &quot;uid&quot;,
+    bind_dn: &quot;cn=search,dc=example,dc=com&quot;,
+    password: ENV[&quot;LDAP_SEARCH_PASSWORD&quot;],
+    header_auth: true,                 # trust REMOTE_USER
+    header_name: &quot;REMOTE_USER&quot;,       # default
+    name_proc: proc { |n| n.split(&quot;@&quot;).first }
+end
+</code></pre>
+
+<p>Rails initializer example:</p>
+
+<pre class="code language-ruby"><code class="language-ruby">Rails.application.config.middleware.use(OmniAuth::Builder) do
+  provider :ldap,
+    title: &quot;Acme LDAP&quot;,
+    host: &quot;ldap.acme.internal&quot;,
+    base: &quot;dc=acme,dc=corp&quot;,
+    uid: &quot;sAMAccountName&quot;,
+    bind_dn: &quot;cn=search,dc=acme,dc=corp&quot;,
+    password: ENV[&quot;LDAP_SEARCH_PASSWORD&quot;],
+    header_auth: true,
+    header_name: &quot;REMOTE_USER&quot;,
+    # Optionally restrict with a group filter while using the header value
+    filter: &quot;(&amp;(sAMAccountName=%{username})(memberOf=cn=myapp-users,ou=groups,dc=acme,dc=corp))&quot;,
+    name_proc: proc { |n| n.gsub(/@.*$/, &quot;&quot;) }
+end
+</code></pre>
+
+<p>Flow:</p>
+
+<ul>
+  <li>If <code>header_auth</code> is on and the header is present when the request hits <code>/auth/ldap</code>, the strategy immediately redirects to <code>/auth/ldap/callback</code>.</li>
+  <li>In the callback, the strategy searches the directory for that user and maps their attributes; no user password bind is attempted.</li>
+  <li>If the header is missing (or <code>header_auth</code> is false), the normal username/password form flow is used.</li>
+</ul>
+
+<p>Security checklist:</p>
+
+<ul>
+  <li>Ensure your reverse proxy strips user-controlled copies of the header and sets the canonical <code>REMOTE_USER</code> itself.</li>
+  <li>Prefer TLS-secured internal links between the proxy and your app.</li>
+  <li>Consider also restricting with a group-based <code>:filter</code> so only authorized users can sign in.</li>
+</ul>
 
 <h2 id="-floss-funding">🦷 FLOSS Funding</h2>
 
@@ -491,13 +777,16 @@ See <a href="file.LICENSE.html" title="LICENSE.txt">LICENSE.txt</a> for the offi
 
 <ul>
     <li>
-        Copyright (c) 2023, 2025 Peter H. Boling, of
+        Copyright (c) 2025 Peter H. Boling, of
         <a href="https://discord.gg/3qme4XHNKN">
             Galtzo.com
             <picture>
               <img src="https://logos.galtzo.com/assets/images/galtzo-floss/avatar-128px-blank.svg" alt="Galtzo.com Logo (Wordless) by Aboling0, CC BY-SA 4.0" width="24">
             </picture>
         </a>, and omniauth-ldap contributors.
+    </li>
+    <li>
+        Copyright (c) 2011 by Ping Yu and Intridea, Inc.
     </li>
 </ul>
 
@@ -525,7 +814,7 @@ Please consider sponsoring me or the project.</p>
 </div></div>
 
       <div id="footer">
-  Generated on Tue Nov  4 04:52:55 2025 by
+  Generated on Wed Nov  5 04:33:15 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.7).
 </div>
