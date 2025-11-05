@@ -27,6 +27,8 @@ Please file a bug if you notice a violation of semantic versioning.
 - Improved code coverage to 98% lines and 78% branches
 - Added integration tests with a complete Roda-based demo app for specs
 - Well tested support for all versions of OmniAuth >= v1 and Rack >= v1 via appraisals
+- Documentation for why auth.uid == dn
+- Support for LDAP-based SSO identity via HTTP Header
 
 ### Changed
 

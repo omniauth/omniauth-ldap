@@ -357,4 +357,94 @@ sn: User
       expect(auth.info.nickname).to eq "ping" # comes from sAMAccountName
     end
   end
+
+  # Header-based SSO (REMOTE_USER) support
+  describe "trusted header SSO" do
+    let(:app) do
+      Rack::Builder.new do
+        use OmniAuth::Test::PhonySession
+        use MyHeaderProvider,
+          name: "ldap",
+          title: "Header LDAP",
+          host: "ldap.example.com",
+          base: "dc=example,dc=com",
+          uid: "uid",
+          header_auth: true,
+          header_name: "REMOTE_USER",
+          name_proc: proc { |n| n.gsub(/@.*$/, "") }
+        run lambda { |env| [404, {"Content-Type" => "text/plain"}, [env.key?("omniauth.auth").to_s]] }
+      end.to_app
+    end
+
+    before do
+      ldap_strategy = Class.new(OmniAuth::Strategies::LDAP)
+      stub_const("MyHeaderProvider", ldap_strategy)
+      @adaptor = double(OmniAuth::LDAP::Adaptor, {uid: "uid", filter: nil})
+      allow(OmniAuth::LDAP::Adaptor).to receive(:new) { @adaptor }
+    end
+
+    def connection_returning(entry)
+      searcher = double("ldap search conn")
+      allow(searcher).to receive(:search).and_return(entry ? [entry] : [])
+      conn = double("ldap connection")
+      allow(conn).to receive(:open).and_yield(searcher)
+      conn
+    end
+
+    it "redirects from request phase when header present" do
+      env = {"rack.session" => {}, "REQUEST_METHOD" => "POST", "PATH_INFO" => "/auth/ldap", "REMOTE_USER" => "alice"}
+      post "/auth/ldap", nil, env
+      expect(last_response).to be_redirect
+      expect(last_response.headers["Location"]).to eq "/auth/ldap/callback"
+    end
+
+    it "authenticates on callback without password using REMOTE_USER" do
+      entry = Net::LDAP::Entry.from_single_ldif_string(%{dn: cn=alice, dc=example, dc=com
+uid: alice
+mail: alice@example.com
+})
+      allow(@adaptor).to receive(:connection).and_return(connection_returning(entry))
+
+      post "/auth/ldap/callback", nil, {"REMOTE_USER" => "alice"}
+
+      expect(last_response).not_to be_redirect
+      auth = last_request.env["omniauth.auth"]
+      expect(auth.uid).to eq "cn=alice, dc=example, dc=com"
+      expect(auth.info.nickname).to eq "alice"
+    end
+
+    it "authenticates on callback with HTTP_ header variant" do
+      entry = Net::LDAP::Entry.from_single_ldif_string(%{dn: cn=alice, dc=example, dc=com
+uid: alice
+})
+      allow(@adaptor).to receive(:connection).and_return(connection_returning(entry))
+
+      post "/auth/ldap/callback", nil, {"HTTP_REMOTE_USER" => "alice"}
+      expect(last_response).not_to be_redirect
+      auth = last_request.env["omniauth.auth"]
+      expect(auth.info.nickname).to eq "alice"
+    end
+
+    it "applies name_proc and filter mapping when provided" do
+      # search result
+      entry = Net::LDAP::Entry.from_single_ldif_string(%{dn: cn=alice, dc=example, dc=com
+        uid: alice
+      })
+      allow(@adaptor).to receive_messages(
+        filter: "uid=%{username}",
+        connection: connection_returning(entry),
+      )
+      expect(Net::LDAP::Filter).to receive(:construct).with("uid=alice").and_call_original
+
+      post "/auth/ldap/callback", nil, {"REMOTE_USER" => "alice@example.com"}
+      expect(last_response).not_to be_redirect
+    end
+
+    it "fails when directory lookup returns no entry" do
+      allow(@adaptor).to receive(:connection).and_return(connection_returning(nil))
+      post "/auth/ldap/callback", nil, {"REMOTE_USER" => "missing"}
+      expect(last_response).to be_redirect
+      expect(last_response.headers["Location"]).to match(/invalid_credentials/)
+    end
+  end
 end

@@ -13,12 +13,20 @@ module OmniAuth
       def callback_phase: () -> untyped
 
       # Accepts an adaptor and returns a Net::LDAP::Filter or similar
+      # Optional second argument allows overriding the username (used for header-based SSO)
       def filter: (OmniAuth::LDAP::Adaptor) -> Net::LDAP::Filter
+                | (OmniAuth::LDAP::Adaptor, String?) -> Net::LDAP::Filter
 
       # Map a user object (Net::LDAP::Entry-like) into a Hash for the auth info
       def self.map_user: (Hash[String, untyped], untyped) -> Hash[String, untyped]
 
       def missing_credentials?: () -> bool
+
+      # Extract username from a trusted header when enabled
+      def header_username: () -> (String | nil)
+
+      # Perform a directory lookup for a given username; returns an Entry or nil
+      def directory_lookup: (OmniAuth::LDAP::Adaptor, String) -> untyped
     end
   end
 end
