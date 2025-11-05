@@ -1,5 +1,20 @@
 # frozen_string_literal: true
 
+# Skip coverage checks for single spec runs outside CI environments
+begin
+  ci_indicators = %w[CI GITHUB_ACTIONS GITLAB_CI TRAVIS CIRCLECI BUILD_ID CONTINUOUS_INTEGRATION]
+  running_in_ci = ci_indicators.any? { |k| ENV[k] }
+  requested_specs = ARGV.select { |a| a =~ %r{(^|/)spec/.+_spec\.rb(:\d+)?$} }
+  if requested_specs.size == 1 && !running_in_ci
+    ENV["K_SOUP_COV_DO"] = "false" unless ENV["K_SOUP_COV_DO"]
+    ENV["K_SOUP_COV_MIN_HARD"] = "false" unless ENV["K_SOUP_COV_MIN_HARD"]
+    ENV["K_SOUP_COV_MIN_LINE"] = "0" unless ENV["K_SOUP_COV_MIN_LINE"]
+    ENV["K_SOUP_COV_MIN_BRANCH"] = "0" unless ENV["K_SOUP_COV_MIN_BRANCH"]
+  end
+rescue
+  # ignore any detection errors
+end
+
 require "logger"
 require "rack/test"
 
@@ -18,7 +33,10 @@ require "config/vcr"
 
 # RSpec Support
 spec_root_matcher = %r{#{__dir__}/(.+)\.rb\Z}
-Dir.glob(Pathname.new(__dir__).join("support/**/", "*.rb")).each { |f| require f.match(spec_root_matcher)[1] }
+Dir.glob(Pathname.new(__dir__).join("support/**/", "*.rb")).each do |f|
+  m = f.match(spec_root_matcher)
+  require m[1] if m
+end
 
 TEST_LOGGER = Logger.new(StringIO.new)
 OmniAuth.config.logger = TEST_LOGGER

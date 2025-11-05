@@ -216,6 +216,8 @@ GEM
     require_bench (1.0.4)
       version_gem (>= 1.1.3, < 4)
     rexml (3.4.4)
+    roda (3.97.0)
+      rack
     rspec (3.13.2)
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
@@ -399,6 +401,7 @@ DEPENDENCIES
   rdoc (~> 6.11)
   reek (~> 6.5)
   require_bench (~> 1.0, >= 1.0.4)
+  roda (~> 3.97)
   rubocop-lts (~> 4.0)
   rubocop-on-rbs (~> 1.8)
   rubocop-packaging (~> 0.6, >= 0.6.0)
