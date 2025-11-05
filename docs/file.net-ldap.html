@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>
-  File: CITATION
+  File: net-ldap
   
     &mdash; Documentation by YARD 0.9.37
   
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="css/common.css" type="text/css" />
 
 <script type="text/javascript">
-  pathId = "CITATION";
+  pathId = "net-ldap";
   relpath = '';
 </script>
 
@@ -37,7 +37,7 @@
         <div id="menu">
   
     <a href="_index.html">Index</a> &raquo; 
-    <span class="title">File: CITATION</span>
+    <span class="title">File: net-ldap</span>
   
 </div>
 
@@ -57,28 +57,24 @@
         <div class="clear"></div>
       </div>
 
-      <div id="content"><div id='filecontents'><p>cff-version: 1.2.0<br>
-title: omniauth-ldap<br>
-message: &gt;-<br>
-  If you use this work and you want to cite it,<br>
-  then you can use the metadata from this file.<br>
-type: software<br>
-authors:</p>
-<ul>
-  <li>given-names: Peter Hurn<br>
-family-names: Boling<br>
-email: peter@railsbling.com<br>
-affiliation: railsbling.com<br>
-orcid: ‘https://orcid.org/0009-0008-8519-441X’<br>
-identifiers:</li>
-  <li>type: url<br>
-value: ‘https://github.com/omniauth/omniauth-ldap’<br>
-description: omniauth-ldap<br>
-repository-code: ‘https://github.com/omniauth/omniauth-ldap’<br>
-abstract: &gt;-<br>
-  omniauth-ldap<br>
-license: See license file</li>
-</ul>
+      <div id="content"><div id='filecontents'><h1 id="minimal-stubs-for-net-ldap-types-used-by-the-gem">Minimal stubs for net-ldap types used by the gem</h1>
+<p>module Net<br>
+  class LDAP<br>
+    def initialize: (Hash[Symbol, untyped]) -&gt; void<br>
+    def open: () { (self) -&gt; untyped } -&gt; untyped<br>
+    def search: (?Hash[Symbol, untyped]) -&gt; Array[Net::LDAP::Entry]<br>
+    def bind: (?Hash[Symbol, untyped]) -&gt; bool<br>
+  end</p>
+
+<p>class LDAP::Entry<br>
+    def dn: () -&gt; String<br>
+  end</p>
+
+<p>class LDAP::Filter<br>
+    def self.construct: (String) -&gt; Net::LDAP::Filter<br>
+    def self.eq: (String, String) -&gt; Net::LDAP::Filter<br>
+  end<br>
+end</p>
 </div></div>
 
       <div id="footer">

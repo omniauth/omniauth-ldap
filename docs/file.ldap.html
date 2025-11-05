@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>
-  File: CITATION
+  File: ldap
   
     &mdash; Documentation by YARD 0.9.37
   
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="css/common.css" type="text/css" />
 
 <script type="text/javascript">
-  pathId = "CITATION";
+  pathId = "ldap";
   relpath = '';
 </script>
 
@@ -37,7 +37,7 @@
         <div id="menu">
   
     <a href="_index.html">Index</a> &raquo; 
-    <span class="title">File: CITATION</span>
+    <span class="title">File: ldap</span>
   
 </div>
 
@@ -57,28 +57,37 @@
         <div class="clear"></div>
       </div>
 
-      <div id="content"><div id='filecontents'><p>cff-version: 1.2.0<br>
-title: omniauth-ldap<br>
-message: &gt;-<br>
-  If you use this work and you want to cite it,<br>
-  then you can use the metadata from this file.<br>
-type: software<br>
-authors:</p>
-<ul>
-  <li>given-names: Peter Hurn<br>
-family-names: Boling<br>
-email: peter@railsbling.com<br>
-affiliation: railsbling.com<br>
-orcid: ‘https://orcid.org/0009-0008-8519-441X’<br>
-identifiers:</li>
-  <li>type: url<br>
-value: ‘https://github.com/omniauth/omniauth-ldap’<br>
-description: omniauth-ldap<br>
-repository-code: ‘https://github.com/omniauth/omniauth-ldap’<br>
-abstract: &gt;-<br>
-  omniauth-ldap<br>
-license: See license file</li>
-</ul>
+      <div id="content"><div id='filecontents'><p>module OmniAuth<br>
+  module Strategies<br>
+    class LDAP<br>
+      OMNIAUTH_GTE_V2: bool</p>
+
+<pre class="code ruby"><code class="ruby">  # CONFIG is a read-only mapping of string keys to mapping definitions
+  CONFIG: Hash[String, untyped]
+
+  # The request_phase either returns a Rack-compatible response or the form response.
+  def request_phase: () -&gt; (Rack::Response | Array[untyped] | String)
+
+  # The callback_phase may call super (untyped) or return a failure symbol
+  def callback_phase: () -&gt; untyped
+
+  # Accepts an adaptor and returns a Net::LDAP::Filter or similar
+  # Optional second argument allows overriding the username (used for header-based SSO)
+  def filter: (OmniAuth::LDAP::Adaptor) -&gt; Net::LDAP::Filter
+            | (OmniAuth::LDAP::Adaptor, String?) -&gt; Net::LDAP::Filter
+
+  # Map a user object (Net::LDAP::Entry-like) into a Hash for the auth info
+  def self.map_user: (Hash[String, untyped], untyped) -&gt; Hash[String, untyped]
+
+  def missing_credentials?: () -&gt; bool
+
+  # Extract username from a trusted header when enabled
+  def header_username: () -&gt; (String | nil)
+
+  # Perform a directory lookup for a given username; returns an Entry or nil
+  def directory_lookup: (OmniAuth::LDAP::Adaptor, String) -&gt; untyped
+end   end end
+</code></pre>
 </div></div>
 
       <div id="footer">

@@ -22,13 +22,36 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Added
 
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+## [2.3.1] - 2025-11-05
+
+- TAG: [v2.3.1][2.3.1t]
+- COVERAGE: 97.85% -- 228/233 lines in 4 files
+- BRANCH COVERAGE: 81.58% -- 62/76 branches in 4 files
+- 37.50% documented
+
+### Added
+
 - Added RBS types
 - Upgraded RSpec tests to v3 syntax
 - Improved code coverage to 98% lines and 78% branches
 - Added integration tests with a complete Roda-based demo app for specs
 - Well tested support for all versions of OmniAuth >= v1 and Rack >= v1 via appraisals
-- Documentation for why auth.uid == dn
+- Document why auth.uid == dn
 - Support for LDAP-based SSO identity via HTTP Header
+- Document how to use filter option
+- All fixes and updates from the GitLab fork since up to v2.3.0
+    - https://github.com/omniauth/omniauth-ldap/pull/100
+    - https://gitlab.com/gitlab-org/gitlab-ce/issues/13280
 
 ### Changed
 
@@ -37,15 +60,9 @@ Please file a bug if you notice a violation of semantic versioning.
 - Make support for Rack v1+ explicit
 - Modernize codebase to use more recent Ruby syntax (upgrade from Ruby v1 to v2 syntax) and conventions
 
-### Deprecated
-
-### Removed
-
 ### Fixed
 
 - Prevent key duplication in symbolize_hash_keys
-
-### Security
 
 ## [2.3.0-gl] (gitlab fork) - 2025-08-20
 
@@ -179,3 +196,7 @@ Please file a bug if you notice a violation of semantic versioning.
 [1.0.0t-gl]: https://gitlab.com/gitlab-org/ruby/gems/omniauth-ldap/-/tags/1.0.0
 [1.0.0]: https://github.com/omniauth/omniauth-ldap/compare/5656da80d4193e0d0584f44bac493a87695e580f...v1.0.0
 [1.0.0t]: https://github.com/omniauth/omniauth-ldap/releases/tag/v1.0.0
+
+[Unreleased]: https://github.com/omniauth/omniauth-ldap/compare/v2.3.1...HEAD
+[2.3.1]: https://github.com/omniauth/omniauth-ldap/compare/v2.0.0...v2.3.1
+[2.3.1t]: https://github.com/omniauth/omniauth-ldap/releases/tag/v2.3.1
