@@ -21,9 +21,9 @@ RSpec.describe OmniAuth::LDAP::Adaptor do
     end
 
     it "maps ssl/tls to Net::LDAP encryption symbols" do
-      ssl_adaptor = described_class.new(valid_config.merge(method: 'ssl'))
-      tls_adaptor = described_class.new(valid_config.merge(method: 'tls'))
-      plain_adaptor = described_class.new(valid_config.merge(method: 'plain'))
+      ssl_adaptor = described_class.new(valid_config.merge(method: "ssl"))
+      tls_adaptor = described_class.new(valid_config.merge(method: "tls"))
+      plain_adaptor = described_class.new(valid_config.merge(method: "plain"))
 
       expect(ssl_adaptor.send(:translate_method)).to eq(OmniAuth::LDAP::Adaptor::ENCRYPTION_METHOD[:ssl])
       expect(tls_adaptor.send(:translate_method)).to eq(OmniAuth::LDAP::Adaptor::ENCRYPTION_METHOD[:tls])

@@ -1,10 +1,6 @@
-# this code borrowed pieces from activeldap and net-ldap
+# frozen_string_literal: true
 
-# nkf/kconv has been part of Ruby since long ago.
-# Eventually it became a standard gem, but was changed to a bundled gem in Ruby 3.4.
-# In general, kconv and iconv have been superseded since Ruby 1.9 by the built-in
-#   encoding support provided by String#encode, String#force_encoding, and similar methods.
-require "nkf"
+# this code borrowed pieces from activeldap and net-ldap
 
 # External Gems
 require "net/ldap"
@@ -21,8 +17,20 @@ module OmniAuth
       class ConnectionError < StandardError; end
 
       VALID_ADAPTER_CONFIGURATION_KEYS = [
-        :hosts, :host, :port, :encryption, :disable_verify_certificates, :bind_dn, :password, :try_sasl,
-        :sasl_mechanisms, :uid, :base, :allow_anonymous, :filter, :tls_options,
+        :hosts,
+        :host,
+        :port,
+        :encryption,
+        :disable_verify_certificates,
+        :bind_dn,
+        :password,
+        :try_sasl,
+        :sasl_mechanisms,
+        :uid,
+        :base,
+        :allow_anonymous,
+        :filter,
+        :tls_options,
 
         # Deprecated
         :method,
@@ -78,9 +86,13 @@ module OmniAuth
           hosts: @hosts,
           host: @host,
           port: @port,
-          encryption: encryption_options
+          encryption: encryption_options,
         }
-        @bind_method = @try_sasl ? :sasl : (@allow_anonymous||!@bind_dn||!@password ? :anonymous : :simple)
+        @bind_method = if @try_sasl
+          :sasl
+        else
+          ((@allow_anonymous || !@bind_dn || !@password) ? :anonymous : :simple)
+        end
 
         @auth = sasl_auths({username: @bind_dn, password: @password}).first if @bind_method == :sasl
         @auth ||= {
@@ -121,11 +133,11 @@ module OmniAuth
 
       def encryption_options
         translated_method = translate_method
-        return nil unless translated_method
+        return unless translated_method
 
         {
           method: translated_method,
-          tls_options: tls_options(translated_method)
+          tls_options: tls_options(translated_method),
         }
       end
 
@@ -135,7 +147,7 @@ module OmniAuth
         normalized_method = method.to_s.downcase.to_sym
 
         unless ENCRYPTION_METHOD.has_key?(normalized_method)
-          available_methods = ENCRYPTION_METHOD.keys.collect {|m| m.inspect}.join(", ")
+          available_methods = ENCRYPTION_METHOD.keys.collect { |m| m.inspect }.join(", ")
           format = "%s is not one of the available connect methods: %s"
           raise ConfigurationError, format % [method.inspect, available_methods]
         end
@@ -143,9 +155,8 @@ module OmniAuth
         ENCRYPTION_METHOD[normalized_method]
       end
 
-
       def tls_options(translated_method)
-        return {} if translated_method == nil # (plain)
+        return {} if translated_method.nil? # (plain)
 
         options = default_options
 
@@ -217,7 +228,7 @@ module OmniAuth
           # 1. The behavior of OpenSSL is undefined when verify_mode is not set.
           # 2. The net-ldap gem implementation verifies the certificate hostname
           #    unless verify_mode is set to VERIFY_NONE.
-          { verify_mode: OpenSSL::SSL::VERIFY_NONE }
+          {verify_mode: OpenSSL::SSL::VERIFY_NONE}
         else
           OpenSSL::SSL::SSLContext::DEFAULT_PARAMS.dup
         end
@@ -230,7 +241,7 @@ module OmniAuth
       def sanitize_hash_values(hash)
         hash.delete_if do |_, value|
           value.nil? ||
-          (value.is_a?(String) && value !~ /\S/)
+            (value.is_a?(String) && value !~ /\S/)
         end
       end
 

@@ -64,8 +64,8 @@ use OmniAuth::Strategies::LDAP,
   bind_dn: "default_bind_dn",
   password: "password",
   tls_options: {
-    ssl_version: 'TLSv1_2',
-    ciphers: ["AES-128-CBC", "AES-128-CBC-HMAC-SHA1", "AES-128-CBC-HMAC-SHA256"]
+    ssl_version: "TLSv1_2",
+    ciphers: ["AES-128-CBC", "AES-128-CBC-HMAC-SHA1", "AES-128-CBC-HMAC-SHA256"],
   }
 # Or, alternatively:
 # use OmniAuth::Strategies::LDAP, filter: '(&(uid=%{username})(memberOf=cn=myapp-users,ou=groups,dc=example,dc=com))'
@@ -96,20 +96,6 @@ Compatible with MRI Ruby 2.0+, and concordant releases of JRuby, and TruffleRuby
 | 🚚 _Amazing_ test matrix was brought to you by | 🔎 appraisal2 🔎 and the color 💚 green 💚             |
 |------------------------------------------------|--------------------------------------------------------|
 | 👟 Check it out!                               | ✨ [github.com/appraisal-rb/appraisal2][💎appraisal2] ✨ |
-
-#### Ruby 3.4
-
-nkf/kconv has been part of Ruby since long ago.
-Eventually it became a standard gem, but was changed to a bundled gem in Ruby 3.4.
-In general, kconv and iconv have been superseded since Ruby 1.9 by the built-in
-encoding support provided by String#encode, String#force_encoding, and similar methods.
-But this gem has not yet been updated to remove its dependency on nkf/kconv.
-
-As a result of all this you should add `nkf` to your Gemfile if you are using Ruby 3.4 or later.
-
-```ruby
-gem "nkf", "~> 0.1"
-```
 
 ### Enterprise Support [![Tidelift](https://tidelift.com/badges/package/rubygems/omniauth-ldap)](https://tidelift.com/subscription/pkg/rubygems-omniauth-ldap?utm_source=rubygems-omniauth-ldap&utm_medium=referral&utm_campaign=readme)
 

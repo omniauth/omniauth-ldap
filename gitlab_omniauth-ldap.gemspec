@@ -98,11 +98,6 @@ Gem::Specification.new do |spec|
   spec.executables = []
 
   spec.add_dependency("net-ldap", "~> 0.16", "< 1")             # ruby >= 2.0
-  # nkf/kconv has been part of Ruby since long ago.
-  # Eventually it became a standard gem, but was changed to a bundled gem in Ruby 3.4.
-  # In general, kconv and iconv have been superseded since Ruby 1.9 by the built-in
-  #   encoding support provided by String#encode, String#force_encoding, and similar methods.
-  # spec.add_dependency("nkf")                                  # ruby >= 2.3
   spec.add_dependency("omniauth", ">= 1", "< 3")                # ruby >= 0.0
   spec.add_dependency("pyu-ruby-sasl", ">= 0.0.3.3", "< 0.1")   # ruby >= 0.0
   spec.add_dependency("rack", ">= 1", "< 4")                    # ruby >= 0.0
