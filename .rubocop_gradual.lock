@@ -1,5 +1,5 @@
 {
-  "lib/omniauth-ldap/adaptor.rb:3906050285": [
+  "lib/omniauth-ldap/adaptor.rb:715274645": [
     [64, 7, 413, "Style/ClassMethodsDefinitions: Use `class << self` to define a class method.", 105664470],
     [114, 17, 3, "Style/AndOr: Use `&&` instead of `and`.", 193409806],
     [114, 30, 3, "Style/AndOr: Use `&&` instead of `and`.", 193409806],
