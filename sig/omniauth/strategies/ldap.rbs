@@ -1,0 +1,24 @@
+module OmniAuth
+  module Strategies
+    class LDAP
+      OMNIAUTH_GTE_V2: bool
+
+      # CONFIG is a read-only mapping of string keys to mapping definitions
+      CONFIG: Hash[String, untyped]
+
+      # The request_phase either returns a Rack-compatible response or the form response.
+      def request_phase: () -> (Rack::Response | Array[untyped] | String)
+
+      # The callback_phase may call super (untyped) or return a failure symbol
+      def callback_phase: () -> untyped
+
+      # Accepts an adaptor and returns a Net::LDAP::Filter or similar
+      def filter: (OmniAuth::LDAP::Adaptor) -> Net::LDAP::Filter
+
+      # Map a user object (Net::LDAP::Entry-like) into a Hash for the auth info
+      def self.map_user: (Hash[String, untyped], untyped) -> Hash[String, untyped]
+
+      def missing_credentials?: () -> bool
+    end
+  end
+end

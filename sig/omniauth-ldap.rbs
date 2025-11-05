@@ -1,0 +1,5 @@
+# Top-level signature file for the gem. Detailed signatures live in the files below:
+# - sig/omniauth/ldap/version.rbs
+# - sig/omniauth/ldap/adaptor.rbs
+# - sig/omniauth/strategies/ldap.rbs
+# This file is intentionally minimal to avoid duplicating declarations.
