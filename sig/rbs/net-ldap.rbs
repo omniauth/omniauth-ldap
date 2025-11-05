@@ -1,0 +1,19 @@
+# Minimal stubs for net-ldap types used by the gem
+module Net
+  class LDAP
+    def initialize: (Hash[Symbol, untyped]) -> void
+    def open: () { (self) -> untyped } -> untyped
+    def search: (?Hash[Symbol, untyped]) -> Array[Net::LDAP::Entry]
+    def bind: (?Hash[Symbol, untyped]) -> bool
+  end
+
+  class LDAP::Entry
+    def dn: () -> String
+  end
+
+  class LDAP::Filter
+    def self.construct: (String) -> Net::LDAP::Filter
+    def self.eq: (String, String) -> Net::LDAP::Filter
+  end
+end
+

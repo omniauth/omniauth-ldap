@@ -1,0 +1,11 @@
+module OmniAuth
+  module LDAP
+    module Version
+      VERSION: String
+    end
+
+    # Traditional constant alias
+    VERSION: String
+  end
+end
+

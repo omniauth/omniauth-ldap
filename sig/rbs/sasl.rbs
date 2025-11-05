@@ -1,0 +1,12 @@
+# Minimal stubs for SASL bindings used in tests
+module SASL
+  class Preferences
+    def initialize: (?Hash[Symbol, untyped]) -> void
+  end
+
+  class SASL
+    def initialize: (String, SASL::Preferences) -> void
+    def receive: (String, untyped) -> [untyped, untyped]
+  end
+end
+

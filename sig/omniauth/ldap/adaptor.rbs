@@ -1,0 +1,54 @@
+module OmniAuth
+  module LDAP
+    class Adaptor
+      class LdapError < ::StandardError
+      end
+
+      class ConfigurationError < ::StandardError
+      end
+
+      class AuthenticationError < ::StandardError
+      end
+
+      class ConnectionError < ::StandardError
+      end
+
+      VALID_ADAPTER_CONFIGURATION_KEYS: Array[Symbol]
+      MUST_HAVE_KEYS: Array[untyped]
+      METHOD: Hash[Symbol, Symbol?]
+
+      attr_accessor bind_dn: String?
+      attr_accessor password: String?
+
+      # Net::LDAP is provided by the net-ldap gem; we reference it here for clarity.
+      attr_reader connection: Net::LDAP
+      attr_reader uid: String?
+      attr_reader base: String?
+      # auth is the hash passed to Net::LDAP#auth or similar
+      attr_reader auth: Hash[Symbol, untyped]
+      # filter is an LDAP filter string when configured
+      attr_reader filter: String?
+
+      # Validate that required keys exist in the configuration
+      def self.validate: (?Hash[Symbol, untyped]) -> void
+      def initialize: (?Hash[Symbol, untyped]) -> void
+
+      # Perform a search and optionally bind; returns the matched entry or false
+      def bind_as: (?Hash[Symbol, untyped]) -> (Net::LDAP::Entry? | false)
+
+      private
+
+      # Returns a Net::LDAP encryption symbol (e.g. :simple_tls, :start_tls) or nil
+      def ensure_method: (untyped) -> Symbol?
+
+      # Returns an array of SASL auth hashes
+      def sasl_auths: (?Hash[Symbol, untyped]) -> Array[Hash[Symbol, untyped]]
+
+      # Returns initial credential (string) and a proc that accepts a challenge and returns the response
+      # Use Array[untyped] here to avoid tuple syntax issues in some linters; the runtime value
+      # is commonly a two-element array [initial_credential, proc].
+      def sasl_bind_setup_digest_md5: (?Hash[Symbol, untyped]) -> Array[untyped]
+      def sasl_bind_setup_gss_spnego: (?Hash[Symbol, untyped]) -> Array[untyped]
+    end
+  end
+end
