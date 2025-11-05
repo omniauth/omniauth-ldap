@@ -5,10 +5,15 @@
     [86, 30, 3, "Style/AndOr: Use `&&` instead of `and`.", 193409806],
     [86, 37, 1, "Lint/AssignmentInCondition: Wrap assignment in parentheses if intentional", 177560]
   ],
-  "lib/omniauth/strategies/ldap.rb:3246704443": [
-    [48, 9, 53, "Lint/RescueException: Avoid rescuing the `Exception` class. Perhaps you meant to rescue `StandardError`?", 4018396070],
-    [54, 27, 3, "Style/AndOr: Use `&&` instead of `and`.", 193409806],
-    [71, 7, 970, "Style/ClassMethodsDefinitions: Use `class << self` to define a class method.", 3995669691]
+  "spec/integration/middleware_spec.rb:4062046892": [
+    [3, 16, 39, "RSpec/DescribeClass: The first argument to describe should be the class or module being tested.", 638096201],
+    [30, 14, 10, "RSpec/ExpectActual: Provide the actual value you are testing to `expect(...)`.", 837117997],
+    [65, 5, 317, "RSpec/LeakyConstantDeclaration: Stub class constant instead of declaring explicitly.", 424933157]
+  ],
+  "spec/integration/roda_integration_spec.rb:1921252381": [
+    [3, 16, 50, "RSpec/DescribeClass: The first argument to describe should be the class or module being tested.", 3681952328],
+    [4, 3, 12, "RSpec/BeforeAfterAll: Beware of using `before(:all)` as it may cause state to leak between tests. If you are using `rspec-rails`, and `use_transactional_fixtures` is enabled, then records created in `before(:all)` are not automatically rolled back.", 86334566],
+    [70, 16, 5, "RSpec/ExpectActual: Provide the actual value you are testing to `expect(...)`.", 237881235]
   ],
   "spec/omniauth-ldap/adaptor_spec.rb:3624298807": [
     [72, 7, 26, "RSpec/StubbedMock: Prefer `allow` over `expect` when configuring a response.", 1924417310],
@@ -17,6 +22,12 @@
     [80, 7, 26, "RSpec/StubbedMock: Prefer `allow` over `expect` when configuring a response.", 1924417310],
     [81, 7, 26, "RSpec/StubbedMock: Prefer `allow` over `expect` when configuring a response.", 1924417310],
     [82, 7, 26, "RSpec/StubbedMock: Prefer `allow` over `expect` when configuring a response.", 1924417310]
+  ],
+  "spec/omniauth/adaptor_spec.rb:3492754784": [
+    [3, 1, 38, "RSpec/SpecFilePathFormat: Spec path should end with `omni_auth/ldap/adaptor*_spec.rb`.", 1973618936],
+    [42, 7, 38, "RSpec/AnyInstance: Avoid stubbing using `allow_any_instance_of`.", 3627954156],
+    [43, 7, 38, "RSpec/AnyInstance: Avoid stubbing using `allow_any_instance_of`.", 3627954156],
+    [80, 7, 48, "RSpec/AnyInstance: Avoid stubbing using `allow_any_instance_of`.", 2759780562]
   ],
   "spec/omniauth/strategies/ldap_spec.rb:3760791626": [
     [13, 3, 54, "RSpec/LeakyConstantDeclaration: Stub class constant instead of declaring explicitly.", 2419068710],
