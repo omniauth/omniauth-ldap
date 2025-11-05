@@ -200,8 +200,8 @@ The following options are available for configuring the OmniAuth LDAP strategy:
 
 Why DN for `auth.uid`?
 
-- DN is the canonical, globally unique identifier for an LDAP entry and is always present in search results. See LDAPv3 and DN syntax: RFC 4511 (LDAP protocol) and RFC 4514 (String Representation of Distinguished Names).
-- Attributes like `uid` (defined in RFC 4519) or `sAMAccountName` (Active Directory–specific) may be absent, duplicated across parts of the DIT, or vary between directories. Using DN ensures consistent behavior across AD, OpenLDAP, and other servers.
+- DN is the canonical, globally unique identifier for an LDAP entry and is always present in search results. See LDAPv3 and DN syntax: [RFC 4511][rfc4511] (LDAP protocol) and [RFC 4514][rfc4514] (String Representation of Distinguished Names).
+- Attributes like `uid` (defined in [RFC 4519][rfc4519]) or `sAMAccountName` (Active Directory–specific) may be absent, duplicated across parts of the DIT, or vary between directories. Using DN ensures consistent behavior across AD, OpenLDAP, and other servers.
 - This trade-off favors cross-directory interoperability and stability for apps that need a unique identifier.
 
 Where to find the "username"-style value
@@ -340,6 +340,67 @@ provider :ldap,
 ```
 
 This trims `alice@example.com` to `alice` before searching.
+
+### Trusted header SSO (REMOTE_USER and friends)
+
+Some deployments terminate SSO at a reverse proxy or portal and forward the already-authenticated user identity via an HTTP header such as `REMOTE_USER`.
+When you enable this mode, the LDAP strategy will trust the upstream header, perform a directory lookup for that user, and complete OmniAuth without asking the user for a password.
+
+Important: Only enable this behind a trusted front-end that strips and sets the header itself. Never enable on a public endpoint without such a gateway, or an attacker could spoof the header.
+
+Configuration options:
+
+- `:header_auth` (Boolean, default: false) — Enable trusted header SSO.
+- `:header_name` (String, default: "REMOTE_USER") — The env/header key to read. The strategy checks both `env["REMOTE_USER"]` and the Rack variant `env["HTTP_REMOTE_USER"]`.
+- `:name_proc` is applied to the header value before search (e.g., to strip a domain part).
+- Search is done using your configured `:uid` or `:filter` and the service bind (`:bind_dn`/`:password`) or anonymous bind if allowed.
+
+Minimal Rack example:
+
+```ruby
+use OmniAuth::Builder do
+  provider :ldap,
+    host: "ldap.example.com",
+    base: "dc=example,dc=com",
+    uid: "uid",
+    bind_dn: "cn=search,dc=example,dc=com",
+    password: ENV["LDAP_SEARCH_PASSWORD"],
+    header_auth: true,                 # trust REMOTE_USER
+    header_name: "REMOTE_USER",       # default
+    name_proc: proc { |n| n.split("@").first }
+end
+```
+
+Rails initializer example:
+
+```ruby
+Rails.application.config.middleware.use(OmniAuth::Builder) do
+  provider :ldap,
+    title: "Acme LDAP",
+    host: "ldap.acme.internal",
+    base: "dc=acme,dc=corp",
+    uid: "sAMAccountName",
+    bind_dn: "cn=search,dc=acme,dc=corp",
+    password: ENV["LDAP_SEARCH_PASSWORD"],
+    header_auth: true,
+    header_name: "REMOTE_USER",
+    # Optionally restrict with a group filter while using the header value
+    filter: "(&(sAMAccountName=%{username})(memberOf=cn=myapp-users,ou=groups,dc=acme,dc=corp))",
+    name_proc: proc { |n| n.gsub(/@.*$/, "") }
+end
+```
+
+Flow:
+
+- If `header_auth` is on and the header is present when the request hits `/auth/ldap`, the strategy immediately redirects to `/auth/ldap/callback`.
+- In the callback, the strategy searches the directory for that user and maps their attributes; no user password bind is attempted.
+- If the header is missing (or `header_auth` is false), the normal username/password form flow is used.
+
+Security checklist:
+
+- Ensure your reverse proxy strips user-controlled copies of the header and sets the canonical `REMOTE_USER` itself.
+- Prefer TLS-secured internal links between the proxy and your app.
+- Consider also restricting with a group-based `:filter` so only authorized users can sign in.
 
 ## 🦷 FLOSS Funding
 
