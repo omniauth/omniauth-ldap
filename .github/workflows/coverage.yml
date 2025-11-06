@@ -83,14 +83,6 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: ${{ matrix.experimental != 'false' }}
 
-      - name: Upload coverage to QLTY
-        if: ${{ !env.ACT }}
-        uses: qltysh/qlty-action/coverage@main
-        with:
-          token: ${{secrets.QLTY_COVERAGE_TOKEN}}
-          files: coverage/.resultset.json
-        continue-on-error: ${{ matrix.experimental != 'false' }}
-
       # Build will fail here if coverage upload fails
       #   which will hopefully be noticed for the lack of code coverage comments
       - name: Upload coverage to CodeCov
