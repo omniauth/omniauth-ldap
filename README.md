@@ -191,6 +191,25 @@ The following options are available for configuring the OmniAuth LDAP strategy:
 - `:sasl_mechanisms` - Array of SASL mechanisms to use (e.g., ["DIGEST-MD5", "GSS-SPNEGO"]).
 - `:allow_anonymous` - Whether to allow anonymous binding (default: false).
 - `:logger` - A logger instance for debugging (optional, for internal use).
+- `:password_policy` - When true, the strategy will request the LDAP Password Policy response control (OID `1.3.6.1.4.1.42.2.27.8.5.1`) during the user bind. If the server supports it, the adaptor exposes:
+  - `adaptor.last_operation_result` — the last Net::LDAP operation result object.
+  - `adaptor.last_password_policy_response` — the matching password policy response control (implementation-specific object). This can indicate conditions such as password expired, account locked, reset required, or grace logins remaining (per the draft RFC).
+
+Example enabling password policy:
+
+```ruby
+use OmniAuth::Builder do
+  provider :ldap,
+    host: "ldap.example.com",
+    base: "dc=example,dc=com",
+    uid: "uid",
+    bind_dn: "cn=search,dc=example,dc=com",
+    password: ENV["LDAP_SEARCH_PASSWORD"],
+    password_policy: true
+end
+```
+
+Note: This is best-effort and compatible with a range of net-ldap versions. If your server supports the control, you can inspect the response via the `adaptor` instance during/after authentication (for example in a failure handler) to tailor error messages.
 
 ### Auth Hash UID vs LDAP :uid (search attribute)
 
@@ -453,7 +472,10 @@ Rails.application.config.middleware.use(OmniAuth::Builder) do
     title: "Acme LDAP",
     host: "ldap.acme.internal",
     base: "dc=acme,dc=corp",
-    uid: "uid"
+    uid: "uid",
+    bind_dn: "cn=search,dc=acme,dc=corp",
+    password: ENV["LDAP_SEARCH_PASSWORD"],
+    name_proc: proc { |n| n.split("@").first }
 end
 ```
 

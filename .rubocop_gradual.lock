@@ -1,9 +1,6 @@
 {
-  "lib/omniauth-ldap/adaptor.rb:715274645": [
-    [64, 7, 413, "Style/ClassMethodsDefinitions: Use `class << self` to define a class method.", 105664470],
-    [114, 17, 3, "Style/AndOr: Use `&&` instead of `and`.", 193409806],
-    [114, 30, 3, "Style/AndOr: Use `&&` instead of `and`.", 193409806],
-    [114, 37, 1, "Lint/AssignmentInCondition: Wrap assignment in parentheses if intentional", 177560]
+  "lib/omniauth-ldap/adaptor.rb:3212021924": [
+    [65, 7, 413, "Style/ClassMethodsDefinitions: Use `class << self` to define a class method.", 105664470]
   ],
   "spec/integration/middleware_spec.rb:4142891586": [
     [3, 16, 39, "RSpec/DescribeClass: The first argument to describe should be the class or module being tested.", 638096201],
@@ -15,14 +12,10 @@
     [4, 3, 12, "RSpec/BeforeAfterAll: Beware of using `before(:all)` as it may cause state to leak between tests. If you are using `rspec-rails`, and `use_transactional_fixtures` is enabled, then records created in `before(:all)` are not automatically rolled back.", 86334566],
     [70, 16, 5, "RSpec/ExpectActual: Provide the actual value you are testing to `expect(...)`.", 237881235]
   ],
-  "spec/omniauth-ldap/adaptor_spec.rb:2715031579": [
+  "spec/omniauth-ldap/adaptor_spec.rb:321639549": [
     [3, 1, 38, "RSpec/SpecFilePathFormat: Spec path should end with `omni_auth/ldap/adaptor*_spec.rb`.", 1973618936],
-    [206, 7, 26, "RSpec/StubbedMock: Prefer `allow` over `expect` when configuring a response.", 1924417310],
-    [207, 7, 26, "RSpec/StubbedMock: Prefer `allow` over `expect` when configuring a response.", 1924417310],
-    [208, 7, 26, "RSpec/StubbedMock: Prefer `allow` over `expect` when configuring a response.", 1924417310],
-    [214, 7, 26, "RSpec/StubbedMock: Prefer `allow` over `expect` when configuring a response.", 1924417310],
-    [215, 7, 26, "RSpec/StubbedMock: Prefer `allow` over `expect` when configuring a response.", 1924417310],
-    [216, 7, 26, "RSpec/StubbedMock: Prefer `allow` over `expect` when configuring a response.", 1924417310]
+    [225, 9, 26, "RSpec/StubbedMock: Prefer `allow` over `expect` when configuring a response.", 1924417310],
+    [226, 9, 26, "RSpec/StubbedMock: Prefer `allow` over `expect` when configuring a response.", 1924417310]
   ],
   "spec/omniauth/adaptor_spec.rb:1168013709": [
     [3, 1, 38, "RSpec/SpecFilePathFormat: Spec path should end with `omni_auth/ldap/adaptor*_spec.rb`.", 1973618936],
@@ -30,14 +23,14 @@
     [47, 7, 38, "RSpec/AnyInstance: Avoid stubbing using `allow_any_instance_of`.", 3627954156],
     [84, 7, 48, "RSpec/AnyInstance: Avoid stubbing using `allow_any_instance_of`.", 2759780562]
   ],
-  "spec/omniauth/strategies/ldap_spec.rb:2044523926": [
-    [120, 13, 9, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 1130140517],
-    [175, 17, 28, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 3444838747],
-    [184, 17, 23, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 1584148894],
-    [195, 17, 32, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 1515076977],
-    [204, 19, 19, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 2526348694],
-    [230, 17, 56, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 2413495789],
-    [245, 13, 9, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 3182939526],
-    [278, 15, 19, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 2526348694]
+  "spec/omniauth/strategies/ldap_spec.rb:1834231975": [
+    [126, 13, 9, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 1130140517],
+    [181, 17, 28, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 3444838747],
+    [190, 17, 23, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 1584148894],
+    [201, 17, 32, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 1515076977],
+    [243, 19, 19, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 2526348694],
+    [269, 17, 56, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 2413495789],
+    [284, 13, 9, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 3182939526],
+    [338, 15, 19, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 2526348694]
   ]
 }

@@ -100,8 +100,13 @@ module OmniAuth
           @ldap_user_info = @adaptor.bind_as(filter: filter(@adaptor), size: 1, password: request.params["password"])
 
           unless @ldap_user_info
+            # Attach password policy info to env if available (best-effort)
+            attach_password_policy_env(@adaptor)
             return fail!(:invalid_credentials, InvalidCredentialsError.new("Invalid credentials for #{request.params["username"]}"))
           end
+
+          # Optionally attach policy info even on success (e.g., timeBeforeExpiration)
+          attach_password_policy_env(@adaptor)
 
           @user_info = self.class.map_user(CONFIG, @ldap_user_info)
           super
@@ -197,9 +202,50 @@ module OmniAuth
         search_filter = filter(adaptor, username)
         adaptor.connection.open do |conn|
           rs = conn.search(filter: search_filter, size: 1)
-          entry = rs.first if rs && rs.first
+          entry = rs && rs.first
         end
         entry
+      end
+
+      # If the adaptor captured a Password Policy response control, expose a minimal, stable hash
+      # in the Rack env for applications to inspect.
+      def attach_password_policy_env(adaptor)
+        return unless adaptor.respond_to?(:password_policy) && adaptor.password_policy
+        ctrl = adaptor.respond_to?(:last_password_policy_response) ? adaptor.last_password_policy_response : nil
+        op = adaptor.respond_to?(:last_operation_result) ? adaptor.last_operation_result : nil
+        return unless ctrl || op
+
+        request.env["omniauth.ldap.password_policy"] = extract_password_policy(ctrl, op)
+      end
+
+      # Best-effort extraction across net-ldap versions; if fields are not available, returns a raw payload.
+      def extract_password_policy(control, operation)
+        data = {raw: control}
+        if control
+          # Prefer named readers if present
+          if control.respond_to?(:error)
+            data[:error] = control.public_send(:error)
+          elsif control.respond_to?(:ppolicy_error)
+            data[:error] = control.public_send(:ppolicy_error)
+          end
+          if control.respond_to?(:time_before_expiration)
+            data[:time_before_expiration] = control.public_send(:time_before_expiration)
+          end
+          if control.respond_to?(:grace_authns_remaining)
+            data[:grace_authns_remaining] = control.public_send(:grace_authns_remaining)
+          elsif control.respond_to?(:grace_logins_remaining)
+            data[:grace_authns_remaining] = control.public_send(:grace_logins_remaining)
+          end
+          if control.respond_to?(:oid)
+            data[:oid] = control.public_send(:oid)
+          end
+        end
+        if operation
+          code = operation.respond_to?(:code) ? operation.code : nil
+          message = operation.respond_to?(:message) ? operation.message : nil
+          data[:operation] = {code: code, message: message}
+        end
+        data
       end
     end
   end

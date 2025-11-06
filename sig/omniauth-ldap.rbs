@@ -3,3 +3,8 @@
 # - sig/omniauth/ldap/adaptor.rbs
 # - sig/omniauth/strategies/ldap.rbs
 # This file is intentionally minimal to avoid duplicating declarations.
+
+module OmniAuth
+  module LDAP
+  end
+end

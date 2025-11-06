@@ -4,6 +4,8 @@ module Net
     class Message
       def self.parse: (untyped) -> Net::NTLM::Message
       def response: (?Hash[Symbol, untyped], ?Hash[Symbol, untyped]) -> Net::NTLM::Message
+      # writer used by adaptor to set target name when a domain is present
+      def target_name=: (String) -> String
     end
 
     class Message::Type1
@@ -13,4 +15,3 @@ module Net
     def self.encode_utf16le: (String) -> String
   end
 end
-

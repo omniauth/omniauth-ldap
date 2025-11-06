@@ -81,6 +81,12 @@ RSpec.describe "OmniAuth::Strategies::LDAP" do
       expect(last_response.body.scan("MyLdap Form").size).to be > 1
     end
 
+    it "redirects to callback when POST includes username and password" do
+      post "/auth/ldap", {username: "alice", password: "secret"}, {"REQUEST_METHOD" => "POST"}
+      expect(last_response).to be_redirect
+      expect(last_response.headers["Location"]).to eq "http://example.org/auth/ldap/callback"
+    end
+
     context "when mounted under a subdirectory" do
       let(:sub_env) do
         make_env("/auth/ldap", {
@@ -201,6 +207,39 @@ RSpec.describe "OmniAuth::Strategies::LDAP" do
             expect(last_request.env["omniauth.error"].message).to eq("Invalid credentials for ping")
           end
 
+          it "attaches password policy info to env when enabled" do
+            allow(@adaptor).to receive(:password_policy).and_return(true)
+            ctrl = double("ppolicy", error: :passwordExpired, time_before_expiration: 42, grace_authns_remaining: 1, oid: "1.3.6.1.4.1.42.2.27.8.5.1")
+            op = double("op", code: 49, message: "Invalid Credentials")
+            allow(@adaptor).to receive_messages(last_password_policy_response: ctrl, last_operation_result: op)
+
+            post("/auth/ldap/callback", {username: "ping", password: "password"})
+
+            expect(last_response).to be_redirect
+            expect(last_response.headers["Location"]).to match("invalid_credentials")
+
+            policy = last_request.env["omniauth.ldap.password_policy"]
+            expect(policy).to be_a(Hash)
+            expect(policy[:error]).to eq(:passwordExpired)
+            expect(policy[:time_before_expiration]).to eq(42)
+            expect(policy[:grace_authns_remaining]).to eq(1)
+            expect(policy[:oid]).to eq("1.3.6.1.4.1.42.2.27.8.5.1")
+            expect(policy[:operation]).to eq({code: 49, message: "Invalid Credentials"})
+          end
+
+          it "maps alternate policy fields (ppolicy_error, grace_logins_remaining)" do
+            allow(@adaptor).to receive(:password_policy).and_return(true)
+            ctrl = double("ppolicy", ppolicy_error: :accountLocked, grace_logins_remaining: 0, oid: "1.3.6.1.4.1.42.2.27.8.5.1")
+            allow(@adaptor).to receive_messages(last_password_policy_response: ctrl, last_operation_result: nil)
+
+            post("/auth/ldap/callback", {username: "ping", password: "password"})
+
+            expect(last_response).to be_redirect
+            policy = last_request.env["omniauth.ldap.password_policy"]
+            expect(policy[:error]).to eq(:accountLocked)
+            expect(policy[:grace_authns_remaining]).to eq(0)
+          end
+
           context "and filter is set" do
             it "binds with filter" do
               allow(@adaptor).to receive(:filter).and_return("uid=%{username}")
@@ -271,6 +310,27 @@ description: omniauth-ldap
       end
 
       it "does not redirect to error page" do
+        post("/auth/ldap/callback", {username: "ping", password: "password"})
+        expect(last_response).not_to be_redirect
+      end
+
+      it "attaches password policy env on success when enabled" do
+        allow(@adaptor).to receive(:password_policy).and_return(true)
+        ctrl = double("ppolicy", oid: "1.3.6.1.4.1.42.2.27.8.5.1")
+        allow(@adaptor).to receive_messages(last_password_policy_response: ctrl, last_operation_result: nil)
+
+        post("/auth/ldap/callback", {username: "ping", password: "password"})
+
+        expect(last_response).not_to be_redirect
+        policy = last_request.env["omniauth.ldap.password_policy"]
+        expect(policy).to be_a(Hash)
+        expect(policy[:oid]).to eq("1.3.6.1.4.1.42.2.27.8.5.1")
+        expect(policy[:raw]).to eq(ctrl)
+      end
+
+      it "uses equals filter when :filter is not configured" do
+        allow(@adaptor).to receive(:filter).and_return(nil)
+        expect(Net::LDAP::Filter).to receive(:equals).with(@adaptor.uid, "ping").and_call_original
         post("/auth/ldap/callback", {username: "ping", password: "password"})
         expect(last_response).not_to be_redirect
       end
