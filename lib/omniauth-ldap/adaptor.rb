@@ -118,10 +118,9 @@ module OmniAuth
             dn = rs.first.dn
             if dn
               password = args[:password]
-              method = args[:method] || @method
               password = password.call if password.respond_to?(:call)
 
-              bind_args = if method == "sasl"
+              bind_args = if @bind_method == :sasl
                 sasl_auths({username: dn, password: password}).first
               else
                 {
@@ -133,27 +132,13 @@ module OmniAuth
 
               # Optionally request LDAP Password Policy control (RFC Draft - de facto standard)
               if @password_policy
-                # Best-effort: if specific control class is available use it; otherwise request by OID
-                control = begin
-                  if defined?(Net::LDAP::Control::PasswordPolicy)
-                    Net::LDAP::Control::PasswordPolicy.new
-                  elsif defined?(Net::LDAP::Controls) && defined?(Net::LDAP::Controls::PasswordPolicy)
-                    Net::LDAP::Controls::PasswordPolicy.new
-                  elsif defined?(Net::LDAP::Control) && Net::LDAP::Control.respond_to?(:new)
-                    # Arguments: oid, critical, value
-                    Net::LDAP::Control.new("1.3.6.1.4.1.42.2.27.8.5.1", true, nil)
-                  else
-                    # Fallback to a simple hash - useful for testing with stubs
-                    {oid: "1.3.6.1.4.1.42.2.27.8.5.1", criticality: true, value: nil}
-                  end
-                rescue StandardError
-                  {oid: "1.3.6.1.4.1.42.2.27.8.5.1", criticality: true, value: nil}
-                end
+                # Always request by OID using a simple hash; avoids depending on gem-specific control classes
+                control = {oid: "1.3.6.1.4.1.42.2.27.8.5.1", criticality: true, value: nil}
                 if bind_args.is_a?(Hash)
                   bind_args = bind_args.merge({controls: [control]})
                 else
                   # Some Net::LDAP versions allow passing a block for SASL only; ensure we still can add controls if hash
-                  # If not a Hash, we can't merge; rely on server default behavior.
+                  # When not a Hash, we can't merge; rely on server default behavior.
                 end
               end
 
