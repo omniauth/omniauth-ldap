@@ -5,6 +5,7 @@ module Net
     def open: () { (self) -> untyped } -> untyped
     def search: (?Hash[Symbol, untyped]) -> Array[Net::LDAP::Entry]
     def bind: (?Hash[Symbol, untyped]) -> bool
+    def get_operation_result: () -> Net::LDAP::PDU
   end
 
   class LDAP::Entry
@@ -15,5 +16,20 @@ module Net
     def self.construct: (String) -> Net::LDAP::Filter
     def self.eq: (String, String) -> Net::LDAP::Filter
   end
-end
 
+  class LDAP::Control
+    def initialize: (String, bool, untyped) -> void
+    def oid: () -> String
+  end
+
+  module LDAP::Controls
+    class PasswordPolicy
+      def initialize: () -> void
+      def oid: () -> String
+    end
+  end
+
+  class LDAP::PDU
+    def controls: () -> Array[untyped]
+  end
+end

@@ -216,5 +216,30 @@ RSpec.describe OmniAuth::LDAP::Adaptor do
       expect(adaptor.connection).to receive(:bind).and_return(true)
       expect(adaptor.bind_as(args)).to eq rs
     end
+
+    context "when password policy is enabled" do
+      let(:ppolicy_oid) { "1.3.6.1.4.1.42.2.27.8.5.1" }
+
+      it "adds a Password Policy request control to the bind" do
+        adaptor = described_class.new({host: "127.0.0.1", encryption: "plain", base: "dc=example, dc=com", port: 389, uid: "sAMAccountName", bind_dn: "bind_dn", password: "password", password_policy: true})
+        expect(adaptor.connection).to receive(:open).and_yield(adaptor.connection)
+        expect(adaptor.connection).to receive(:search).with(args).and_return([rs])
+        expect(adaptor.connection).to receive(:bind) do |bind_args|
+          expect(bind_args).to be_a(Hash)
+          expect(bind_args[:controls]).to be_a(Array)
+          ctrl = bind_args[:controls].first
+          oid = ctrl.respond_to?(:oid) ? ctrl.oid : ctrl[:oid]
+          expect(oid).to eq(ppolicy_oid)
+          true
+        end.and_return(true)
+        # Stub operation result with a ppolicy response control
+        ctrl = Struct.new(:oid).new(ppolicy_oid)
+        op_result = Struct.new(:controls).new([ctrl])
+        allow(adaptor.connection).to receive(:get_operation_result).and_return(op_result)
+
+        expect(adaptor.bind_as(args)).to eq rs
+        expect(adaptor.last_password_policy_response).not_to be_nil
+      end
+    end
   end
 end

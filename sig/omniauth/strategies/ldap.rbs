@@ -27,6 +27,12 @@ module OmniAuth
 
       # Perform a directory lookup for a given username; returns an Entry or nil
       def directory_lookup: (OmniAuth::LDAP::Adaptor, String) -> untyped
+
+      def uid: () { () -> String } -> void
+
+      def info: () { () -> Hash[untyped, untyped] } -> void
+
+      def extra: () { () -> Hash[Symbol, untyped] } -> void
     end
   end
 end

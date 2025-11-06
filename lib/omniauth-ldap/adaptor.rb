@@ -31,6 +31,7 @@ module OmniAuth
         :allow_anonymous,
         :filter,
         :tls_options,
+        :password_policy,
 
         # Deprecated
         :method,
@@ -59,7 +60,7 @@ module OmniAuth
       }
 
       attr_accessor :bind_dn, :password
-      attr_reader :connection, :uid, :base, :auth, :filter
+      attr_reader :connection, :uid, :base, :auth, :filter, :password_policy, :last_operation_result, :last_password_policy_response
 
       def self.validate(configuration = {})
         message = []
@@ -109,20 +110,60 @@ module OmniAuth
       # :password => psw
       def bind_as(args = {})
         result = false
+        @last_operation_result = nil
+        @last_password_policy_response = nil
         @connection.open do |me|
           rs = me.search(args)
-          if rs and rs.first and dn = rs.first.dn
-            password = args[:password]
-            method = args[:method] || @method
-            password = password.call if password.respond_to?(:call)
-            if method == "sasl"
-              result = rs.first if me.bind(sasl_auths({username: dn, password: password}).first)
-            elsif me.bind(
-              method: :simple,
-              username: dn,
-              password: password,
-            )
-              result = rs.first
+          if rs && rs.first
+            dn = rs.first.dn
+            if dn
+              password = args[:password]
+              method = args[:method] || @method
+              password = password.call if password.respond_to?(:call)
+
+              bind_args = if method == "sasl"
+                sasl_auths({username: dn, password: password}).first
+              else
+                {
+                  method: :simple,
+                  username: dn,
+                  password: password,
+                }
+              end
+
+              # Optionally request LDAP Password Policy control (RFC Draft - de facto standard)
+              if @password_policy
+                # Best-effort: if specific control class is available use it; otherwise request by OID
+                control = begin
+                  if defined?(Net::LDAP::Control::PasswordPolicy)
+                    Net::LDAP::Control::PasswordPolicy.new
+                  elsif defined?(Net::LDAP::Controls) && defined?(Net::LDAP::Controls::PasswordPolicy)
+                    Net::LDAP::Controls::PasswordPolicy.new
+                  elsif defined?(Net::LDAP::Control) && Net::LDAP::Control.respond_to?(:new)
+                    # Arguments: oid, critical, value
+                    Net::LDAP::Control.new("1.3.6.1.4.1.42.2.27.8.5.1", true, nil)
+                  else
+                    # Fallback to a simple hash - useful for testing with stubs
+                    {oid: "1.3.6.1.4.1.42.2.27.8.5.1", criticality: true, value: nil}
+                  end
+                rescue StandardError
+                  {oid: "1.3.6.1.4.1.42.2.27.8.5.1", criticality: true, value: nil}
+                end
+                if bind_args.is_a?(Hash)
+                  bind_args = bind_args.merge({controls: [control]})
+                else
+                  # Some Net::LDAP versions allow passing a block for SASL only; ensure we still can add controls if hash
+                  # If not a Hash, we can't merge; rely on server default behavior.
+                end
+              end
+
+              begin
+                success = bind_args ? me.bind(bind_args) : me.bind
+              ensure
+                capture_password_policy(me)
+              end
+
+              result = rs.first if success
             end
           end
         end
@@ -248,6 +289,32 @@ module OmniAuth
       def symbolize_hash_keys(hash)
         hash.each_with_object({}) do |(key, value), result|
           result[key.to_sym] = value
+        end
+      end
+
+      # Capture the operation result and extract any Password Policy response control if present.
+      def capture_password_policy(conn)
+        return unless @password_policy
+        return unless conn.respond_to?(:get_operation_result)
+
+        begin
+          @last_operation_result = conn.get_operation_result
+          controls = if @last_operation_result && @last_operation_result.respond_to?(:controls)
+            @last_operation_result.controls || []
+          else
+            []
+          end
+          if controls.any?
+            # Find Password Policy response control by OID
+            ppolicy_oid = "1.3.6.1.4.1.42.2.27.8.5.1"
+            ctrl = controls.find do |c|
+              (c.respond_to?(:oid) && c.oid == ppolicy_oid) || (c.is_a?(Hash) && c[:oid] == ppolicy_oid)
+            end
+            @last_password_policy_response = ctrl if ctrl
+          end
+        rescue StandardError
+          # Swallow errors to keep authentication flow unaffected when server or gem doesn't support controls
+          @last_password_policy_response = nil
         end
       end
     end
