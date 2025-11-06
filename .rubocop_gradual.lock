@@ -1,6 +1,6 @@
 {
-  "lib/omniauth-ldap/adaptor.rb:3212021924": [
-    [65, 7, 413, "Style/ClassMethodsDefinitions: Use `class << self` to define a class method.", 105664470]
+  "lib/omniauth-ldap/adaptor.rb:3925200886": [
+    [68, 7, 413, "Style/ClassMethodsDefinitions: Use `class << self` to define a class method.", 105664470]
   ],
   "spec/integration/middleware_spec.rb:4142891586": [
     [3, 16, 39, "RSpec/DescribeClass: The first argument to describe should be the class or module being tested.", 638096201],
@@ -12,10 +12,10 @@
     [4, 3, 12, "RSpec/BeforeAfterAll: Beware of using `before(:all)` as it may cause state to leak between tests. If you are using `rspec-rails`, and `use_transactional_fixtures` is enabled, then records created in `before(:all)` are not automatically rolled back.", 86334566],
     [70, 16, 5, "RSpec/ExpectActual: Provide the actual value you are testing to `expect(...)`.", 237881235]
   ],
-  "spec/omniauth-ldap/adaptor_spec.rb:321639549": [
+  "spec/omniauth-ldap/adaptor_spec.rb:1245381318": [
     [3, 1, 38, "RSpec/SpecFilePathFormat: Spec path should end with `omni_auth/ldap/adaptor*_spec.rb`.", 1973618936],
-    [225, 9, 26, "RSpec/StubbedMock: Prefer `allow` over `expect` when configuring a response.", 1924417310],
-    [226, 9, 26, "RSpec/StubbedMock: Prefer `allow` over `expect` when configuring a response.", 1924417310]
+    [239, 9, 26, "RSpec/StubbedMock: Prefer `allow` over `expect` when configuring a response.", 1924417310],
+    [240, 9, 26, "RSpec/StubbedMock: Prefer `allow` over `expect` when configuring a response.", 1924417310]
   ],
   "spec/omniauth/adaptor_spec.rb:1168013709": [
     [3, 1, 38, "RSpec/SpecFilePathFormat: Spec path should end with `omni_auth/ldap/adaptor*_spec.rb`.", 1973618936],

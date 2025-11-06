@@ -63,6 +63,9 @@ use OmniAuth::Strategies::LDAP,
   name_proc: proc { |name| name.gsub(/@.*$/, "") },
   bind_dn: "default_bind_dn",
   password: "password",
+  # Optional timeouts (seconds)
+  connect_timeout: 3,
+  read_timeout: 7,
   tls_options: {
     ssl_version: "TLSv1_2",
     ciphers: ["AES-128-CBC", "AES-128-CBC-HMAC-SHA1", "AES-128-CBC-HMAC-SHA256"],
@@ -194,6 +197,8 @@ The following options are available for configuring the OmniAuth LDAP strategy:
 - `:password_policy` - When true, the strategy will request the LDAP Password Policy response control (OID `1.3.6.1.4.1.42.2.27.8.5.1`) during the user bind. If the server supports it, the adaptor exposes:
   - `adaptor.last_operation_result` — the last Net::LDAP operation result object.
   - `adaptor.last_password_policy_response` — the matching password policy response control (implementation-specific object). This can indicate conditions such as password expired, account locked, reset required, or grace logins remaining (per the draft RFC).
+- `:connect_timeout` - Maximum time in seconds to wait when establishing the TCP connection to the LDAP server. Forwarded to `Net::LDAP`.
+- `:read_timeout` - Maximum time in seconds to wait for reads during LDAP operations (search/bind). Forwarded to `Net::LDAP`.
 
 Example enabling password policy:
 
@@ -719,7 +724,7 @@ To join the community or get help 👇️ Join the Discord.
 
 To say "thanks!" ☝️ Join the Discord or 👇️ send money.
 
-[![Sponsor me on GitHub Sponsors][🖇sponsor-bottom-img]][🖇sponsor] 💌 [![Sponsor me on Liberapay][⛳liberapay-bottom-img]][⛳liberapay-img] 💌 [![Donate on PayPal][🖇paypal-bottom-img]][🖇paypal-img]
+[![Sponsor me on GitHub Sponsors][🖇sponsor-bottom-img]][🖇sponsor] 💌 [![Sponsor me on Liberapay][⛳liberapay-bottom-img]][⛳liberapay] 💌 [![Donate on PayPal][🖇paypal-bottom-img]][🖇paypal]
 
 ### Please give the project a star ⭐ ♥.
 

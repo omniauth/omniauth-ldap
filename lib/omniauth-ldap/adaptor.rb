@@ -32,6 +32,9 @@ module OmniAuth
         :filter,
         :tls_options,
         :password_policy,
+        # Timeouts
+        :connect_timeout,
+        :read_timeout,
 
         # Deprecated
         :method,
@@ -89,6 +92,8 @@ module OmniAuth
           port: @port,
           encryption: encryption_options,
         }
+        # Remove passing timeouts here to avoid issues on older net-ldap versions.
+        # We'll set them after initialization if the connection responds to writers.
         @bind_method = if @try_sasl
           :sasl
         else
@@ -103,6 +108,21 @@ module OmniAuth
         }
         config[:auth] = @auth
         @connection = Net::LDAP.new(config)
+        # Apply optional timeout settings if supported by the installed net-ldap version
+        if !@connect_timeout.nil?
+          if @connection.respond_to?(:connect_timeout=)
+            @connection.connect_timeout = @connect_timeout
+          else
+            @connection.instance_variable_set(:@connect_timeout, @connect_timeout)
+          end
+        end
+        if !@read_timeout.nil?
+          if @connection.respond_to?(:read_timeout=)
+            @connection.read_timeout = @read_timeout
+          else
+            @connection.instance_variable_set(:@read_timeout, @read_timeout)
+          end
+        end
       end
 
       #:base => "dc=yourcompany, dc=com",

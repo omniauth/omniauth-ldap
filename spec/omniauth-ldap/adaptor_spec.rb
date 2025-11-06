@@ -195,6 +195,20 @@ RSpec.describe OmniAuth::LDAP::Adaptor do
         expect(adaptor.connection.instance_variable_get(:@encryption)).to include method: :start_tls
       end
     end
+
+    context "when timeouts are configured" do
+      it "passes connect_timeout and read_timeout settings to Net::LDAP connection" do
+        adaptor = described_class.new(host: "192.168.1.145", encryption: "plain", base: "dc=example,dc=com", port: 389, uid: "uid", connect_timeout: 3, read_timeout: 7)
+        expect(adaptor.connection.instance_variable_get(:@connect_timeout)).to eq 3
+        expect(adaptor.connection.instance_variable_get(:@read_timeout)).to eq 7
+      end
+
+      it "omits timeout settings when not provided" do
+        adaptor = described_class.new(host: "192.168.1.145", encryption: "plain", base: "dc=example,dc=com", port: 389, uid: "uid")
+        expect(adaptor.connection.instance_variable_get(:@connect_timeout)).to be_nil
+        expect(adaptor.connection.instance_variable_get(:@read_timeout)).to be_nil
+      end
+    end
   end
 
   describe "bind_as" do

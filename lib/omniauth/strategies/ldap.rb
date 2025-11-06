@@ -46,6 +46,9 @@ module OmniAuth
       #                 standard Rack "HTTP_" variant automatically.
       option :header_auth, false
       option :header_name, "REMOTE_USER"
+      # Optional timeouts (forwarded to Net::LDAP when supported)
+      option :connect_timeout, nil
+      option :read_timeout, nil
 
       def request_phase
         # OmniAuth >= 2.0 expects the request phase to be POST-only for /auth/:provider.
