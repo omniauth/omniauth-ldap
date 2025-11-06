@@ -29,6 +29,8 @@ Please file a bug if you notice a violation of semantic versioning.
   - password_policy: true|false (default: false)
   - on authentication failure, if the server returns password policy controls, the info will be included in the failure message
   - https://datatracker.ietf.org/doc/html/draft-behera-ldap-password-policy-11
+- Support for JSON bodies
+- Support custom LDAP attributes mapping
 
 ### Changed
 
