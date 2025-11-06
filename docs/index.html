@@ -143,6 +143,51 @@
 
 <p>All of the listed options are required, with the exception of <code>:title</code>, <code>:name_proc</code>, <code>:bind_dn</code>, and <code>:password</code>.</p>
 
+<h2 id="tls-certificate-verification">TLS certificate verification</h2>
+
+<p>This gem enables TLS certificate verification by default when you use <code>encryption: "ssl"</code> (LDAPS / simple TLS) or <code>encryption: "tls"</code> (STARTTLS). We always pass <code>tls_options</code> to Net::LDAP based on <code>OpenSSL::SSL::SSLContext::DEFAULT_PARAMS</code>, which includes <code>verify_mode: OpenSSL::SSL::VERIFY_PEER</code> and sane defaults.</p>
+
+<ul>
+  <li>Secure by default: you do not need to set anything extra to verify the LDAP server certificate.</li>
+  <li>To customize trust or ciphers, supply your own <code>tls_options</code>, which are merged over the safe defaults.</li>
+  <li>If you truly need to skip verification (not recommended), set <code>disable_verify_certificates: true</code>.</li>
+</ul>
+
+<p>Examples:</p>
+
+<pre class="code language-ruby"><code class="language-ruby"># Verify server certs (default behavior)
+use OmniAuth::Strategies::LDAP,
+  host: ENV[&quot;LDAP_HOST&quot;],
+  port: 636,
+  encryption: &quot;ssl&quot;,  # or &quot;tls&quot;
+  base: &quot;dc=example,dc=com&quot;,
+  uid:  &quot;uid&quot;
+
+# Use a private CA bundle and restrict protocol/ciphers
+use OmniAuth::Strategies::LDAP,
+  host: ENV[&quot;LDAP_HOST&quot;],
+  port: 636,
+  encryption: &quot;ssl&quot;,
+  base: &quot;dc=example,dc=com&quot;,
+  uid:  &quot;uid&quot;,
+  tls_options: {
+    ca_file: &quot;/etc/ssl/private/my_org_ca.pem&quot;,
+    ssl_version: &quot;TLSv1_2&quot;,
+    ciphers: [&quot;TLS_AES_256_GCM_SHA384&quot;, &quot;TLS_CHACHA20_POLY1305_SHA256&quot;],
+  }
+
+# Opt out of verification (NOT recommended – use only in trusted test/dev scenarios)
+use OmniAuth::Strategies::LDAP,
+  host: ENV[&quot;LDAP_HOST&quot;],
+  port: 636,
+  encryption: &quot;ssl&quot;,
+  base: &quot;dc=example,dc=com&quot;,
+  uid:  &quot;uid&quot;,
+  disable_verify_certificates: true
+</code></pre>
+
+<p>Note: Net::LDAP historically defaulted to no certificate validation when <code>tls_options</code> were not provided. This library mitigates that by always providing secure <code>tls_options</code> unless you explicitly disable verification.</p>
+
 <h2 id="-info-you-can-shake-a-stick-at">💡 Info you can shake a stick at</h2>
 
 <table>
@@ -998,7 +1043,7 @@ Please consider sponsoring me or the project.</p>
 </div></div>
 
       <div id="footer">
-  Generated on Thu Nov  6 02:24:32 2025 by
+  Generated on Thu Nov  6 04:21:53 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.7).
 </div>

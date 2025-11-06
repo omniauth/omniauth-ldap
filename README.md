@@ -81,6 +81,50 @@ use OmniAuth::Strategies::LDAP,
 
 All of the listed options are required, with the exception of `:title`, `:name_proc`, `:bind_dn`, and `:password`.
 
+## TLS certificate verification
+
+This gem enables TLS certificate verification by default when you use `encryption: "ssl"` (LDAPS / simple TLS) or `encryption: "tls"` (STARTTLS). We always pass `tls_options` to Net::LDAP based on `OpenSSL::SSL::SSLContext::DEFAULT_PARAMS`, which includes `verify_mode: OpenSSL::SSL::VERIFY_PEER` and sane defaults.
+
+- Secure by default: you do not need to set anything extra to verify the LDAP server certificate.
+- To customize trust or ciphers, supply your own `tls_options`, which are merged over the safe defaults.
+- If you truly need to skip verification (not recommended), set `disable_verify_certificates: true`.
+
+Examples:
+
+```ruby
+# Verify server certs (default behavior)
+use OmniAuth::Strategies::LDAP,
+  host: ENV["LDAP_HOST"],
+  port: 636,
+  encryption: "ssl",  # or "tls"
+  base: "dc=example,dc=com",
+  uid:  "uid"
+
+# Use a private CA bundle and restrict protocol/ciphers
+use OmniAuth::Strategies::LDAP,
+  host: ENV["LDAP_HOST"],
+  port: 636,
+  encryption: "ssl",
+  base: "dc=example,dc=com",
+  uid:  "uid",
+  tls_options: {
+    ca_file: "/etc/ssl/private/my_org_ca.pem",
+    ssl_version: "TLSv1_2",
+    ciphers: ["TLS_AES_256_GCM_SHA384", "TLS_CHACHA20_POLY1305_SHA256"],
+  }
+
+# Opt out of verification (NOT recommended – use only in trusted test/dev scenarios)
+use OmniAuth::Strategies::LDAP,
+  host: ENV["LDAP_HOST"],
+  port: 636,
+  encryption: "ssl",
+  base: "dc=example,dc=com",
+  uid:  "uid",
+  disable_verify_certificates: true
+```
+
+Note: Net::LDAP historically defaulted to no certificate validation when `tls_options` were not provided. This library mitigates that by always providing secure `tls_options` unless you explicitly disable verification.
+
 ## 💡 Info you can shake a stick at
 
 | Tokens to Remember      | [![Gem name][⛳️name-img]][⛳️gem-name] [![Gem namespace][⛳️namespace-img]][⛳️gem-namespace]                                                                                                                                                                                                                                                                          |
