@@ -22,6 +22,25 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Added
 
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+## [2.3.2] - 2025-11-06
+
+- TAG: [v2.3.2][2.3.2t]
+- COVERAGE: 97.64% -- 290/297 lines in 4 files
+- BRANCH COVERAGE: 79.69% -- 102/128 branches in 4 files
+- 44.12% documented
+
+### Added
+
 - Support for SCRIPT_NAME for proper URL generation
   - behind certain proxies/load balancers, or
   - under a subdirectory
@@ -39,14 +58,6 @@ Please file a bug if you notice a violation of semantic versioning.
 
 - Make support for OmniAuth v1.2+ explicit
   - Versions < 1.2 do not support SCRIPT_NAME properly, and may cause other issues
-
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
 
 ## [2.3.1] - 2025-11-05
 
@@ -213,6 +224,8 @@ Please file a bug if you notice a violation of semantic versioning.
 [1.0.0]: https://github.com/omniauth/omniauth-ldap/compare/5656da80d4193e0d0584f44bac493a87695e580f...v1.0.0
 [1.0.0t]: https://github.com/omniauth/omniauth-ldap/releases/tag/v1.0.0
 
-[Unreleased]: https://github.com/omniauth/omniauth-ldap/compare/v2.3.1...HEAD
+[Unreleased]: https://github.com/omniauth/omniauth-ldap/compare/v2.3.2...HEAD
+[2.3.2]: https://github.com/omniauth/omniauth-ldap/compare/v2.3.1...v2.3.2
+[2.3.2t]: https://github.com/omniauth/omniauth-ldap/releases/tag/v2.3.2
 [2.3.1]: https://github.com/omniauth/omniauth-ldap/compare/v2.0.0...v2.3.1
 [2.3.1t]: https://github.com/omniauth/omniauth-ldap/releases/tag/v2.3.1
