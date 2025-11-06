@@ -134,6 +134,8 @@ module OmniAuth
         @last_password_policy_response = nil
         @connection.open do |me|
           rs = me.search(args)
+          raise ConnectionError.new("LDAP search operation failed") unless rs
+
           if rs && rs.first
             dn = rs.first.dn
             if dn

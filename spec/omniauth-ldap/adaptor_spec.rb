@@ -310,5 +310,14 @@ RSpec.describe OmniAuth::LDAP::Adaptor do
       expect(@last_bind_args[:controls].first).to include(oid: ppolicy_oid)
       expect(adaptor.last_password_policy_response.oid).to eq(ppolicy_oid)
     end
+
+    it "raises a ConnectionError if the bind fails" do
+      adaptor = described_class.new({host: "192.168.1.126", method: "plain", base: "dc=score, dc=local", port: 389, uid: "sAMAccountName", bind_dn: "bind_dn", password: "password"})
+      allow(adaptor.connection).to receive(:open).and_yield(adaptor.connection)
+      # Net::LDAP#search returns nil if the operation was not successful
+      allow(adaptor.connection).to receive(:search).with(args).and_return(nil)
+      expect(adaptor.connection).not_to receive(:bind)
+      expect { adaptor.bind_as(args) }.to raise_error described_class::ConnectionError
+    end
   end
 end
