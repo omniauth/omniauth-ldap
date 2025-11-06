@@ -311,13 +311,13 @@ RSpec.describe OmniAuth::LDAP::Adaptor do
       expect(adaptor.last_password_policy_response.oid).to eq(ppolicy_oid)
     end
 
-    it "should raise a ConnectionError if the bind fails" do
-      adaptor = OmniAuth::LDAP::Adaptor.new({host: "192.168.1.126", method: 'plain', base: 'dc=score, dc=local', port: 389, uid: 'sAMAccountName', bind_dn: 'bind_dn', password: 'password'})
-      expect(adaptor.connection).to receive(:open).and_yield(adaptor.connection)
+    it "raises a ConnectionError if the bind fails" do
+      adaptor = described_class.new({host: "192.168.1.126", method: "plain", base: "dc=score, dc=local", port: 389, uid: "sAMAccountName", bind_dn: "bind_dn", password: "password"})
+      allow(adaptor.connection).to receive(:open).and_yield(adaptor.connection)
       # Net::LDAP#search returns nil if the operation was not successful
-      expect(adaptor.connection).to receive(:search).with(args).and_return(nil)
+      allow(adaptor.connection).to receive(:search).with(args).and_return(nil)
       expect(adaptor.connection).not_to receive(:bind)
-      expect { adaptor.bind_as(args) }.to raise_error OmniAuth::LDAP::Adaptor::ConnectionError
+      expect { adaptor.bind_as(args) }.to raise_error described_class::ConnectionError
     end
   end
 end

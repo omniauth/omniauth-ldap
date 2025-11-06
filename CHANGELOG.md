@@ -32,7 +32,7 @@ Please file a bug if you notice a violation of semantic versioning.
 - Support for JSON bodies
 - Support custom LDAP attributes mapping
 - Raise a distinct error when LDAP server is unreachable
-  - Previously raised an invalid credentials authentication failure error, which is technically incorrect 
+  - Previously raised an invalid credentials authentication failure error, which is technically incorrect
 
 ### Changed
 
