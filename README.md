@@ -204,7 +204,7 @@ The following options are available for configuring the OmniAuth LDAP strategy:
   - `adaptor.last_password_policy_response` — the matching password policy response control (implementation-specific object). This can indicate conditions such as password expired, account locked, reset required, or grace logins remaining (per the draft RFC).
 - `:connect_timeout` - Maximum time in seconds to wait when establishing the TCP connection to the LDAP server. Forwarded to `Net::LDAP`.
 - `:read_timeout` - Maximum time in seconds to wait for reads during LDAP operations (search/bind). Forwarded to `Net::LDAP`.
-- `:mapping` - allows you to customize mapping of LDAP attributes to the returned user info hash. The default mappings are defined in [ldap.rb](lib/omniauth/strategies/ldap.rb#L7), it will be merged with yours.
+- `:mapping` - Customize how LDAP attributes map to the returned `auth.info` hash. A sensible default mapping is built into the strategy and will be merged with your overrides. See `lib/omniauth/strategies/ldap.rb` for the default keys and behavior; values can be a String (single attribute), an Array (first present attribute wins), or a Hash (string pattern with placeholders like `%0` combined from multiple attributes).
 
 Example enabling password policy:
 
