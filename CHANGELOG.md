@@ -22,6 +22,10 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Added
 
+- Support for SCRIPT_NAME for proper URL generation
+  - behind certain proxies/load balancers, or
+  - under a subdirectory
+
 ### Changed
 
 ### Deprecated

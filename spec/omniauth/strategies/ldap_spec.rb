@@ -80,6 +80,33 @@ RSpec.describe "OmniAuth::Strategies::LDAP" do
     it "has a label of the form title" do
       expect(last_response.body.scan("MyLdap Form").size).to be > 1
     end
+
+    context "when mounted under a subdirectory" do
+      let(:sub_env) do
+        make_env("/auth/ldap", {
+          "SCRIPT_NAME" => "/subdirectory",
+          "rack.session" => {csrf: csrf_token},
+          "rack.input" => StringIO.new("authenticity_token=#{escaped_token}"),
+        })
+      end
+
+      it "renders form with full callback_url including subdirectory" do
+        post "/auth/ldap", nil, sub_env
+        expect(last_response.status).to eq 200
+        expect(last_response.body).to include("action='http://example.org/subdirectory/auth/ldap/callback'")
+      end
+
+      it "renders form with full callback_url including nested subdirectory" do
+        nested_env = make_env("/auth/ldap", {
+          "SCRIPT_NAME" => "/nested/app",
+          "rack.session" => {csrf: csrf_token},
+          "rack.input" => StringIO.new("authenticity_token=#{escaped_token}"),
+        })
+        post "/auth/ldap", nil, nested_env
+        expect(last_response.status).to eq 200
+        expect(last_response.body).to include("action='http://example.org/nested/app/auth/ldap/callback'")
+      end
+    end
   end
 
   describe "post /auth/ldap/callback" do
@@ -434,7 +461,21 @@ sn: User
       env = {"rack.session" => {}, "REQUEST_METHOD" => "POST", "PATH_INFO" => "/auth/ldap", "REMOTE_USER" => "alice"}
       post "/auth/ldap", nil, env
       expect(last_response).to be_redirect
-      expect(last_response.headers["Location"]).to eq "/auth/ldap/callback"
+      expect(last_response.headers["Location"]).to eq "http://example.org/auth/ldap/callback"
+    end
+
+    it "redirects including subdirectory when header present and app is mounted under a subdirectory" do
+      env = {"rack.session" => {}, "REQUEST_METHOD" => "POST", "PATH_INFO" => "/auth/ldap", "SCRIPT_NAME" => "/subdir", "REMOTE_USER" => "alice"}
+      post "/auth/ldap", nil, env
+      expect(last_response).to be_redirect
+      expect(last_response.headers["Location"]).to eq "http://example.org/subdir/auth/ldap/callback"
+    end
+
+    it "redirects including nested subdirectory when header present and app is mounted under a nested subdirectory" do
+      env = {"rack.session" => {}, "REQUEST_METHOD" => "POST", "PATH_INFO" => "/auth/ldap", "SCRIPT_NAME" => "/nested/app", "REMOTE_USER" => "alice"}
+      post "/auth/ldap", nil, env
+      expect(last_response).to be_redirect
+      expect(last_response.headers["Location"]).to eq "http://example.org/nested/app/auth/ldap/callback"
     end
 
     it "authenticates on callback without password using REMOTE_USER" do

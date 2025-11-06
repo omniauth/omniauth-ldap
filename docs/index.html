@@ -567,6 +567,89 @@ end
 
 <p>This trims <code>alice@example.com</code> to <code>alice</code> before searching.</p>
 
+<h3 id="mounted-under-a-subdirectory-script_name">Mounted under a subdirectory (SCRIPT_NAME)</h3>
+
+<p>If your app is served from a path prefix (for example, behind a reverse proxy at <code>/myapp</code>, or mounted via Rack::URLMap, or Rails <code>relative_url_root</code>), the OmniAuth callback must include that subdirectory. This strategy uses <code>callback_url</code> for the form action and redirects, so it automatically includes any <code>SCRIPT_NAME</code> set by Rack/Rails. In other words, you typically do not need any special configuration beyond ensuring <code>SCRIPT_NAME</code> is correct in the request environment.</p>
+
+<ul>
+  <li>Works out-of-the-box when:
+    <ul>
+      <li>You mount the app at a path using Rack’s <code>map</code>/<code>URLMap</code>.</li>
+      <li>You set Rails’ <code>config.relative_url_root</code> (or <code>RAILS_RELATIVE_URL_ROOT</code>) or deploy under a prefix with a reverse proxy that sets <code>SCRIPT_NAME</code>.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Rack example (mounted at /myapp):</p>
+
+<pre class="code language-ruby"><code class="language-ruby"># config.ru
+require &quot;rack&quot;
+require &quot;omniauth-ldap&quot;
+
+app = Rack::Builder.new do
+  use(Rack::Session::Cookie, secret: &quot;change_me&quot;)
+  use(OmniAuth::Builder) do
+    provider(
+      :ldap,
+      host: &quot;ldap.example.com&quot;,
+      base: &quot;dc=example,dc=com&quot;,
+      uid: &quot;uid&quot;,
+      title: &quot;Example LDAP&quot;,
+    )
+  end
+
+  run(-&gt;(env) { [404, {&quot;Content-Type&quot; =&gt; &quot;text/plain&quot;}, [env.key?(&quot;omniauth.auth&quot;).to_s]] })
+end
+
+run Rack::URLMap.new(
+  &quot;/myapp&quot; =&gt; app,
+)
+</code></pre>
+
+<ul>
+  <li>Visiting <code>POST /myapp/auth/ldap</code> renders the login form with <code>action='http://host/myapp/auth/ldap/callback'</code>.</li>
+  <li>Any redirects (including header-based SSO fast path) will also point to <code>http://host/myapp/auth/ldap/callback</code>.</li>
+</ul>
+
+<p>Rails example (relative_url_root):</p>
+
+<pre class="code language-ruby"><code class="language-ruby"># config/environments/production.rb (or an initializer)
+Rails.application.configure do
+  config.relative_url_root = &quot;/myapp&quot;  # or set ENV[&quot;RAILS_RELATIVE_URL_ROOT&quot;]
+end
+
+# config/initializers/omniauth.rb
+Rails.application.config.middleware.use(OmniAuth::Builder) do
+  provider :ldap,
+    title: &quot;Acme LDAP&quot;,
+    host: &quot;ldap.acme.internal&quot;,
+    base: &quot;dc=acme,dc=corp&quot;,
+    uid: &quot;uid&quot;
+end
+</code></pre>
+
+<ul>
+  <li>With <code>relative_url_root</code> set, Rails/Rack provide <code>SCRIPT_NAME=/myapp</code>, and this strategy will issue a form with <code>action='.../myapp/auth/ldap/callback'</code> and redirect accordingly.</li>
+</ul>
+
+<p>Behind proxies with unusual host/proto handling (optional):</p>
+
+<p>OmniAuth usually derives the correct scheme/host/prefix from Rack (and standard <code>X-Forwarded-*</code> headers). If your environment produces incorrect absolute URLs, you can override the computed host and prefix by setting <code>OmniAuth.config.full_host</code>:</p>
+
+<pre class="code language-ruby"><code class="language-ruby">OmniAuth.config.full_host = lambda do |env|
+  scheme = (env[&quot;HTTP_X_FORWARDED_PROTO&quot;] || env[&quot;rack.url_scheme&quot;]).to_s.split(&quot;,&quot;).first
+  host = env[&quot;HTTP_X_FORWARDED_HOST&quot;] || env[&quot;HTTP_HOST&quot;] || [env[&quot;SERVER_NAME&quot;], env[&quot;SERVER_PORT&quot;]].compact.join(&quot;:&quot;)
+  script = env[&quot;SCRIPT_NAME&quot;].to_s
+  &quot;#{scheme}://#{host}#{script}&quot;
+end
+</code></pre>
+
+<p>Note: You generally do not need this override. Prefer configuring your proxy to pass standard <code>X-Forwarded-Proto</code> and <code>X-Forwarded-Host</code> headers and let Rack/OmniAuth compute the full URL.</p>
+
+<ul>
+  <li>Header-based SSO (<code>header_auth: true</code>) also respects <code>SCRIPT_NAME</code>; when a trusted header is present on <code>POST /myapp/auth/ldap</code>, the strategy redirects to <code>http://host/myapp/auth/ldap/callback</code>.</li>
+</ul>
+
 <h3 id="trusted-header-sso-remote_user-and-friends">Trusted header SSO (REMOTE_USER and friends)</h3>
 
 <p>Some deployments terminate SSO at a reverse proxy or portal and forward the already-authenticated user identity via an HTTP header such as <code>REMOTE_USER</code>.<br>
@@ -814,7 +897,7 @@ Please consider sponsoring me or the project.</p>
 </div></div>
 
       <div id="footer">
-  Generated on Wed Nov  5 04:53:08 2025 by
+  Generated on Wed Nov  5 20:02:30 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.7).
 </div>

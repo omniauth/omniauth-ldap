@@ -111,9 +111,10 @@ module OmniAuth
       end
 
       def filter(adaptor, username_override = nil)
-        if adaptor.filter && !adaptor.filter.empty?
+        flt = adaptor.filter
+        if flt && !flt.to_s.empty?
           username = Net::LDAP::Filter.escape(@options[:name_proc].call(username_override || request.params["username"]))
-          Net::LDAP::Filter.construct(adaptor.filter % {username: username})
+          Net::LDAP::Filter.construct(flt % {username: username})
         else
           Net::LDAP::Filter.equals(adaptor.uid, @options[:name_proc].call(username_override || request.params["username"]))
         end
@@ -174,7 +175,7 @@ module OmniAuth
 
       def missing_credentials?
         request.params["username"].nil? || request.params["username"].empty? || request.params["password"].nil? || request.params["password"].empty?
-      end # missing_credentials?
+      end
 
       # Extract a normalized username from a trusted header when enabled.
       # Returns nil when not configured or not present.
@@ -193,9 +194,9 @@ module OmniAuth
       # (bind_dn/password or anonymous). Does not attempt to bind as the user.
       def directory_lookup(adaptor, username)
         entry = nil
-        filter = filter(adaptor, username)
+        search_filter = filter(adaptor, username)
         adaptor.connection.open do |conn|
-          rs = conn.search(filter: filter, size: 1)
+          rs = conn.search(filter: search_filter, size: 1)
           entry = rs.first if rs && rs.first
         end
         entry
