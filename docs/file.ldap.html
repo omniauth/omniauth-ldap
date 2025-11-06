@@ -62,10 +62,7 @@
     class LDAP<br>
       OMNIAUTH_GTE_V2: bool</p>
 
-<pre class="code ruby"><code class="ruby">  # CONFIG is a read-only mapping of string keys to mapping definitions
-  CONFIG: Hash[String, untyped]
-
-  # The request_phase either returns a Rack-compatible response or the form response.
+<pre class="code ruby"><code class="ruby">  # The request_phase either returns a Rack-compatible response or the form response.
   def request_phase: () -&gt; (Rack::Response | Array[untyped] | String)
 
   # The callback_phase may call super (untyped) or return a failure symbol
@@ -86,12 +83,18 @@
 
   # Perform a directory lookup for a given username; returns an Entry or nil
   def directory_lookup: (OmniAuth::LDAP::Adaptor, String) -&gt; untyped
+
+  def uid: () { () -&gt; String } -&gt; void
+
+  def info: () { () -&gt; Hash[untyped, untyped] } -&gt; void
+
+  def extra: () { () -&gt; Hash[Symbol, untyped] } -&gt; void
 end   end end
 </code></pre>
 </div></div>
 
       <div id="footer">
-  Generated on Wed Nov  5 20:02:30 2025 by
+  Generated on Thu Nov  6 02:24:32 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.7).
 </div>

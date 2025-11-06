@@ -123,25 +123,6 @@
         </dt>
         <dd><pre class="code"><span class='const'>Class</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>StandardError</span><span class='rparen'>)</span></pre></dd>
       
-        <dt id="CONFIG-constant" class="">CONFIG =
-          
-        </dt>
-        <dd><pre class="code"><span class='lbrace'>{</span>
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>name</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>cn</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>first_name</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>givenName</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>last_name</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>sn</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>email</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>mail</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>email</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>userPrincipalName</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>phone</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>telephoneNumber</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>homePhone</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>facsimileTelephoneNumber</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>mobile</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>mobile</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>mobileTelephoneNumber</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>nickname</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>uid</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>userid</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>sAMAccountName</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>title</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>title</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>location</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>%0, %1, %2, %3 %4</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbracket'>[</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>address</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>postalAddress</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>homePostalAddress</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>street</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>streetAddress</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>l</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>st</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>co</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>postOfficeBox</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>uid</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>dn</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>url</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>wwwhomepage</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>image</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>jpegPhoto</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>description</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>description</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
-<span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
-      
     </dl>
   
 
@@ -285,14 +266,6 @@
       <pre class="lines">
 
 
-134
-135
-136
-137
-138
-139
-140
-141
 142
 143
 144
@@ -318,10 +291,18 @@
 164
 165
 166
-167</pre>
+167
+168
+169
+170
+171
+172
+173
+174
+175</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/omniauth/strategies/ldap.rb', line 134</span>
+      <pre class="code"><span class="info file"># File 'lib/omniauth/strategies/ldap.rb', line 142</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_map_user'>map_user</span><span class='lparen'>(</span><span class='id identifier rubyid_mapper'>mapper</span><span class='comma'>,</span> <span class='id identifier rubyid_object'>object</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_user'>user</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
@@ -383,9 +364,6 @@
       <pre class="lines">
 
 
-78
-79
-80
 81
 82
 83
@@ -416,10 +394,18 @@
 108
 109
 110
-111</pre>
+111
+112
+113
+114
+115
+116
+117
+118
+119</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/omniauth/strategies/ldap.rb', line 78</span>
+      <pre class="code"><span class="info file"># File 'lib/omniauth/strategies/ldap.rb', line 81</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_callback_phase'>callback_phase</span>
   <span class='ivar'>@adaptor</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../../OmniAuth.html" title="OmniAuth (module)">OmniAuth</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../LDAP.html" title="OmniAuth::LDAP (module)">LDAP</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../LDAP/Adaptor.html" title="OmniAuth::LDAP::Adaptor (class)">Adaptor</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../LDAP/Adaptor.html#initialize-instance_method" title="OmniAuth::LDAP::Adaptor#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='ivar'>@options</span><span class='rparen'>)</span>
@@ -434,7 +420,7 @@
         <span class='kw'>return</span> <span class='id identifier rubyid_fail!'>fail!</span><span class='lparen'>(</span><span class='symbol'>:invalid_credentials</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="#InvalidCredentialsError-constant" title="OmniAuth::Strategies::LDAP::InvalidCredentialsError (constant)">InvalidCredentialsError</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>User not found for header </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_hu'>hu</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='rparen'>)</span>
       <span class='kw'>end</span>
       <span class='ivar'>@ldap_user_info</span> <span class='op'>=</span> <span class='id identifier rubyid_entry'>entry</span>
-      <span class='ivar'>@user_info</span> <span class='op'>=</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_map_user'>map_user</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="#CONFIG-constant" title="OmniAuth::Strategies::LDAP::CONFIG (constant)">CONFIG</a></span></span><span class='comma'>,</span> <span class='ivar'>@ldap_user_info</span><span class='rparen'>)</span>
+      <span class='ivar'>@user_info</span> <span class='op'>=</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_map_user'>map_user</span><span class='lparen'>(</span><span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:mapping</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='ivar'>@ldap_user_info</span><span class='rparen'>)</span>
       <span class='kw'>return</span> <span class='kw'>super</span>
     <span class='kw'>rescue</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_e'>e</span>
       <span class='kw'>return</span> <span class='id identifier rubyid_fail!'>fail!</span><span class='lparen'>(</span><span class='symbol'>:ldap_error</span><span class='comma'>,</span> <span class='id identifier rubyid_e'>e</span><span class='rparen'>)</span>
@@ -443,13 +429,18 @@
 
   <span class='kw'>return</span> <span class='id identifier rubyid_fail!'>fail!</span><span class='lparen'>(</span><span class='symbol'>:missing_credentials</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_missing_credentials?'>missing_credentials?</span>
   <span class='kw'>begin</span>
-    <span class='ivar'>@ldap_user_info</span> <span class='op'>=</span> <span class='ivar'>@adaptor</span><span class='period'>.</span><span class='id identifier rubyid_bind_as'>bind_as</span><span class='lparen'>(</span><span class='label'>filter:</span> <span class='id identifier rubyid_filter'>filter</span><span class='lparen'>(</span><span class='ivar'>@adaptor</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='label'>size:</span> <span class='int'>1</span><span class='comma'>,</span> <span class='label'>password:</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>password</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='rparen'>)</span>
+    <span class='ivar'>@ldap_user_info</span> <span class='op'>=</span> <span class='ivar'>@adaptor</span><span class='period'>.</span><span class='id identifier rubyid_bind_as'>bind_as</span><span class='lparen'>(</span><span class='label'>filter:</span> <span class='id identifier rubyid_filter'>filter</span><span class='lparen'>(</span><span class='ivar'>@adaptor</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='label'>size:</span> <span class='int'>1</span><span class='comma'>,</span> <span class='label'>password:</span> <span class='id identifier rubyid_request_data'>request_data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>password</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='rparen'>)</span>
 
     <span class='kw'>unless</span> <span class='ivar'>@ldap_user_info</span>
-      <span class='kw'>return</span> <span class='id identifier rubyid_fail!'>fail!</span><span class='lparen'>(</span><span class='symbol'>:invalid_credentials</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="#InvalidCredentialsError-constant" title="OmniAuth::Strategies::LDAP::InvalidCredentialsError (constant)">InvalidCredentialsError</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Invalid credentials for </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>username</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='rparen'>)</span>
+      <span class='comment'># Attach password policy info to env if available (best-effort)
+</span>      <span class='id identifier rubyid_attach_password_policy_env'>attach_password_policy_env</span><span class='lparen'>(</span><span class='ivar'>@adaptor</span><span class='rparen'>)</span>
+      <span class='kw'>return</span> <span class='id identifier rubyid_fail!'>fail!</span><span class='lparen'>(</span><span class='symbol'>:invalid_credentials</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="#InvalidCredentialsError-constant" title="OmniAuth::Strategies::LDAP::InvalidCredentialsError (constant)">InvalidCredentialsError</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Invalid credentials for </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_request_data'>request_data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>username</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='rparen'>)</span>
     <span class='kw'>end</span>
 
-    <span class='ivar'>@user_info</span> <span class='op'>=</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_map_user'>map_user</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="#CONFIG-constant" title="OmniAuth::Strategies::LDAP::CONFIG (constant)">CONFIG</a></span></span><span class='comma'>,</span> <span class='ivar'>@ldap_user_info</span><span class='rparen'>)</span>
+    <span class='comment'># Optionally attach policy info even on success (e.g., timeBeforeExpiration)
+</span>    <span class='id identifier rubyid_attach_password_policy_env'>attach_password_policy_env</span><span class='lparen'>(</span><span class='ivar'>@adaptor</span><span class='rparen'>)</span>
+
+    <span class='ivar'>@user_info</span> <span class='op'>=</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_map_user'>map_user</span><span class='lparen'>(</span><span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:mapping</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='ivar'>@ldap_user_info</span><span class='rparen'>)</span>
     <span class='kw'>super</span>
   <span class='kw'>rescue</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_e'>e</span>
     <span class='id identifier rubyid_fail!'>fail!</span><span class='lparen'>(</span><span class='symbol'>:ldap_error</span><span class='comma'>,</span> <span class='id identifier rubyid_e'>e</span><span class='rparen'>)</span>
@@ -475,26 +466,26 @@
       <pre class="lines">
 
 
-113
-114
-115
-116
-117
-118
-119
-120
-121</pre>
+121
+122
+123
+124
+125
+126
+127
+128
+129</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/omniauth/strategies/ldap.rb', line 113</span>
+      <pre class="code"><span class="info file"># File 'lib/omniauth/strategies/ldap.rb', line 121</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_filter'>filter</span><span class='lparen'>(</span><span class='id identifier rubyid_adaptor'>adaptor</span><span class='comma'>,</span> <span class='id identifier rubyid_username_override'>username_override</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_flt'>flt</span> <span class='op'>=</span> <span class='id identifier rubyid_adaptor'>adaptor</span><span class='period'>.</span><span class='id identifier rubyid_filter'>filter</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_flt'>flt</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='id identifier rubyid_flt'>flt</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
-    <span class='id identifier rubyid_username'>username</span> <span class='op'>=</span> <span class='const'>Net</span><span class='op'>::</span><span class='const'>LDAP</span><span class='op'>::</span><span class='const'>Filter</span><span class='period'>.</span><span class='id identifier rubyid_escape'>escape</span><span class='lparen'>(</span><span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:name_proc</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_username_override'>username_override</span> <span class='op'>||</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>username</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_username'>username</span> <span class='op'>=</span> <span class='const'>Net</span><span class='op'>::</span><span class='const'>LDAP</span><span class='op'>::</span><span class='const'>Filter</span><span class='period'>.</span><span class='id identifier rubyid_escape'>escape</span><span class='lparen'>(</span><span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:name_proc</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_username_override'>username_override</span> <span class='op'>||</span> <span class='id identifier rubyid_request_data'>request_data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>username</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='rparen'>)</span>
     <span class='const'>Net</span><span class='op'>::</span><span class='const'>LDAP</span><span class='op'>::</span><span class='const'>Filter</span><span class='period'>.</span><span class='id identifier rubyid_construct'>construct</span><span class='lparen'>(</span><span class='id identifier rubyid_flt'>flt</span> <span class='op'>%</span> <span class='lbrace'>{</span><span class='label'>username:</span> <span class='id identifier rubyid_username'>username</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='kw'>else</span>
-    <span class='const'>Net</span><span class='op'>::</span><span class='const'>LDAP</span><span class='op'>::</span><span class='const'>Filter</span><span class='period'>.</span><span class='id identifier rubyid_equals'>equals</span><span class='lparen'>(</span><span class='id identifier rubyid_adaptor'>adaptor</span><span class='period'>.</span><span class='id identifier rubyid_uid'>uid</span><span class='comma'>,</span> <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:name_proc</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_username_override'>username_override</span> <span class='op'>||</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>username</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='rparen'>)</span>
+    <span class='const'>Net</span><span class='op'>::</span><span class='const'>LDAP</span><span class='op'>::</span><span class='const'>Filter</span><span class='period'>.</span><span class='id identifier rubyid_equals'>equals</span><span class='lparen'>(</span><span class='id identifier rubyid_adaptor'>adaptor</span><span class='period'>.</span><span class='id identifier rubyid_uid'>uid</span><span class='comma'>,</span> <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:name_proc</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_username_override'>username_override</span> <span class='op'>||</span> <span class='id identifier rubyid_request_data'>request_data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>username</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -517,9 +508,6 @@
       <pre class="lines">
 
 
-50
-51
-52
 53
 54
 55
@@ -543,10 +531,13 @@
 73
 74
 75
-76</pre>
+76
+77
+78
+79</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/omniauth/strategies/ldap.rb', line 50</span>
+      <pre class="code"><span class="info file"># File 'lib/omniauth/strategies/ldap.rb', line 53</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_request_phase'>request_phase</span>
   <span class='comment'># OmniAuth &gt;= 2.0 expects the request phase to be POST-only for /auth/:provider.
@@ -564,7 +555,7 @@
   <span class='comment'># If credentials were POSTed directly to /auth/:provider, redirect to the callback path.
 </span>  <span class='comment'># This mirrors the behavior of many OmniAuth providers and allows test helpers (like
 </span>  <span class='comment'># OmniAuth::Test::PhonySession) to populate `env[&#39;omniauth.auth&#39;]` on the callback request.
-</span>  <span class='kw'>if</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_post?'>post?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>username</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='op'>!=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>password</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='op'>!=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span>
+</span>  <span class='kw'>if</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_post?'>post?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_request_data'>request_data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>username</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='op'>!=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_request_data'>request_data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>password</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='op'>!=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span>
     <span class='kw'>return</span> <span class='const'>Rack</span><span class='op'>::</span><span class='const'>Response</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='int'>302</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Location</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_callback_url'>callback_url</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_finish'>finish</span>
   <span class='kw'>end</span>
 
@@ -585,7 +576,7 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Nov  5 20:02:30 2025 by
+  Generated on Thu Nov  6 02:24:32 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.7).
 </div>

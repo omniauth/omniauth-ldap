@@ -186,7 +186,7 @@ module OmniAuth
       end
 
       def request_data
-        @env['action_dispatch.request.request_parameters'] || request.params
+        @env["action_dispatch.request.request_parameters"] || request.params
       end
 
       # Extract a normalized username from a trusted header when enabled.

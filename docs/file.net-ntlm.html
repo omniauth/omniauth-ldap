@@ -63,6 +63,8 @@
     class Message<br>
       def self.parse: (untyped) -&gt; Net::NTLM::Message<br>
       def response: (?Hash[Symbol, untyped], ?Hash[Symbol, untyped]) -&gt; Net::NTLM::Message<br>
+      # writer used by adaptor to set target name when a domain is present<br>
+      def target_name=: (String) -&gt; String<br>
     end</p>
 
 <pre class="code ruby"><code class="ruby">class Message::Type1
@@ -74,7 +76,7 @@ def self.encode_utf16le: (String) -&gt; String   end end
 </div></div>
 
       <div id="footer">
-  Generated on Wed Nov  5 20:02:30 2025 by
+  Generated on Thu Nov  6 02:24:32 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.7).
 </div>

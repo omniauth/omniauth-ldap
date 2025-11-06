@@ -779,7 +779,7 @@ Please consider sponsoring me or the project.
 
 To join the community or get help 👇️ Join the Discord.
 
-[![Live Chat on Discord][✉️discord-invite-img-ftb]][✉️discord]
+[![Live Chat on Discord][✉️discord-invite-img-ftb]][✉️discord-invite]
 
 To say "thanks!" ☝️ Join the Discord or 👇️ send money.
 

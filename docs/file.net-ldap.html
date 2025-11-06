@@ -64,6 +64,7 @@
     def open: () { (self) -&gt; untyped } -&gt; untyped<br>
     def search: (?Hash[Symbol, untyped]) -&gt; Array[Net::LDAP::Entry]<br>
     def bind: (?Hash[Symbol, untyped]) -&gt; bool<br>
+    def get_operation_result: () -&gt; Net::LDAP::PDU<br>
   end</p>
 
 <p>class LDAP::Entry<br>
@@ -73,12 +74,28 @@
 <p>class LDAP::Filter<br>
     def self.construct: (String) -&gt; Net::LDAP::Filter<br>
     def self.eq: (String, String) -&gt; Net::LDAP::Filter<br>
+  end</p>
+
+<p>class LDAP::Control<br>
+    def initialize: (String, bool, untyped) -&gt; void<br>
+    def oid: () -&gt; String<br>
+  end</p>
+
+<p>module LDAP::Controls<br>
+    class PasswordPolicy<br>
+      def initialize: () -&gt; void<br>
+      def oid: () -&gt; String<br>
+    end<br>
+  end</p>
+
+<p>class LDAP::PDU<br>
+    def controls: () -&gt; Array[untyped]<br>
   end<br>
 end</p>
 </div></div>
 
       <div id="footer">
-  Generated on Wed Nov  5 20:02:30 2025 by
+  Generated on Thu Nov  6 02:24:32 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.7).
 </div>

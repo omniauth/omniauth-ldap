@@ -81,9 +81,33 @@ Please file a bug if you notice a violation of semantic versioning.</p>
       <li>under a subdirectory</li>
     </ul>
   </li>
+  <li>Password Policy for LDAP Directories
+    <ul>
+      <li>
+        <table>
+          <tbody>
+            <tr>
+              <td>password_policy: true</td>
+              <td>false (default: false)</td>
+            </tr>
+          </tbody>
+        </table>
+      </li>
+      <li>on authentication failure, if the server returns password policy controls, the info will be included in the failure message</li>
+      <li>https://datatracker.ietf.org/doc/html/draft-behera-ldap-password-policy-11</li>
+    </ul>
+  </li>
 </ul>
 
 <h3 id="changed">Changed</h3>
+
+<ul>
+  <li>Make support for OmniAuth v1.2+ explicit
+    <ul>
+      <li>Versions &lt; 1.2 do not support SCRIPT_NAME properly, and may cause other issues</li>
+    </ul>
+  </li>
+</ul>
 
 <h3 id="deprecated">Deprecated</h3>
 
@@ -293,7 +317,7 @@ Please file a bug if you notice a violation of semantic versioning.</p>
 </div></div>
 
       <div id="footer">
-  Generated on Wed Nov  5 20:02:30 2025 by
+  Generated on Thu Nov  6 02:24:32 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.7).
 </div>
