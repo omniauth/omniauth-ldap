@@ -333,10 +333,53 @@ Then link users to `/auth/ldap` in your app (for example, in a Devise sign-in pa
 
 This gem is compatible with JSON-encoded POST bodies as well as traditional form-encoded.
 
-Set header `Content-Type` to `application/json`
+- Set header `Content-Type` to `application/json`.
+- Send a JSON object containing `username` and `password`.
+- Rails automatically exposes parsed JSON params via `env["action_dispatch.request.request_parameters"]`, which this strategy reads first. In non-Rails Rack apps, ensure you use a JSON parser middleware if you post raw JSON.
 
-Send your credentials similar to below to use this gem:
-`{"username":"USERNAME","password":"PASSWORD"}`
+Examples
+
+- curl (JSON):
+
+  ```bash
+  curl -i \
+    -X POST \
+    -H 'Content-Type: application/json' \
+    -d '{"username":"alice","password":"secret"}' \
+    http://localhost:3000/auth/ldap
+  ```
+
+  The request phase will redirect to `/auth/ldap/callback` when both fields are present.
+
+- curl (form-encoded, still supported):
+
+  ```bash
+  curl -i \
+    -X POST \
+    -H 'Content-Type: application/x-www-form-urlencoded' \
+    --data-urlencode 'username=alice' \
+    --data-urlencode 'password=secret' \
+    http://localhost:3000/auth/ldap
+  ```
+
+- Browser (JavaScript fetch):
+
+  ```js
+  fetch('/auth/ldap', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username: 'alice', password: 'secret' })
+  }).then(res => {
+    if (res.redirected) {
+      window.location = res.url; // typically /auth/ldap/callback
+    }
+  });
+  ```
+
+Notes
+
+- You can still initiate authentication by visiting `GET /auth/ldap` to render the HTML form and then submitting it (form-encoded). JSON is an additional option, not a replacement.
+- In the callback phase (`POST /auth/ldap/callback`), the strategy reads JSON credentials the same way; Rails exposes them via `action_dispatch.request.request_parameters` and non-Rails apps should use a JSON parser middleware.
 
 ### Using a custom filter
 
@@ -736,7 +779,7 @@ Please consider sponsoring me or the project.
 
 To join the community or get help 👇️ Join the Discord.
 
-[![Live Chat on Discord][✉️discord-invite-img-ftb]][✉️discord-invite]
+[![Live Chat on Discord][✉️discord-invite-img-ftb]][✉️discord]
 
 To say "thanks!" ☝️ Join the Discord or 👇️ send money.
 
