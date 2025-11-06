@@ -61,6 +61,55 @@ RSpec.describe "OmniAuth LDAP middleware (Rack stack)", type: :integration do
     end
   end
 
+  it "POST /auth/ldap accepts JSON-style credentials via Rails env and sets omniauth.auth" do
+    begin
+      OmniAuth.config.test_mode = true
+      OmniAuth.config.mock_auth[:ldap] = OmniAuth::AuthHash.new(provider: "ldap", uid: "json-bob", info: {"name" => "Bob"})
+
+      env = {
+        "CONTENT_TYPE" => "application/json",
+        "action_dispatch.request.request_parameters" => {"username" => "bob", "password" => "secret"},
+      }
+      post "/auth/ldap", nil, env
+
+      # Follow redirects to callback
+      max_redirects = 5
+      redirects = 0
+      while last_response.status == 302 && redirects < max_redirects
+        follow_redirect!
+        redirects += 1
+      end
+
+      expect(last_response.status).to eq 200
+      expect(last_response.body).to include("true")
+    ensure
+      OmniAuth.config.mock_auth.delete(:ldap)
+      OmniAuth.config.test_mode = false
+    end
+  end
+
+  it "POST /auth/ldap/callback with JSON missing username and password redirects with missing_credentials" do
+    env = {
+      "CONTENT_TYPE" => "application/json",
+      "action_dispatch.request.request_parameters" => {},
+    }
+    post "/auth/ldap/callback", nil, env
+
+    expect(last_response.status).to eq 302
+    expect(last_response.headers["Location"]).to match(/missing_credentials/)
+  end
+
+  it "POST /auth/ldap/callback with JSON username but missing password redirects with missing_credentials" do
+    env = {
+      "CONTENT_TYPE" => "application/json",
+      "action_dispatch.request.request_parameters" => {"username" => "bob"},
+    }
+    post "/auth/ldap/callback", nil, env
+
+    expect(last_response.status).to eq 302
+    expect(last_response.headers["Location"]).to match(/missing_credentials/)
+  end
+
   it "honors SCRIPT_NAME when mounted under a subdirectory for redirect to callback" do
     begin
       OmniAuth.config.test_mode = true
