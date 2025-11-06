@@ -2,10 +2,10 @@
   "lib/omniauth-ldap/adaptor.rb:3925200886": [
     [68, 7, 413, "Style/ClassMethodsDefinitions: Use `class << self` to define a class method.", 105664470]
   ],
-  "spec/integration/middleware_spec.rb:4142891586": [
+  "spec/integration/middleware_spec.rb:2185613788": [
     [3, 16, 39, "RSpec/DescribeClass: The first argument to describe should be the class or module being tested.", 638096201],
     [30, 14, 10, "RSpec/ExpectActual: Provide the actual value you are testing to `expect(...)`.", 837117997],
-    [81, 5, 317, "RSpec/LeakyConstantDeclaration: Stub class constant instead of declaring explicitly.", 424933157]
+    [130, 5, 317, "RSpec/LeakyConstantDeclaration: Stub class constant instead of declaring explicitly.", 424933157]
   ],
   "spec/integration/roda_integration_spec.rb:1921252381": [
     [3, 16, 50, "RSpec/DescribeClass: The first argument to describe should be the class or module being tested.", 3681952328],
@@ -23,14 +23,14 @@
     [47, 7, 38, "RSpec/AnyInstance: Avoid stubbing using `allow_any_instance_of`.", 3627954156],
     [84, 7, 48, "RSpec/AnyInstance: Avoid stubbing using `allow_any_instance_of`.", 2759780562]
   ],
-  "spec/omniauth/strategies/ldap_spec.rb:4166458344": [
-    [126, 13, 9, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 1130140517],
-    [181, 17, 28, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 3444838747],
-    [190, 17, 23, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 1584148894],
-    [201, 17, 32, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 1515076977],
-    [243, 19, 19, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 2526348694],
-    [269, 17, 56, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 2413495789],
-    [284, 13, 9, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 3182939526],
-    [338, 15, 19, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 2526348694]
+  "spec/omniauth/strategies/ldap_spec.rb:2130811218": [
+    [138, 13, 9, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 1130140517],
+    [193, 17, 28, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 3444838747],
+    [202, 17, 23, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 1584148894],
+    [213, 17, 32, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 1515076977],
+    [255, 19, 19, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 2526348694],
+    [281, 17, 56, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 2413495789],
+    [296, 13, 9, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 3182939526],
+    [350, 15, 19, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 2526348694]
   ]
 }

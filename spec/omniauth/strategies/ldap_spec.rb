@@ -87,6 +87,18 @@ RSpec.describe "OmniAuth::Strategies::LDAP" do
       expect(last_response.headers["Location"]).to eq "http://example.org/auth/ldap/callback"
     end
 
+    it "redirects to callback when JSON POST includes username and password (Rails env)" do
+      env = {
+        "REQUEST_METHOD" => "POST",
+        "CONTENT_TYPE" => "application/json",
+        # Rails places parsed JSON params here
+        "action_dispatch.request.request_parameters" => {"username" => "json_alice", "password" => "json_secret"},
+      }
+      post "/auth/ldap", nil, env
+      expect(last_response).to be_redirect
+      expect(last_response.headers["Location"]).to eq "http://example.org/auth/ldap/callback"
+    end
+
     context "when mounted under a subdirectory" do
       let(:sub_env) do
         make_env("/auth/ldap", {

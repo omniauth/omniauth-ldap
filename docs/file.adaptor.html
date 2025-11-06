@@ -74,7 +74,7 @@
 
   VALID_ADAPTER_CONFIGURATION_KEYS: Array[Symbol]
   MUST_HAVE_KEYS: Array[untyped]
-  METHOD: Hash[Symbol, Symbol?]
+  ENCRYPTION_METHOD: Hash[Symbol, Symbol?]
 
   attr_accessor bind_dn: String?
   attr_accessor password: String?
@@ -87,6 +87,10 @@
   attr_reader auth: Hash[Symbol, untyped]
   # filter is an LDAP filter string when configured
   attr_reader filter: String?
+  # optional: request password policy control and capture response
+  attr_reader password_policy: bool?
+  attr_reader last_operation_result: untyped
+  attr_reader last_password_policy_response: untyped
 
   # Validate that required keys exist in the configuration
   def self.validate: (?Hash[Symbol, untyped]) -&gt; void
@@ -97,23 +101,37 @@
 
   private
 
-  # Returns a Net::LDAP encryption symbol (e.g. :simple_tls, :start_tls) or nil
-  def ensure_method: (untyped) -&gt; Symbol?
+  # Returns encryption settings hash or nil
+  def encryption_options: () -&gt; Hash[Symbol, untyped]?
+  # Translate configured method/encryption into Net::LDAP symbol
+  def translate_method: () -&gt; Symbol?
+  # Returns a Net::LDAP encryption default options hash
+  def default_options: () -&gt; Hash[Symbol, untyped]
+  # Sanitize provided TLS options
+  def sanitize_hash_values: (Hash[untyped, untyped]) -&gt; Hash[untyped, untyped]
+  # Symbolize option keys
+  def symbolize_hash_keys: (Hash[untyped, untyped]) -&gt; Hash[Symbol, untyped]
+  # Capture password policy control from last operation
+  def capture_password_policy: (Net::LDAP) -&gt; void
 
   # Returns an array of SASL auth hashes
   def sasl_auths: (?Hash[Symbol, untyped]) -&gt; Array[Hash[Symbol, untyped]]
 
-  # Returns initial credential (string) and a proc that accepts a challenge and returns the response
-  # Use Array[untyped] here to avoid tuple syntax issues in some linters; the runtime value
-  # is commonly a two-element array [initial_credential, proc].
+  # Returns initial credential and a proc that accepts a challenge and returns the response
   def sasl_bind_setup_digest_md5: (?Hash[Symbol, untyped]) -&gt; Array[untyped]
   def sasl_bind_setup_gss_spnego: (?Hash[Symbol, untyped]) -&gt; Array[untyped]
+
+  @try_sasl: bool?
+  @allow_anonymous: bool?
+  @tls_options: Hash[untyped, untyped]?
+  @sasl_mechanisms: Array[String]?
+  @disable_verify_certificates: bool?
 end   end end
 </code></pre>
 </div></div>
 
       <div id="footer">
-  Generated on Wed Nov  5 20:02:30 2025 by
+  Generated on Thu Nov  6 02:24:32 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.7).
 </div>
