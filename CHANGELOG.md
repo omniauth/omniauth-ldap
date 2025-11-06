@@ -28,6 +28,9 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Changed
 
+- Make support for OmniAuth v1.2+ explicit
+  - Versions < 1.2 do not support SCRIPT_NAME properly, and may cause other issues
+
 ### Deprecated
 
 ### Removed

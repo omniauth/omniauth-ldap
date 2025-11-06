@@ -36,20 +36,6 @@ jobs:
         include:
           # Ruby 2.3
           - ruby: "ruby-2.3"
-            appraisal: "ruby-2-3-omni-v1.0"
-            exec_cmd: "rake test"
-            gemfile: "Appraisal.root"
-            rubygems: "3.3.27"
-            bundler: "2.3.27"
-
-          - ruby: "ruby-2.3"
-            appraisal: "ruby-2-3-omni-v1.1"
-            exec_cmd: "rake test"
-            gemfile: "Appraisal.root"
-            rubygems: "3.3.27"
-            bundler: "2.3.27"
-
-          - ruby: "ruby-2.3"
             appraisal: "ruby-2-3-omni-v1.2"
             exec_cmd: "rake test"
             gemfile: "Appraisal.root"
@@ -86,6 +72,13 @@ jobs:
 
           - ruby: "ruby-2.3"
             appraisal: "ruby-2-3-omni-v1.7"
+            exec_cmd: "rake test"
+            gemfile: "Appraisal.root"
+            rubygems: "3.3.27"
+            bundler: "2.3.27"
+
+          - ruby: "ruby-2.3"
+            appraisal: "ruby-2-3-omni-v1.8"
             exec_cmd: "rake test"
             gemfile: "Appraisal.root"
             rubygems: "3.3.27"

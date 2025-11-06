@@ -98,7 +98,7 @@ Gem::Specification.new do |spec|
   spec.executables = []
 
   spec.add_dependency("net-ldap", "~> 0.16", "< 1")             # ruby >= 2.0
-  spec.add_dependency("omniauth", ">= 1", "< 3")                # ruby >= 0.0
+  spec.add_dependency("omniauth", ">= 1.2", "< 3")              # ruby >= 0.0
   spec.add_dependency("pyu-ruby-sasl", ">= 0.0.3.3", "< 0.1")   # ruby >= 0.0
   spec.add_dependency("rack", ">= 1", "< 4")                    # ruby >= 0.0
   spec.add_dependency("rubyntlm", "~> 0.6.2", "< 1")            # ruby >= 1.8.7
