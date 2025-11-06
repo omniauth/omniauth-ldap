@@ -205,7 +205,7 @@ module OmniAuth
         search_filter = filter(adaptor, username)
         adaptor.connection.open do |conn|
           rs = conn.search(filter: search_filter, size: 1)
-          entry = rs&.first
+          entry = rs && rs.first
         end
         entry
       end

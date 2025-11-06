@@ -71,9 +71,9 @@ use OmniAuth::Strategies::LDAP,
     ciphers: ["AES-128-CBC", "AES-128-CBC-HMAC-SHA1", "AES-128-CBC-HMAC-SHA256"],
   },
   mapping: {
-    'name' => 'cn;lang-en',
-    'email' => ['preferredEmail', 'mail'],
-    'nickname' => ['uid', 'userid', 'sAMAccountName']
+    "name" => "cn;lang-en",
+    "email" => ["preferredEmail", "mail"],
+    "nickname" => ["uid", "userid", "sAMAccountName"],
   }
 # Or, alternatively:
 # use OmniAuth::Strategies::LDAP, filter: '(&(uid=%{username})(memberOf=cn=myapp-users,ou=groups,dc=example,dc=com))'

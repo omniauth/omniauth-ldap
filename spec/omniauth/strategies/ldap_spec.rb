@@ -433,19 +433,19 @@ description: omniauth-ldap
         expect(info.description).to eq "omniauth-ldap"
       end
 
-      context 'and mapping is set' do
+      context "when mapping is set" do
         let(:app) do
           Rack::Builder.new {
             use OmniAuth::Test::PhonySession
-            use MyLdapProvider, :name => 'ldap', :host => '192.168.1.145', :base => 'dc=score, dc=local', :mapping => { 'phone' => 'mobile' }
-            run lambda { |env| [404, {'Content-Type' => 'text/plain'}, [env.key?('omniauth.auth').to_s]] }
+            use MyLdapProvider, name: "ldap", host: "192.168.1.145", base: "dc=score, dc=local", mapping: {"phone" => "mobile"}
+            run lambda { |env| [404, {"Content-Type" => "text/plain"}, [env.key?("omniauth.auth").to_s]] }
           }.to_app
         end
 
-        it 'should map user info according to customized mapping' do
-          post('/auth/ldap/callback', {:username => 'ping', :password => 'password'})
-          expect(auth_hash.info.phone).to eq '444-444-4444'
-          expect(auth_hash.info.mobile).to eq '444-444-4444'
+        it "maps user info according to customized mapping" do
+          post("/auth/ldap/callback", {username: "ping", password: "password"})
+          expect(auth_hash.info.phone).to eq "444-444-4444"
+          expect(auth_hash.info.mobile).to eq "444-444-4444"
         end
       end
     end
@@ -646,7 +646,7 @@ uid: alice
             header_auth: true,
             header_name: "REMOTE_USER",
             name_proc: proc { |n| n },
-            mapping: { "phone" => "mobile" }
+            mapping: {"phone" => "mobile"}
           run lambda { |env| [404, {"Content-Type" => "text/plain"}, [env.key?("omniauth.auth").to_s]] }
         end.to_app
       end
