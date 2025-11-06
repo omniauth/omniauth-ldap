@@ -22,7 +22,14 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Added
 
+- Support for SCRIPT_NAME for proper URL generation
+  - behind certain proxies/load balancers, or
+  - under a subdirectory
+
 ### Changed
+
+- Make support for OmniAuth v1.2+ explicit
+  - Versions < 1.2 do not support SCRIPT_NAME properly, and may cause other issues
 
 ### Deprecated
 

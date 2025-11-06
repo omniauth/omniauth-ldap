@@ -57,18 +57,18 @@ module OmniAuth
         # Fast-path: if a trusted identity header is present, skip the login form
         # and jump to the callback where we will complete using directory lookup.
         if header_username
-          return Rack::Response.new([], 302, "Location" => callback_path).finish
+          return Rack::Response.new([], 302, "Location" => callback_url).finish
         end
 
         # If credentials were POSTed directly to /auth/:provider, redirect to the callback path.
         # This mirrors the behavior of many OmniAuth providers and allows test helpers (like
         # OmniAuth::Test::PhonySession) to populate `env['omniauth.auth']` on the callback request.
         if request.post? && request.params["username"].to_s != "" && request.params["password"].to_s != ""
-          return Rack::Response.new([], 302, "Location" => callback_path).finish
+          return Rack::Response.new([], 302, "Location" => callback_url).finish
         end
 
         OmniAuth::LDAP::Adaptor.validate(@options)
-        f = OmniAuth::Form.new(title: options[:title] || "LDAP Authentication", url: callback_path)
+        f = OmniAuth::Form.new(title: options[:title] || "LDAP Authentication", url: callback_url)
         f.text_field("Login", "username")
         f.password_field("Password", "password")
         f.button("Sign In")
@@ -111,9 +111,10 @@ module OmniAuth
       end
 
       def filter(adaptor, username_override = nil)
-        if adaptor.filter && !adaptor.filter.empty?
+        flt = adaptor.filter
+        if flt && !flt.to_s.empty?
           username = Net::LDAP::Filter.escape(@options[:name_proc].call(username_override || request.params["username"]))
-          Net::LDAP::Filter.construct(adaptor.filter % {username: username})
+          Net::LDAP::Filter.construct(flt % {username: username})
         else
           Net::LDAP::Filter.equals(adaptor.uid, @options[:name_proc].call(username_override || request.params["username"]))
         end
@@ -174,7 +175,7 @@ module OmniAuth
 
       def missing_credentials?
         request.params["username"].nil? || request.params["username"].empty? || request.params["password"].nil? || request.params["password"].empty?
-      end # missing_credentials?
+      end
 
       # Extract a normalized username from a trusted header when enabled.
       # Returns nil when not configured or not present.
@@ -193,9 +194,9 @@ module OmniAuth
       # (bind_dn/password or anonymous). Does not attempt to bind as the user.
       def directory_lookup(adaptor, username)
         entry = nil
-        filter = filter(adaptor, username)
+        search_filter = filter(adaptor, username)
         adaptor.connection.open do |conn|
-          rs = conn.search(filter: filter, size: 1)
+          rs = conn.search(filter: search_filter, size: 1)
           entry = rs.first if rs && rs.first
         end
         entry

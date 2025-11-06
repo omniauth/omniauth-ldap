@@ -61,6 +61,22 @@ RSpec.describe "OmniAuth LDAP middleware (Rack stack)", type: :integration do
     end
   end
 
+  it "honors SCRIPT_NAME when mounted under a subdirectory for redirect to callback" do
+    begin
+      OmniAuth.config.test_mode = true
+      OmniAuth.config.mock_auth[:ldap] = OmniAuth::AuthHash.new(provider: "ldap", uid: "bob", info: {"name" => "Bob"})
+
+      # Simulate subdirectory mount by setting SCRIPT_NAME and posting credentials to request phase
+      env = {"SCRIPT_NAME" => "/subdir"}
+      post "/auth/ldap", {"username" => "bob", "password" => "secret"}, env
+      expect(last_response.status).to eq 302
+      expect(last_response.headers["Location"]).to eq "http://example.org/subdir/auth/ldap/callback"
+    ensure
+      OmniAuth.config.mock_auth.delete(:ldap)
+      OmniAuth.config.test_mode = false
+    end
+  end
+
   unless defined?(TestCallbackSetter)
     class TestCallbackSetter
       def initialize(app)
