@@ -97,6 +97,14 @@ Please file a bug if you notice a violation of semantic versioning.</p>
       <li>https://datatracker.ietf.org/doc/html/draft-behera-ldap-password-policy-11</li>
     </ul>
   </li>
+  <li>Support for JSON bodies</li>
+  <li>Support custom LDAP attributes mapping</li>
+  <li>Raise a distinct error when LDAP server is unreachable
+    <ul>
+      <li>Previously raised an invalid credentials authentication failure error, which is technically incorrect</li>
+    </ul>
+  </li>
+  <li>Documentation of TLS verification options</li>
 </ul>
 
 <h3 id="changed">Changed</h3>
@@ -317,7 +325,7 @@ Please file a bug if you notice a violation of semantic versioning.</p>
 </div></div>
 
       <div id="footer">
-  Generated on Thu Nov  6 02:24:32 2025 by
+  Generated on Thu Nov  6 04:21:53 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.7).
 </div>
