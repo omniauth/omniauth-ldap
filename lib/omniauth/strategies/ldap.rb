@@ -9,7 +9,7 @@ module OmniAuth
 
       InvalidCredentialsError = Class.new(StandardError)
 
-      CONFIG = {
+      option :mapping, {
         "name" => "cn",
         "first_name" => "givenName",
         "last_name" => "sn",
@@ -23,7 +23,7 @@ module OmniAuth
         "url" => ["wwwhomepage"],
         "image" => "jpegPhoto",
         "description" => "description",
-      }.freeze
+      }
       option :title, "LDAP Authentication" # default title for authentication form
       # For OmniAuth >= 2.0 the default allowed request method is POST only.
       # Ensure the strategy follows that default so GET /auth/:provider returns 404 as expected in tests.
@@ -91,7 +91,7 @@ module OmniAuth
               return fail!(:invalid_credentials, InvalidCredentialsError.new("User not found for header #{hu}"))
             end
             @ldap_user_info = entry
-            @user_info = self.class.map_user(CONFIG, @ldap_user_info)
+            @user_info = self.class.map_user(@options[:mapping], @ldap_user_info)
             return super
           rescue => e
             return fail!(:ldap_error, e)
@@ -111,7 +111,7 @@ module OmniAuth
           # Optionally attach policy info even on success (e.g., timeBeforeExpiration)
           attach_password_policy_env(@adaptor)
 
-          @user_info = self.class.map_user(CONFIG, @ldap_user_info)
+          @user_info = self.class.map_user(@options[:mapping], @ldap_user_info)
           super
         rescue => e
           fail!(:ldap_error, e)

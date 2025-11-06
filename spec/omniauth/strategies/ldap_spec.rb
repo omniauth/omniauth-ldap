@@ -347,7 +347,7 @@ description: omniauth-ldap
         it "escapes special characters in username when building filter" do
           allow(@adaptor).to receive(:filter).and_return("uid=%{username}")
           # '(' => \28 and ')' => \29 per RFC 4515 escaping
-          expect(Net::LDAP::Filter).to receive(:construct).with("uid=al\\28ice\\29")
+          expect(Net::LDAP::Filter).to receive(:construct).with('uid=al\28ice\29')
           post("/auth/ldap/callback", {username: "al(ice)", password: "secret"})
         end
 
@@ -431,6 +431,22 @@ description: omniauth-ldap
         expect(info.url).to eq "www.intridea.com"
         expect(info.image).to eq "http://www.intridea.com/ping.jpg"
         expect(info.description).to eq "omniauth-ldap"
+      end
+
+      context "when mapping is set" do
+        let(:app) do
+          Rack::Builder.new {
+            use OmniAuth::Test::PhonySession
+            use MyLdapProvider, name: "ldap", host: "192.168.1.145", base: "dc=score, dc=local", mapping: {"phone" => "mobile"}
+            run lambda { |env| [404, {"Content-Type" => "text/plain"}, [env.key?("omniauth.auth").to_s]] }
+          }.to_app
+        end
+
+        it "maps user info according to customized mapping" do
+          post("/auth/ldap/callback", {username: "ping", password: "password"})
+          expect(auth_hash.info.phone).to eq "444-444-4444"
+          expect(auth_hash.info.mobile).to eq "444-444-4444"
+        end
       end
     end
   end
@@ -588,7 +604,7 @@ uid: al(ice)
         connection: connection_returning(entry),
         filter: "uid=%{username}",
       )
-      expect(Net::LDAP::Filter).to receive(:construct).with("uid=al\\28ice\\29").and_call_original
+      expect(Net::LDAP::Filter).to receive(:construct).with('uid=al\28ice\29').and_call_original
 
       post "/auth/ldap/callback", nil, {"REMOTE_USER" => "al(ice)"}
       expect(last_response).not_to be_redirect
@@ -615,6 +631,42 @@ uid: alice
 
       post "/auth/ldap/callback", nil, {"REMOTE_USER" => "alice@example.com"}
       expect(last_response).not_to be_redirect
+    end
+
+    context "with custom mapping option" do
+      let(:app) do
+        Rack::Builder.new do
+          use OmniAuth::Test::PhonySession
+          use MyHeaderProvider,
+            name: "ldap",
+            title: "Header LDAP",
+            host: "ldap.example.com",
+            base: "dc=example,dc=com",
+            uid: "uid",
+            header_auth: true,
+            header_name: "REMOTE_USER",
+            name_proc: proc { |n| n },
+            mapping: {"phone" => "mobile"}
+          run lambda { |env| [404, {"Content-Type" => "text/plain"}, [env.key?("omniauth.auth").to_s]] }
+        end.to_app
+      end
+
+      it "applies the custom mapping in header SSO path" do
+        entry = Net::LDAP::Entry.from_single_ldif_string(%{dn: cn=bob, dc=example, dc=com
+uid: bob
+mobile: 444-444-4444
+telephonenumber: 555-555-5555
+})
+        allow(@adaptor).to receive(:connection).and_return(connection_returning(entry))
+
+        post "/auth/ldap/callback", nil, {"REMOTE_USER" => "bob"}
+        expect(last_response).not_to be_redirect
+        auth = last_request.env["omniauth.auth"]
+        # phone should come from mobile due to custom mapping override
+        expect(auth.info.phone).to eq "444-444-4444"
+        # mobile remains available as well
+        expect(auth.info.mobile).to eq "444-444-4444"
+      end
     end
   end
 end
