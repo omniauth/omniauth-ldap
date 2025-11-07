@@ -50,14 +50,14 @@ Please file a bug if you notice a violation of semantic versioning.
   - https://datatracker.ietf.org/doc/html/draft-behera-ldap-password-policy-11
 - Support for JSON bodies
 - Support custom LDAP attributes mapping
-- Raise a distinct error when LDAP server is unreachable
-  - Previously raised an invalid credentials authentication failure error, which is technically incorrect
 - Documentation of TLS verification options
 
 ### Changed
 
 - Make support for OmniAuth v1.2+ explicit
   - Versions < 1.2 do not support SCRIPT_NAME properly, and may cause other issues
+- Raise a distinct error when LDAP server is unreachable
+    - Previously raised an invalid credentials authentication failure error, which is technically incorrect
 
 ## [2.3.1] - 2025-11-05
 
