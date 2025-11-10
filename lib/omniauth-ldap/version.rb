@@ -8,7 +8,7 @@ module OmniAuth
     module Version
       # Public semantic version for the gem
       # @return [String]
-      VERSION = "2.3.2"
+      VERSION = "2.3.3"
     end
     # Convenience constant for consumers that expect OmniAuth::LDAP::VERSION
     # @return [String]

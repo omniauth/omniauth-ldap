@@ -22,12 +22,7 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Added
 
-- Documentation cleanup & updates
-- YARD documentation covering 94% of the code
-
 ### Changed
-
-- kettle-dev v1.1.54
 
 ### Deprecated
 
@@ -36,6 +31,22 @@ Please file a bug if you notice a violation of semantic versioning.
 ### Fixed
 
 ### Security
+
+## [2.3.3] - 2025-11-10
+
+- TAG: [v2.3.3][2.3.3t]
+- COVERAGE: 97.61% -- 286/293 lines in 4 files
+- BRANCH COVERAGE: 79.69% -- 102/128 branches in 4 files
+- 94.44% documented
+
+### Added
+
+- Documentation cleanup & updates
+- YARD documentation covering 94% of the code
+
+### Changed
+
+- kettle-dev v1.1.54
 
 ## [2.3.2] - 2025-11-06
 
@@ -229,7 +240,9 @@ Please file a bug if you notice a violation of semantic versioning.
 [1.0.0]: https://github.com/omniauth/omniauth-ldap/compare/5656da80d4193e0d0584f44bac493a87695e580f...v1.0.0
 [1.0.0t]: https://github.com/omniauth/omniauth-ldap/releases/tag/v1.0.0
 
-[Unreleased]: https://github.com/omniauth/omniauth-ldap/compare/v2.3.2...HEAD
+[Unreleased]: https://github.com/omniauth/omniauth-ldap/compare/v2.3.3...HEAD
+[2.3.3]: https://github.com/omniauth/omniauth-ldap/compare/v2.3.2...v2.3.3
+[2.3.3t]: https://github.com/omniauth/omniauth-ldap/releases/tag/v2.3.3
 [2.3.2]: https://github.com/omniauth/omniauth-ldap/compare/v2.3.1...v2.3.2
 [2.3.2t]: https://github.com/omniauth/omniauth-ldap/releases/tag/v2.3.2
 [2.3.1]: https://github.com/omniauth/omniauth-ldap/compare/v2.0.0...v2.3.1

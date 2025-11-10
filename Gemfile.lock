@@ -13,7 +13,7 @@ GIT
 PATH
   remote: .
   specs:
-    omniauth-ldap (2.3.2)
+    omniauth-ldap (2.3.3)
       net-ldap (~> 0.16, < 1)
       omniauth (>= 1.2, < 3)
       pyu-ruby-sasl (>= 0.0.3.3, < 0.1)
