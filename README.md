@@ -27,18 +27,18 @@
 [gem-server]: https://github.com/galtzo-floss/gem-server
 [reinteractive-podcast]: https://youtu.be/_H4qbtC5qzU?si=BvuBU90R2wAqD2E6
 
-[![Galtzo FLOSS Logo by Aboling0, CC BY-SA 4.0][🖼️galtzo-i]][🖼️galtzo-discord] [![ruby-lang Logo, Yukihiro Matsumoto, Ruby Visual Identity Team, CC BY-SA 2.5][🖼️ruby-lang-i]][🖼️ruby-lang] [![omniauth-ldap Logo by Aboling0, CC BY-SA 4.0][🖼️omniauth-ldap-i]][🖼️omniauth-ldap]
+[![Galtzo FLOSS Logo by Aboling0, CC BY-SA 4.0][🖼️galtzo-i]][🖼️galtzo-discord] [![ruby-lang Logo, Yukihiro Matsumoto, Ruby Visual Identity Team, CC BY-SA 2.5][🖼️ruby-lang-i]][🖼️ruby-lang] [![omniauth Logo (presumed to be) by tomeara, (presumed to be) MIT License][🖼️omniauth-i]][🖼️omniauth]
 
 [🖼️galtzo-i]: https://logos.galtzo.com/assets/images/galtzo-floss/avatar-192px.svg
 [🖼️galtzo-discord]: https://discord.gg/3qme4XHNKN
 [🖼️ruby-lang-i]: https://logos.galtzo.com/assets/images/ruby-lang/avatar-192px.svg
 [🖼️ruby-lang]: https://www.ruby-lang.org/
-[🖼️omniauth-ldap-i]: https://logos.galtzo.com/assets/images/omniauth/omniauth-ldap/avatar-192px.svg
-[🖼️omniauth-ldap]: https://github.com/omniauth/omniauth-ldap
+[🖼️omniauth-i]: https://logos.galtzo.com/assets/images/omniauth/avatar-192px.png
+[🖼️omniauth]: https://github.com/omniauth/omniauth-ldap
 
 # 📁 OmniAuth LDAP
 
-[![Version][👽versioni]][👽version] [![GitHub tag (latest SemVer)][⛳️tag-img]][⛳️tag] [![License: MIT][📄license-img]][📄license-ref] [![Downloads Rank][👽dl-ranki]][👽dl-rank] [![Open Source Helpers][👽oss-helpi]][👽oss-help] [![CodeCov Test Coverage][🏀codecovi]][🏀codecov] [![Coveralls Test Coverage][🏀coveralls-img]][🏀coveralls] [![QLTY Test Coverage][🏀qlty-covi]][🏀qlty-cov] [![QLTY Maintainability][🏀qlty-mnti]][🏀qlty-mnt] [![CI Heads][🚎3-hd-wfi]][🚎3-hd-wf] [![CI Runtime Dependencies @ HEAD][🚎12-crh-wfi]][🚎12-crh-wf] [![CI Current][🚎11-c-wfi]][🚎11-c-wf] [![CI Truffle Ruby][🚎9-t-wfi]][🚎9-t-wf] [![CI JRuby][🚎10-j-wfi]][🚎10-j-wf] [![Deps Locked][🚎13-🔒️-wfi]][🚎13-🔒️-wf] [![Deps Unlocked][🚎14-🔓️-wfi]][🚎14-🔓️-wf] [![CI Supported][🚎6-s-wfi]][🚎6-s-wf] [![CI Legacy][🚎4-lg-wfi]][🚎4-lg-wf] [![CI Unsupported][🚎7-us-wfi]][🚎7-us-wf] [![CI Ancient][🚎1-an-wfi]][🚎1-an-wf] [![CI Test Coverage][🚎2-cov-wfi]][🚎2-cov-wf] [![CI Style][🚎5-st-wfi]][🚎5-st-wf] [![CodeQL][🖐codeQL-img]][🖐codeQL] [![Apache SkyWalking Eyes License Compatibility Check][🚎15-🪪-wfi]][🚎15-🪪-wf]
+[![Version][👽versioni]][👽version] [![GitHub tag (latest SemVer)][⛳️tag-img]][⛳️tag] [![License: MIT][📄license-img]][📄license-ref] [![Downloads Rank][👽dl-ranki]][👽dl-rank] [![Open Source Helpers][👽oss-helpi]][👽oss-help] [![CodeCov Test Coverage][🏀codecovi]][🏀codecov] [![Coveralls Test Coverage][🏀coveralls-img]][🏀coveralls] [![CI Heads][🚎3-hd-wfi]][🚎3-hd-wf] [![CI Runtime Dependencies @ HEAD][🚎12-crh-wfi]][🚎12-crh-wf] [![CI Current][🚎11-c-wfi]][🚎11-c-wf] [![CI Truffle Ruby][🚎9-t-wfi]][🚎9-t-wf] [![CI JRuby][🚎10-j-wfi]][🚎10-j-wf] [![Deps Locked][🚎13-🔒️-wfi]][🚎13-🔒️-wf] [![Deps Unlocked][🚎14-🔓️-wfi]][🚎14-🔓️-wf] [![CI Supported][🚎6-s-wfi]][🚎6-s-wf] [![CI Legacy][🚎4-lg-wfi]][🚎4-lg-wf] [![CI Unsupported][🚎7-us-wfi]][🚎7-us-wf] [![CI Ancient][🚎1-an-wfi]][🚎1-an-wf] [![CI Test Coverage][🚎2-cov-wfi]][🚎2-cov-wf] [![CI Style][🚎5-st-wfi]][🚎5-st-wf] [![CodeQL][🖐codeQL-img]][🖐codeQL] [![Apache SkyWalking Eyes License Compatibility Check][🚎15-🪪-wfi]][🚎15-🪪-wf]
 
 `if ci_badges.map(&:color).detect { it != "green"}` ☝️ [let me know][🖼️galtzo-discord], as I may have missed the [discord notification][🖼️galtzo-discord].
 
@@ -81,6 +81,50 @@ use OmniAuth::Strategies::LDAP,
 
 All of the listed options are required, with the exception of `:title`, `:name_proc`, `:bind_dn`, and `:password`.
 
+### TLS certificate verification
+
+This gem enables TLS certificate verification by default when you use `encryption: "ssl"` (LDAPS / simple TLS) or `encryption: "tls"` (STARTTLS). We always pass `tls_options` to Net::LDAP based on `OpenSSL::SSL::SSLContext::DEFAULT_PARAMS`, which includes `verify_mode: OpenSSL::SSL::VERIFY_PEER` and sane defaults.
+
+- Secure by default: you do not need to set anything extra to verify the LDAP server certificate.
+- To customize trust or ciphers, supply your own `tls_options`, which are merged over the safe defaults.
+- If you truly need to skip verification (not recommended), set `disable_verify_certificates: true`.
+
+Examples:
+
+```ruby
+# Verify server certs (default behavior)
+use OmniAuth::Strategies::LDAP,
+  host: ENV["LDAP_HOST"],
+  port: 636,
+  encryption: "ssl",  # or "tls"
+  base: "dc=example,dc=com",
+  uid:  "uid"
+
+# Use a private CA bundle and restrict protocol/ciphers
+use OmniAuth::Strategies::LDAP,
+  host: ENV["LDAP_HOST"],
+  port: 636,
+  encryption: "ssl",
+  base: "dc=example,dc=com",
+  uid:  "uid",
+  tls_options: {
+    ca_file: "/etc/ssl/private/my_org_ca.pem",
+    ssl_version: "TLSv1_2",
+    ciphers: ["TLS_AES_256_GCM_SHA384", "TLS_CHACHA20_POLY1305_SHA256"],
+  }
+
+# Opt out of verification (NOT recommended – use only in trusted test/dev scenarios)
+use OmniAuth::Strategies::LDAP,
+  host: ENV["LDAP_HOST"],
+  port: 636,
+  encryption: "ssl",
+  base: "dc=example,dc=com",
+  uid:  "uid",
+  disable_verify_certificates: true
+```
+
+Note: Net::LDAP historically defaulted to no certificate validation when `tls_options` were not provided. This library mitigates that by always providing secure `tls_options` unless you explicitly disable verification.
+
 ## 💡 Info you can shake a stick at
 
 | Tokens to Remember      | [![Gem name][⛳️name-img]][⛳️gem-name] [![Gem namespace][⛳️namespace-img]][⛳️gem-namespace]                                                                                                                                                                                                                                                                          |
@@ -90,8 +134,8 @@ All of the listed options are required, with the exception of `:title`, `:name_p
 | Works with MRI Ruby 3   | [![Ruby 3.0 Compat][💎ruby-3.0i]][🚎4-lg-wf] [![Ruby 3.1 Compat][💎ruby-3.1i]][🚎6-s-wf] [![Ruby 3.2 Compat][💎ruby-3.2i]][🚎6-s-wf] [![Ruby 3.3 Compat][💎ruby-3.3i]][🚎6-s-wf] [![Ruby 3.4 Compat][💎ruby-c-i]][🚎11-c-wf] [![Ruby HEAD Compat][💎ruby-headi]][🚎3-hd-wf]                                                                                         |
 | Works with MRI Ruby 2   | ![Ruby 2.0 Compat][💎ruby-2.0i] ![Ruby 2.1 Compat][💎ruby-2.1i] ![Ruby 2.2 Compat][💎ruby-2.2i] <br/> [![Ruby 2.3 Compat][💎ruby-2.3i]][🚎1-an-wf] [![Ruby 2.4 Compat][💎ruby-2.4i]][🚎1-an-wf] [![Ruby 2.5 Compat][💎ruby-2.5i]][🚎1-an-wf] [![Ruby 2.6 Compat][💎ruby-2.6i]][🚎7-us-wf] [![Ruby 2.7 Compat][💎ruby-2.7i]][🚎7-us-wf]                              |
 | Support & Community     | [![Join Me on Daily.dev's RubyFriends][✉️ruby-friends-img]][✉️ruby-friends] [![Live Chat on Discord][✉️discord-invite-img-ftb]][✉️discord-invite] [![Get help from me on Upwork][👨🏼‍🏫expsup-upwork-img]][👨🏼‍🏫expsup-upwork] [![Get help from me on Codementor][👨🏼‍🏫expsup-codementor-img]][👨🏼‍🏫expsup-codementor]                                       |
-| Source                  | [![Source on GitLab.com][📜src-gl-img]][📜src-gl] [![Source on CodeBerg.org][📜src-cb-img]][📜src-cb] [![Source on Github.com][📜src-gh-img]][📜src-gh] [![The best SHA: dQw4w9WgXcQ!][🧮kloc-img]][🧮kloc]                                                                                                                                                         |
-| Documentation           | [![Current release on RubyDoc.info][📜docs-cr-rd-img]][🚎yard-current] [![YARD on Galtzo.com][📜docs-head-rd-img]][🚎yard-head] [![Maintainer Blog][🚂maint-blog-img]][🚂maint-blog] [![GitLab Wiki][📜gl-wiki-img]][📜gl-wiki] [![GitHub Wiki][📜gh-wiki-img]][📜gh-wiki]                                                                                          |
+| Source                  | [![Source on Github.com][📜src-gh-img]][📜src-gh] [![The best SHA: dQw4w9WgXcQ!][🧮kloc-img]][🧮kloc]                                                                                                                                                                                                                                                               |
+| Documentation           | [![Current release on RubyDoc.info][📜docs-cr-rd-img]][🚎yard-current] [![YARD on Galtzo.com][📜docs-head-rd-img]][🚎yard-head] [![Maintainer Blog][🚂maint-blog-img]][🚂maint-blog] [![GitHub Wiki][📜gh-wiki-img]][📜gh-wiki]                                                                                                                                     |
 | Compliance              | [![License: MIT][📄license-img]][📄license-ref] [![Compatible with Apache Software Projects: Verified by SkyWalking Eyes][📄license-compat-img]][📄license-compat] [![📄ilo-declaration-img]][📄ilo-declaration] [![Security Policy][🔐security-img]][🔐security] [![Contributor Covenant 2.1][🪇conduct-img]][🪇conduct] [![SemVer 2.0.0][📌semver-img]][📌semver] |
 | Style                   | [![Enforced Code Style Linter][💎rlts-img]][💎rlts] [![Keep-A-Changelog 1.0.0][📗keep-changelog-img]][📗keep-changelog] [![Gitmoji Commits][📌gitmoji-img]][📌gitmoji] [![Compatibility appraised by: appraisal2][💎appraisal2-img]][💎appraisal2]                                                                                                                  |
 | Maintainer 🎖️          | [![Follow Me on LinkedIn][💖🖇linkedin-img]][💖🖇linkedin] [![Follow Me on Ruby.Social][💖🐘ruby-mast-img]][💖🐘ruby-mast] [![Follow Me on Bluesky][💖🦋bluesky-img]][💖🦋bluesky] [![Contact Maintainer][🚂maint-contact-img]][🚂maint-contact] [![My technical writing][💖💁🏼‍♂️devto-img]][💖💁🏼‍♂️devto]                                                      |
@@ -104,22 +148,6 @@ Compatible with MRI Ruby 2.0+, and concordant releases of JRuby, and TruffleRuby
 | 🚚 _Amazing_ test matrix was brought to you by | 🔎 appraisal2 🔎 and the color 💚 green 💚             |
 |------------------------------------------------|--------------------------------------------------------|
 | 👟 Check it out!                               | ✨ [github.com/appraisal-rb/appraisal2][💎appraisal2] ✨ |
-
-### Federated DVCS
-
-<details markdown="1">
-  <summary>Find this repo on federated forges (Coming soon!)</summary>
-
-| Federated [DVCS][💎d-in-dvcs] Repository        | Status                                                                | Issues                    | PRs                      | Wiki                      | CI                       | Discussions                  |
-|-------------------------------------------------|-----------------------------------------------------------------------|---------------------------|--------------------------|---------------------------|--------------------------|------------------------------|
-| 🧪 [omniauth/omniauth-ldap on GitLab][📜src-gl]   | The Truth                                                             | [💚][🤝gl-issues]         | [💚][🤝gl-pulls]         | [💚][📜gl-wiki]           | 🐭 Tiny Matrix           | ➖                            |
-| 🧊 [omniauth/omniauth-ldap on CodeBerg][📜src-cb] | An Ethical Mirror ([Donate][🤝cb-donate])                             | [💚][🤝cb-issues]         | [💚][🤝cb-pulls]         | ➖                         | ⭕️ No Matrix             | ➖                            |
-| 🐙 [omniauth/omniauth-ldap on GitHub][📜src-gh]   | Another Mirror                                                        | [💚][🤝gh-issues]         | [💚][🤝gh-pulls]         | [💚][📜gh-wiki]           | 💯 Full Matrix           | [💚][gh-discussions]         |
-| 🎮️ [Discord Server][✉️discord-invite]          | [![Live Chat on Discord][✉️discord-invite-img-ftb]][✉️discord-invite] | [Let's][✉️discord-invite] | [talk][✉️discord-invite] | [about][✉️discord-invite] | [this][✉️discord-invite] | [library!][✉️discord-invite] |
-
-</details>
-
-[gh-discussions]: https://github.com/omniauth/omniauth-ldap/discussions
 
 ### Enterprise Support [![Tidelift](https://tidelift.com/badges/package/rubygems/omniauth-ldap)](https://tidelift.com/subscription/pkg/rubygems-omniauth-ldap?utm_source=rubygems-omniauth-ldap&utm_medium=referral&utm_campaign=readme)
 
@@ -696,8 +724,6 @@ See [CONTRIBUTING.md][🤝contributing].
 
 [![Coveralls Test Coverage][🏀coveralls-img]][🏀coveralls]
 
-[![QLTY Test Coverage][🏀qlty-covi]][🏀qlty-cov]
-
 ### 🪇 Code of Conduct
 
 Everyone interacting with this project's codebases, issue trackers,
@@ -708,8 +734,6 @@ chat rooms and mailing lists agrees to follow the [![Contributor Covenant 2.1][�
 [![Contributors][🖐contributors-img]][🖐contributors]
 
 Made with [contributors-img][🖐contrib-rocks].
-
-Also see GitLab Contributors: [https://gitlab.com/omniauth/omniauth-ldap/-/graphs/main][🚎contributors-gl]
 
 <details>
     <summary>⭐️ Star History</summary>
@@ -771,13 +795,19 @@ See [LICENSE.txt][📄license] for the official [Copyright Notice][📄copyright
 
 <ul>
     <li>
-        Copyright (c) 2023, 2025 Peter H. Boling, of
+        Copyright (c) 2025 Peter H. Boling, of
         <a href="https://discord.gg/3qme4XHNKN">
             Galtzo.com
             <picture>
               <img src="https://logos.galtzo.com/assets/images/galtzo-floss/avatar-128px-blank.svg" alt="Galtzo.com Logo (Wordless) by Aboling0, CC BY-SA 4.0" width="24">
             </picture>
         </a>, and omniauth-ldap contributors.
+    </li>
+    <li>
+        Copyright (c) 2014 David Benko
+    </li>
+    <li>
+        Copyright (c) 2011 by Ping Yu and Intridea, Inc.
     </li>
 </ul>
 
@@ -867,17 +897,11 @@ Thanks for RTFM. ☺️
 [🏙️entsup-tidelift-sonar]: https://blog.tidelift.com/tidelift-joins-sonar
 [💁🏼‍♂️peterboling]: http://www.peterboling.com
 [🚂railsbling]: http://www.railsbling.com
-[📜src-gl-img]: https://img.shields.io/badge/GitLab-FBA326?style=for-the-badge&logo=Gitlab&logoColor=orange
-[📜src-gl]: https://gitlab.com/omniauth/omniauth-ldap/
-[📜src-cb-img]: https://img.shields.io/badge/CodeBerg-4893CC?style=for-the-badge&logo=CodeBerg&logoColor=blue
-[📜src-cb]: https://codeberg.org/omniauth/omniauth-ldap
 [📜src-gh-img]: https://img.shields.io/badge/GitHub-238636?style=for-the-badge&logo=Github&logoColor=green
 [📜src-gh]: https://github.com/omniauth/omniauth-ldap
 [📜docs-cr-rd-img]: https://img.shields.io/badge/RubyDoc-Current_Release-943CD2?style=for-the-badge&logo=readthedocs&logoColor=white
 [📜docs-head-rd-img]: https://img.shields.io/badge/YARD_on_Galtzo.com-HEAD-943CD2?style=for-the-badge&logo=readthedocs&logoColor=white
-[📜gl-wiki]: https://gitlab.com/omniauth/omniauth-ldap/-/wikis/home
 [📜gh-wiki]: https://github.com/omniauth/omniauth-ldap/wiki
-[📜gl-wiki-img]: https://img.shields.io/badge/wiki-examples-943CD2.svg?style=for-the-badge&logo=gitlab&logoColor=white
 [📜gh-wiki-img]: https://img.shields.io/badge/wiki-examples-943CD2.svg?style=for-the-badge&logo=github&logoColor=white
 [👽dl-rank]: https://bestgems.org/gems/omniauth-ldap
 [👽dl-ranki]: https://img.shields.io/gem/rd/omniauth-ldap.svg
@@ -885,10 +909,6 @@ Thanks for RTFM. ☺️
 [👽oss-helpi]: https://www.codetriage.com/omniauth/omniauth-ldap/badges/users.svg
 [👽version]: https://bestgems.org/gems/omniauth-ldap
 [👽versioni]: https://img.shields.io/gem/v/omniauth-ldap.svg
-[🏀qlty-mnt]: https://qlty.sh/gh/omniauth/projects/omniauth-ldap
-[🏀qlty-mnti]: https://qlty.sh/gh/omniauth/projects/omniauth-ldap/maintainability.svg
-[🏀qlty-cov]: https://qlty.sh/gh/omniauth/projects/omniauth-ldap/metrics/code?sort=coverageRating
-[🏀qlty-covi]: https://qlty.sh/gh/omniauth/projects/omniauth-ldap/coverage.svg
 [🏀codecov]: https://codecov.io/gh/omniauth/omniauth-ldap
 [🏀codecovi]: https://codecov.io/gh/omniauth/omniauth-ldap/graph/badge.svg
 [🏀coveralls]: https://coveralls.io/github/omniauth/omniauth-ldap?branch=main
@@ -952,17 +972,11 @@ Thanks for RTFM. ☺️
 [💎jruby-headi]: https://img.shields.io/badge/JRuby-HEAD-FBE742?style=for-the-badge&logo=ruby&logoColor=blue
 [🤝gh-issues]: https://github.com/omniauth/omniauth-ldap/issues
 [🤝gh-pulls]: https://github.com/omniauth/omniauth-ldap/pulls
-[🤝gl-issues]: https://gitlab.com/omniauth/omniauth-ldap/-/issues
-[🤝gl-pulls]: https://gitlab.com/omniauth/omniauth-ldap/-/merge_requests
-[🤝cb-issues]: https://codeberg.org/omniauth/omniauth-ldap/issues
-[🤝cb-pulls]: https://codeberg.org/omniauth/omniauth-ldap/pulls
-[🤝cb-donate]: https://donate.codeberg.org/
 [🤝contributing]: CONTRIBUTING.md
 [🏀codecov-g]: https://codecov.io/gh/omniauth/omniauth-ldap/graphs/tree.svg
 [🖐contrib-rocks]: https://contrib.rocks
 [🖐contributors]: https://github.com/omniauth/omniauth-ldap/graphs/contributors
 [🖐contributors-img]: https://contrib.rocks/image?repo=omniauth/omniauth-ldap
-[🚎contributors-gl]: https://gitlab.com/omniauth/omniauth-ldap/-/graphs/main
 [🪇conduct]: CODE_OF_CONDUCT.md
 [🪇conduct-img]: https://img.shields.io/badge/Contributor_Covenant-2.1-259D6C.svg
 [📌pvc]: http://guides.rubygems.org/patterns/#pessimistic-version-constraint
@@ -976,7 +990,7 @@ Thanks for RTFM. ☺️
 [📌gitmoji]: https://gitmoji.dev
 [📌gitmoji-img]: https://img.shields.io/badge/gitmoji_commits-%20%F0%9F%98%9C%20%F0%9F%98%8D-34495e.svg?style=flat-square
 [🧮kloc]: https://www.youtube.com/watch?v=dQw4w9WgXcQ
-[🧮kloc-img]: https://img.shields.io/badge/KLOC-4.076-FFDD67.svg?style=for-the-badge&logo=YouTube&logoColor=blue
+[🧮kloc-img]: https://img.shields.io/badge/KLOC-0.297-FFDD67.svg?style=for-the-badge&logo=YouTube&logoColor=blue
 [🔐security]: SECURITY.md
 [🔐security-img]: https://img.shields.io/badge/security-policy-259D6C.svg?style=flat
 [📄copyright-notice-explainer]: https://opensource.stackexchange.com/questions/5778/why-do-licenses-such-as-the-mit-license-specify-a-single-year
@@ -996,3 +1010,8 @@ Thanks for RTFM. ☺️
 [💎appraisal2]: https://github.com/appraisal-rb/appraisal2
 [💎appraisal2-img]: https://img.shields.io/badge/appraised_by-appraisal2-34495e.svg?plastic&logo=ruby&logoColor=white
 [💎d-in-dvcs]: https://railsbling.com/posts/dvcs/put_the_d_in_dvcs/
+
+[//]: # (LDAP RFC references)
+[rfc4511]: https://datatracker.ietf.org/doc/html/rfc4511
+[rfc4514]: https://datatracker.ietf.org/doc/html/rfc4514
+[rfc4519]: https://datatracker.ietf.org/doc/html/rfc4519
