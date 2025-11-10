@@ -1,14 +1,64 @@
+# frozen_string_literal: true
+
 require "omniauth"
 require "omniauth/version"
 
+# OmniAuth strategies namespace.
+#
+# This file implements an LDAP authentication strategy for OmniAuth.
+# It provides both an interactive request phase (login form) and a
+# callback phase which binds to an LDAP directory to authenticate the
+# user or performs a lookup for header-based SSO.
+#
+# The strategy exposes a number of options (see `option` calls below)
+# that control LDAP connection, mapping of LDAP attributes to the
+# OmniAuth `info` hash, header-based SSO behavior, and SSL/timeouts.
+#
+# @example Minimal Rack mounting
+#   use OmniAuth::Builder do
+#     provider :ldap, {
+#       host: 'ldap.example.com',
+#       base: 'dc=example,dc=com'
+#     }
+#   end
+#
 module OmniAuth
   module Strategies
+    # LDAP OmniAuth strategy
+    #
+    # This class implements the OmniAuth::Strategy interface and performs
+    # LDAP authentication using an `Adaptor` object. It supports three
+    # primary flows:
+    #
+    # - Interactive login form (request_phase) where users POST username/password
+    # - Callback binding where the strategy attempts to bind as the user
+    # - Header-based SSO (trusted upstream) where a header identifies the user
+    #
+    # The mapping from LDAP attributes to resulting `info` fields is
+    # configurable via the `:mapping` option. See `map_user` for the
+    # mapping algorithm.
+    #
+    # @see OmniAuth::Strategy
     class LDAP
+      # Whether the loaded OmniAuth version is >= 2.0.0; used to set default request methods.
+      # @return [Boolean]
       OMNIAUTH_GTE_V2 = Gem::Version.new(OmniAuth::VERSION) >= Gem::Version.new("2.0.0")
+
       include OmniAuth::Strategy
 
+      # Raised when credentials are invalid or the user cannot be authenticated.
+      # @example
+      #   raise InvalidCredentialsError, 'Invalid credentials'
       InvalidCredentialsError = Class.new(StandardError)
 
+      # Default mapping for converting LDAP attributes to OmniAuth `info` keys.
+      # Keys are the resulting `info` hash keys (strings). Values may be:
+      # - String: single LDAP attribute name
+      # - Array: list of attribute names in priority order
+      # - Hash: pattern mapping where pattern keys contain %<n> placeholders
+      #   that are substituted from a list of possible attribute names
+      #
+      # @return [Hash<String, String|Array|Hash>]
       option :mapping, {
         "name" => "cn",
         "first_name" => "givenName",
@@ -24,7 +74,11 @@ module OmniAuth
         "image" => "jpegPhoto",
         "description" => "description",
       }
-      option :title, "LDAP Authentication" # default title for authentication form
+
+      # Default title shown on the login form.
+      # @return [String]
+      option :title, "LDAP Authentication"
+
       # For OmniAuth >= 2.0 the default allowed request method is POST only.
       # Ensure the strategy follows that default so GET /auth/:provider returns 404 as expected in tests.
       if OMNIAUTH_GTE_V2
@@ -32,6 +86,8 @@ module OmniAuth
       else
         option(:request_methods, [:get, :post])
       end
+
+      # Default LDAP connection options / behavior
       option :port, 389
       option :method, :plain
       option :disable_verify_certificates, false
@@ -39,6 +95,7 @@ module OmniAuth
       option :ssl_version, nil # use OpenSSL default if nil
       option :uid, "sAMAccountName"
       option :name_proc, lambda { |n| n }
+
       # Trusted header SSO support (disabled by default)
       # :header_auth - when true and the header is present, the strategy trusts the upstream gateway
       #                 and searches the directory for the user without requiring a user password.
@@ -46,10 +103,20 @@ module OmniAuth
       #                 standard Rack "HTTP_" variant automatically.
       option :header_auth, false
       option :header_name, "REMOTE_USER"
+
       # Optional timeouts (forwarded to Net::LDAP when supported)
       option :connect_timeout, nil
       option :read_timeout, nil
 
+      # Request phase: Render the login form or redirect to callback for header-auth or direct POSTed credentials
+      #
+      # This will behave differently depending on OmniAuth version and request method:
+      # - For OmniAuth >= 2.0 a GET to /auth/:provider should return 404 (so we return a 404 for GET requests).
+      # - If header-based SSO is enabled and a trusted header is present we immediately redirect to the callback.
+      # - If credentials are POSTed directly to /auth/:provider we redirect to the callback so the test helpers
+      #   that populate `env['omniauth.auth']` can operate on the callback request.
+      #
+      # @return [Array] A Rack response triple from the login form or redirect.
       def request_phase
         # OmniAuth >= 2.0 expects the request phase to be POST-only for /auth/:provider.
         # Some test environments (and OmniAuth itself) enforce this by returning 404 on GET.
@@ -78,6 +145,19 @@ module OmniAuth
         f.to_response
       end
 
+      # Callback phase: Authenticate user or perform header-based lookup
+      #
+      # This method executes on the callback URL and implements the main
+      # authentication logic. There are two primary paths:
+      #
+      # - Header-based lookup: when `options[:header_auth]` is enabled and a header value is present,
+      #   we perform a read-only directory lookup for the user and, if found, map attributes and finish.
+      # - Password bind: when username/password are provided we attempt a bind as the user using the adaptor.
+      #
+      # Errors raised by the LDAP adaptor are captured and turned into OmniAuth failures.
+      #
+      # @raise [InvalidCredentialsError] when credentials are invalid
+      # @return [Object] result of calling `super` from the OmniAuth::Strategy chain
       def callback_phase
         @adaptor = OmniAuth::LDAP::Adaptor.new(@options)
 
@@ -118,6 +198,15 @@ module OmniAuth
         end
       end
 
+      # Build an LDAP filter for searching/binding the user.
+      #
+      # If the adaptor has a custom `filter` option set it will be used (with
+      # interpolation of `%{username}`). Otherwise a simple equality filter for
+      # the configured uid attribute is used.
+      #
+      # @param adaptor [OmniAuth::LDAP::Adaptor] the adaptor used to build connection/filters
+      # @param username_override [String, nil] optional username to build the filter for (defaults to request username)
+      # @return [Net::LDAP::Filter] the constructed filter object
       def filter(adaptor, username_override = nil)
         flt = adaptor.filter
         if flt && !flt.to_s.empty?
@@ -128,17 +217,37 @@ module OmniAuth
         end
       end
 
-      uid {
-        @user_info["uid"]
-      }
-      info {
-        @user_info
-      }
-      extra {
-        {raw_info: @ldap_user_info}
-      }
+      # The uid exposed to OmniAuth consumers.
+      #
+      # This block-based DSL is part of OmniAuth::Strategy; document the value
+      # returned by the block.
+      #
+      # @return [String] the user's uid as determined from the mapped info
+      uid { @user_info["uid"] }
+
+      # The `info` hash returned to OmniAuth consumers. Usually contains name, email, etc.
+      # @return [Hash<String, Object>]
+      info { @user_info }
+
+      # Extra information exposed under `extra[:raw_info]` containing the raw LDAP entry.
+      # @return [Hash{Symbol => Object}]
+      extra { {raw_info: @ldap_user_info} }
 
       class << self
+        # Map LDAP attributes from the directory entry into a simple Hash used
+        # for the OmniAuth `info` hash according to the provided `mapper`.
+        #
+        # The mapper supports three types of values:
+        # - String: a single attribute name. The method will call the attribute
+        #   reader (downcased symbol) on the `object` and take the first value.
+        # - Array: iterate values and pick the first attribute that exists on the object.
+        # - Hash: a mapping of a pattern string to an array of attribute-name lists
+        #   where each `%<n>` placeholder in the pattern will be substituted by the
+        #   first available attribute from the corresponding list.
+        #
+        # @param mapper [Hash] mapping configuration (see option :mapping)
+        # @param object [#respond_to?, #[]] directory entry (commonly a Net::LDAP::Entry or similar)
+        # @return [Hash<String, Object>] the mapped user info hash
         def map_user(mapper, object)
           user = {}
           mapper.each do |key, value|
@@ -177,20 +286,38 @@ module OmniAuth
 
       protected
 
+      # Validate that the incoming request method is allowed.
+      #
+      # For OmniAuth >= 2.0 the default is POST only. This method checks the
+      # Rack env REQUEST_METHOD directly so tests and environments that stub
+      # request.HTTP_METHOD are handled deterministically.
+      #
+      # @return [Boolean] true when the request method is POST
       def valid_request_method?
         request.env["REQUEST_METHOD"] == "POST"
       end
 
+      # Determine if the request is missing required credentials.
+      #
+      # @return [Boolean] true when username or password are nil/empty
       def missing_credentials?
         request_data["username"].nil? || request_data["username"].empty? || request_data["password"].nil? || request_data["password"].empty?
       end
 
+      # Extract request parameters in a way compatible with Rails/Rack.
+      #
+      # @return [Hash] parameters hash containing at least "username" and "password" when provided
       def request_data
         @env["action_dispatch.request.request_parameters"] || request.params
       end
 
       # Extract a normalized username from a trusted header when enabled.
       # Returns nil when not configured or not present.
+      #
+      # The method will attempt the raw env key (e.g. "REMOTE_USER") and the Rack
+      # HTTP_ variant (e.g. "HTTP_REMOTE_USER" or "HTTP_X_REMOTE_USER").
+      #
+      # @return [String, nil] normalized username or nil if not present
       def header_username
         return unless options[:header_auth]
 
@@ -204,6 +331,10 @@ module OmniAuth
 
       # Perform a directory lookup for the given username using the strategy configuration
       # (bind_dn/password or anonymous). Does not attempt to bind as the user.
+      #
+      # @param adaptor [OmniAuth::LDAP::Adaptor] initialized adaptor
+      # @param username [String] username to look up
+      # @return [Object, nil] first directory entry found or nil
       def directory_lookup(adaptor, username)
         entry = nil
         search_filter = filter(adaptor, username)
@@ -216,6 +347,11 @@ module OmniAuth
 
       # If the adaptor captured a Password Policy response control, expose a minimal, stable hash
       # in the Rack env for applications to inspect.
+      #
+      # The structure is available at `request.env['omniauth.ldap.password_policy']`.
+      #
+      # @param adaptor [OmniAuth::LDAP::Adaptor]
+      # @return [void]
       def attach_password_policy_env(adaptor)
         return unless adaptor.respond_to?(:password_policy) && adaptor.password_policy
         ctrl = adaptor.respond_to?(:last_password_policy_response) ? adaptor.last_password_policy_response : nil
@@ -226,6 +362,10 @@ module OmniAuth
       end
 
       # Best-effort extraction across net-ldap versions; if fields are not available, returns a raw payload.
+      #
+      # @param control [Object, nil] the password policy response control if available
+      # @param operation [Object, nil] the last operation result if available
+      # @return [Hash] normalized password policy info with keys :raw, :error, :time_before_expiration, :grace_authns_remaining, :oid, :operation
       def extract_password_policy(control, operation)
         data = {raw: control}
         if control

@@ -104,7 +104,38 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    <p>LDAP OmniAuth strategy</p>
 
+<p>This class implements the OmniAuth::Strategy interface and performs<br />
+LDAP authentication using an <code>Adaptor</code> object. It supports three<br />
+primary flows:</p>
+
+<ul>
+  <li>Interactive login form (request_phase) where users POST username/password</li>
+  <li>Callback binding where the strategy attempts to bind as the user</li>
+  <li>Header-based SSO (trusted upstream) where a header identifies the user</li>
+</ul>
+
+<p>The mapping from LDAP attributes to resulting <code>info</code> fields is<br />
+configurable via the <code>:mapping</code> option. See <code>map_user</code> for the<br />
+mapping algorithm.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li>OmniAuth::Strategy</li>
+    
+  </ul>
+
+</div>
   
     <h2>
       Constant Summary
@@ -114,12 +145,53 @@
     <dl class="constants">
       
         <dt id="OMNIAUTH_GTE_V2-constant" class="">OMNIAUTH_GTE_V2 =
-          
+          <div class="docstring">
+  <div class="discussion">
+    <p>Whether the loaded OmniAuth version is &gt;= 2.0.0; used to set default request methods.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div>
         </dt>
         <dd><pre class="code"><span class='const'>Gem</span><span class='op'>::</span><span class='const'>Version</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../../OmniAuth.html" title="OmniAuth (module)">OmniAuth</a></span></span><span class='op'>::</span><span class='const'>VERSION</span><span class='rparen'>)</span> <span class='op'>&gt;=</span> <span class='const'>Gem</span><span class='op'>::</span><span class='const'>Version</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>2.0.0</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span></pre></dd>
       
         <dt id="InvalidCredentialsError-constant" class="">InvalidCredentialsError =
-          
+          <div class="docstring">
+  <div class="discussion">
+    <p>Raised when credentials are invalid or the user cannot be authenticated.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <h4 class="tag_title">Examples:</h4>
+    
+      
+      <pre class="example code"><code><span class='id identifier rubyid_raise'>raise</span> <span class='const'>InvalidCredentialsError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Invalid credentials</span><span class='tstring_end'>&#39;</span></span></code></pre>
+    
+  </div>
+
+
+</div>
         </dt>
         <dd><pre class="code"><span class='const'>Class</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>StandardError</span><span class='rparen'>)</span></pre></dd>
       
@@ -143,7 +215,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#map_user-class_method" title="map_user (class method)">.<strong>map_user</strong>(mapper, object)  &#x21d2; Object </a>
+      <a href="#map_user-class_method" title="map_user (class method)">.<strong>map_user</strong>(mapper, object)  &#x21d2; Hash&lt;String, Object&gt; </a>
     
 
     
@@ -157,7 +229,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
+    <span class="summary_desc"><div class='inline'><p>Map LDAP attributes from the directory entry into a simple Hash used for the OmniAuth <code>info</code> hash according to the provided <code>mapper</code>.</p>
 </div></span>
   
 </li>
@@ -189,7 +261,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
+    <span class="summary_desc"><div class='inline'><p>Callback phase: Authenticate user or perform header-based lookup.</p>
 </div></span>
   
 </li>
@@ -198,7 +270,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#filter-instance_method" title="#filter (instance method)">#<strong>filter</strong>(adaptor, username_override = nil)  &#x21d2; Object </a>
+      <a href="#filter-instance_method" title="#filter (instance method)">#<strong>filter</strong>(adaptor, username_override = nil)  &#x21d2; Net::LDAP::Filter </a>
     
 
     
@@ -212,7 +284,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
+    <span class="summary_desc"><div class='inline'><p>Build an LDAP filter for searching/binding the user.</p>
 </div></span>
   
 </li>
@@ -221,7 +293,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#request_phase-instance_method" title="#request_phase (instance method)">#<strong>request_phase</strong>  &#x21d2; Object </a>
+      <a href="#mapping-instance_method" title="#mapping (instance method)">#<strong>mapping</strong>  &#x21d2; Hash&lt;String, String|Array|Hash&gt; </a>
     
 
     
@@ -235,7 +307,53 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
+    <span class="summary_desc"><div class='inline'><p>Default mapping for converting LDAP attributes to OmniAuth <code>info</code> keys.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#request_phase-instance_method" title="#request_phase (instance method)">#<strong>request_phase</strong>  &#x21d2; Array </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Request phase: Render the login form or redirect to callback for header-auth or direct POSTed credentials.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#title-instance_method" title="#title (instance method)">#<strong>title</strong>  &#x21d2; String </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Default title shown on the login form.</p>
 </div></span>
   
 </li>
@@ -254,55 +372,127 @@
       <div class="method_details first">
   <h3 class="signature first" id="map_user-class_method">
   
-    .<strong>map_user</strong>(mapper, object)  &#x21d2; <tt>Object</tt> 
+    .<strong>map_user</strong>(mapper, object)  &#x21d2; <tt>Hash&lt;String, Object&gt;</tt> 
   
 
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Map LDAP attributes from the directory entry into a simple Hash used<br />
+for the OmniAuth <code>info</code> hash according to the provided <code>mapper</code>.</p>
+
+<p>The mapper supports three types of values:</p>
+<ul>
+  <li>String: a single attribute name. The method will call the attribute<br />
+reader (downcased symbol) on the <code>object</code> and take the first value.</li>
+  <li>Array: iterate values and pick the first attribute that exists on the object.</li>
+  <li>Hash: a mapping of a pattern string to an array of attribute-name lists<br />
+where each <code>%&lt;n&gt;</code> placeholder in the pattern will be substituted by the<br />
+first available attribute from the corresponding list.</li>
+</ul>
+
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>mapper</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>mapping configuration (see option :mapping)</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>object</span>
+      
+      
+        <span class='type'>(<tt>#respond_to?</tt>, <tt>#[]</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>directory entry (commonly a Net::LDAP::Entry or similar)</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Hash&lt;String, Object&gt;</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>the mapped user info hash</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-142
-143
-144
-145
-146
-147
-148
-149
-150
-151
-152
-153
-154
-155
-156
-157
-158
-159
-160
-161
-162
-163
-164
-165
-166
-167
-168
-169
-170
-171
-172
-173
-174
-175</pre>
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/omniauth/strategies/ldap.rb', line 142</span>
+      <pre class="code"><span class="info file"># File 'lib/omniauth/strategies/ldap.rb', line 251</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_map_user'>map_user</span><span class='lparen'>(</span><span class='id identifier rubyid_mapper'>mapper</span><span class='comma'>,</span> <span class='id identifier rubyid_object'>object</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_user'>user</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
@@ -358,54 +548,109 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Callback phase: Authenticate user or perform header-based lookup</p>
+
+<p>This method executes on the callback URL and implements the main<br />
+authentication logic. There are two primary paths:</p>
+
+<ul>
+  <li>Header-based lookup: when <code>options[:header_auth]</code> is enabled and a header value is present,<br />
+we perform a read-only directory lookup for the user and, if found, map attributes and finish.</li>
+  <li>Password bind: when username/password are provided we attempt a bind as the user using the adaptor.</li>
+</ul>
+
+<p>Errors raised by the LDAP adaptor are captured and turned into OmniAuth failures.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Object</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>result of calling <code>super</code> from the OmniAuth::Strategy chain</p>
+</div>
+      
+    </li>
+  
+</ul>
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="#InvalidCredentialsError-constant" title="OmniAuth::Strategies::LDAP::InvalidCredentialsError (constant)">InvalidCredentialsError</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>when credentials are invalid</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-81
-82
-83
-84
-85
-86
-87
-88
-89
-90
-91
-92
-93
-94
-95
-96
-97
-98
-99
-100
-101
-102
-103
-104
-105
-106
-107
-108
-109
-110
-111
-112
-113
-114
-115
-116
-117
-118
-119</pre>
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/omniauth/strategies/ldap.rb', line 81</span>
+      <pre class="code"><span class="info file"># File 'lib/omniauth/strategies/ldap.rb', line 161</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_callback_phase'>callback_phase</span>
   <span class='ivar'>@adaptor</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../../OmniAuth.html" title="OmniAuth (module)">OmniAuth</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../LDAP.html" title="OmniAuth::LDAP (module)">LDAP</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../LDAP/Adaptor.html" title="OmniAuth::LDAP::Adaptor (class)">Adaptor</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../LDAP/Adaptor.html#initialize-instance_method" title="OmniAuth::LDAP::Adaptor#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='ivar'>@options</span><span class='rparen'>)</span>
@@ -454,30 +699,97 @@
       <div class="method_details ">
   <h3 class="signature " id="filter-instance_method">
   
-    #<strong>filter</strong>(adaptor, username_override = nil)  &#x21d2; <tt>Object</tt> 
+    #<strong>filter</strong>(adaptor, username_override = nil)  &#x21d2; <tt>Net::LDAP::Filter</tt> 
   
 
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Build an LDAP filter for searching/binding the user.</p>
+
+<p>If the adaptor has a custom <code>filter</code> option set it will be used (with<br />
+interpolation of <code>%{username}</code>). Otherwise a simple equality filter for<br />
+the configured uid attribute is used.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>adaptor</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="../LDAP/Adaptor.html" title="OmniAuth::LDAP::Adaptor (class)">OmniAuth::LDAP::Adaptor</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>the adaptor used to build connection/filters</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>username_override</span>
+      
+      
+        <span class='type'>(<tt>String</tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>optional username to build the filter for (defaults to request username)</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Net::LDAP::Filter</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>the constructed filter object</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-121
-122
-123
-124
-125
-126
-127
-128
-129</pre>
+210
+211
+212
+213
+214
+215
+216
+217
+218</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/omniauth/strategies/ldap.rb', line 121</span>
+      <pre class="code"><span class="info file"># File 'lib/omniauth/strategies/ldap.rb', line 210</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_filter'>filter</span><span class='lparen'>(</span><span class='id identifier rubyid_adaptor'>adaptor</span><span class='comma'>,</span> <span class='id identifier rubyid_username_override'>username_override</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_flt'>flt</span> <span class='op'>=</span> <span class='id identifier rubyid_adaptor'>adaptor</span><span class='period'>.</span><span class='id identifier rubyid_filter'>filter</span>
@@ -494,29 +806,50 @@
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="request_phase-instance_method">
+  <h3 class="signature " id="mapping-instance_method">
   
-    #<strong>request_phase</strong>  &#x21d2; <tt>Object</tt> 
-  
-
+    #<strong>mapping</strong>  &#x21d2; <tt>Hash&lt;String, String|Array|Hash&gt;</tt> 
   
 
   
-</h3><table class="source_code">
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Default mapping for converting LDAP attributes to OmniAuth <code>info</code> keys.<br />
+Keys are the resulting <code>info</code> hash keys (strings). Values may be:</p>
+<ul>
+  <li>String: single LDAP attribute name</li>
+  <li>Array: list of attribute names in priority order</li>
+  <li>Hash: pattern mapping where pattern keys contain %<n> placeholders
+that are substituted from a list of possible attribute names</n></li>
+</ul>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Hash&lt;String, String|Array|Hash&gt;</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-53
-54
-55
-56
-57
-58
-59
-60
-61
 62
 63
 64
@@ -531,13 +864,111 @@
 73
 74
 75
-76
-77
-78
-79</pre>
+76</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/omniauth/strategies/ldap.rb', line 53</span>
+      <pre class="code"><span class="info file"># File 'lib/omniauth/strategies/ldap.rb', line 62</span>
+
+<span class='id identifier rubyid_option'>option</span> <span class='symbol'>:mapping</span><span class='comma'>,</span> <span class='lbrace'>{</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>name</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>cn</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>first_name</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>givenName</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>last_name</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>sn</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>email</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>mail</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>email</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>userPrincipalName</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>phone</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>telephoneNumber</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>homePhone</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>facsimileTelephoneNumber</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>mobile</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>mobile</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>mobileTelephoneNumber</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>nickname</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>uid</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>userid</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>sAMAccountName</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>title</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>title</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>location</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>%0, %1, %2, %3 %4</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbracket'>[</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>address</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>postalAddress</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>homePostalAddress</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>street</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>streetAddress</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>l</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>st</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>co</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>postOfficeBox</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>uid</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>dn</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>url</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>wwwhomepage</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>image</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>jpegPhoto</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>description</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>description</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+<span class='rbrace'>}</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="request_phase-instance_method">
+  
+    #<strong>request_phase</strong>  &#x21d2; <tt>Array</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Request phase: Render the login form or redirect to callback for header-auth or direct POSTed credentials</p>
+
+<p>This will behave differently depending on OmniAuth version and request method:</p>
+<ul>
+  <li>For OmniAuth &gt;= 2.0 a GET to /auth/:provider should return 404 (so we return a 404 for GET requests).</li>
+  <li>If header-based SSO is enabled and a trusted header is present we immediately redirect to the callback.</li>
+  <li>If credentials are POSTed directly to /auth/:provider we redirect to the callback so the test helpers<br />
+that populate <code>env['omniauth.auth']</code> can operate on the callback request.</li>
+</ul>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Array</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>A Rack response triple from the login form or redirect.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/omniauth/strategies/ldap.rb', line 120</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_request_phase'>request_phase</span>
   <span class='comment'># OmniAuth &gt;= 2.0 expects the request phase to be POST-only for /auth/:provider.
@@ -571,12 +1002,61 @@
 </table>
 </div>
     
+      <div class="method_details ">
+  <h3 class="signature " id="title-instance_method">
+  
+    #<strong>title</strong>  &#x21d2; <tt>String</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Default title shown on the login form.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+80</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/omniauth/strategies/ldap.rb', line 80</span>
+
+<span class='id identifier rubyid_option'>option</span> <span class='symbol'>:title</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>LDAP Authentication</span><span class='tstring_end'>&quot;</span></span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
   </div>
 
 </div>
 
       <div id="footer">
-  Generated on Fri Nov  7 14:40:48 2025 by
+  Generated on Mon Nov 10 14:11:47 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.7).
 </div>

@@ -23,6 +23,7 @@ Please file a bug if you notice a violation of semantic versioning.
 ### Added
 
 - Documentation cleanup & updates
+- YARD documentation covering 94% of the code
 
 ### Changed
 
