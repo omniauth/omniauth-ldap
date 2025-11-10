@@ -99,7 +99,39 @@
   
 </div>
 
-<h2>Defined Under Namespace</h2>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+  <div class="note notetag">
+    <strong>Note:</strong>
+    <div class='inline'><p>Public API: <span class='object_link'><a href="#validate-class_method" title="OmniAuth::LDAP::Adaptor.validate (method)">Adaptor.validate</a></span>, <span class='object_link'><a href="#initialize-instance_method" title="OmniAuth::LDAP::Adaptor#initialize (method)">#initialize</a></span>, <span class='object_link'><a href="#bind_as-instance_method" title="OmniAuth::LDAP::Adaptor#bind_as (method)">#bind_as</a></span>, and attr readers such as <span class='object_link'><a href="#connection-instance_method" title="OmniAuth::LDAP::Adaptor#connection (method)">#connection</a></span>, <span class='object_link'><a href="#uid-instance_method" title="OmniAuth::LDAP::Adaptor#uid (method)">#uid</a></span></p>
+</div>
+  </div>
+
+<p>Adaptor encapsulates the behavior required to connect to an LDAP server<br />
+and perform searches and binds. It maps user-provided configuration into<br />
+a Net::LDAP connection and provides compatibility helpers for different<br />
+net-ldap and SASL versions. The adaptor is intentionally defensive and<br />
+provides a small, stable API used by the OmniAuth strategy.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <h4 class="tag_title">Examples:</h4>
+    
+      
+        <h5 class="example_title"><div class='inline'><p>Initialize with minimal config</p>
+</div></h5>
+      
+      <pre class="example code"><code><span class='id identifier rubyid_adaptor'>adaptor</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../../OmniAuth.html" title="OmniAuth (module)">OmniAuth</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../LDAP.html" title="OmniAuth::LDAP (module)">LDAP</a></span></span><span class='op'>::</span><span class='const'>Adaptor</span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="OmniAuth::LDAP::Adaptor#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>base:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>dc=example,dc=com</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>host:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ldap.example.com</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span></code></pre>
+    
+  </div>
+
+
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -119,7 +151,31 @@
     <dl class="constants">
       
         <dt id="VALID_ADAPTER_CONFIGURATION_KEYS-constant" class="">VALID_ADAPTER_CONFIGURATION_KEYS =
-          
+          <div class="docstring">
+  <div class="discussion">
+    <p>Valid configuration keys accepted by the adaptor. These correspond to<br />
+the options supported by the gem and are used during initialization.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Array&lt;Symbol&gt;</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div>
         </dt>
         <dd><pre class="code"><span class='lbracket'>[</span>
   <span class='symbol'>:hosts</span><span class='comma'>,</span>
@@ -150,13 +206,27 @@
         <dt id="MUST_HAVE_KEYS-constant" class="">MUST_HAVE_KEYS =
           <div class="docstring">
   <div class="discussion">
-    <p>A list of needed keys. Possible alternatives are specified using sub-lists.</p>
+    <p>Required configuration keys. This may include alternatives as sub-lists<br />
+(e.g., [:hosts, :host] means either key is acceptable).</p>
 
 
   </div>
 </div>
 <div class="tags">
   
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Array</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
 
 </div>
         </dt>
@@ -169,7 +239,30 @@
 <span class='rbracket'>]</span></pre></dd>
       
         <dt id="ENCRYPTION_METHOD-constant" class="">ENCRYPTION_METHOD =
-          
+          <div class="docstring">
+  <div class="discussion">
+    <p>Supported encryption method mapping for configuration readability.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Hash&lt;Symbol,Symbol,nil&gt;</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div>
         </dt>
         <dd><pre class="code"><span class='lbrace'>{</span>
   <span class='label'>simple_tls:</span> <span class='symbol'>:simple_tls</span><span class='comma'>,</span>
@@ -194,7 +287,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#auth-instance_method" title="#auth (instance method)">#<strong>auth</strong>  &#x21d2; Object </a>
+      <a href="#auth-instance_method" title="#auth (instance method)">#<strong>auth</strong>  &#x21d2; Hash </a>
     
 
     
@@ -213,7 +306,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute auth.</p>
+    <span class="summary_desc"><div class='inline'><p>The final auth structure used by net-ldap.</p>
 </div></span>
   
 </li>
@@ -222,7 +315,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#base-instance_method" title="#base (instance method)">#<strong>base</strong>  &#x21d2; Object </a>
+      <a href="#base-instance_method" title="#base (instance method)">#<strong>base</strong>  &#x21d2; String </a>
     
 
     
@@ -241,7 +334,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute base.</p>
+    <span class="summary_desc"><div class='inline'><p>The base DN for searches.</p>
 </div></span>
   
 </li>
@@ -250,7 +343,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#bind_dn-instance_method" title="#bind_dn (instance method)">#<strong>bind_dn</strong>  &#x21d2; Object </a>
+      <a href="#bind_dn-instance_method" title="#bind_dn (instance method)">#<strong>bind_dn</strong>  &#x21d2; String<sup>?</sup> </a>
     
 
     
@@ -267,7 +360,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute bind_dn.</p>
+    <span class="summary_desc"><div class='inline'><p>The distinguished name used for binding when provided in configuration.</p>
 </div></span>
   
 </li>
@@ -276,35 +369,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#connection-instance_method" title="#connection (instance method)">#<strong>connection</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-    
-      <span class="note title readonly">readonly</span>
-    
-    
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute connection.</p>
-</div></span>
-  
-</li>
-
-    
-      <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#filter-instance_method" title="#filter (instance method)">#<strong>filter</strong>  &#x21d2; Object </a>
+      <a href="#connection-instance_method" title="#connection (instance method)">#<strong>connection</strong>  &#x21d2; Net::LDAP </a>
     
 
     
@@ -323,7 +388,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute filter.</p>
+    <span class="summary_desc"><div class='inline'><p>The underlying Net::LDAP connection object.</p>
 </div></span>
   
 </li>
@@ -332,7 +397,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#last_operation_result-instance_method" title="#last_operation_result (instance method)">#<strong>last_operation_result</strong>  &#x21d2; Object </a>
+      <a href="#filter-instance_method" title="#filter (instance method)">#<strong>filter</strong>  &#x21d2; String<sup>?</sup> </a>
     
 
     
@@ -351,7 +416,35 @@
   
 
   
-    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute last_operation_result.</p>
+    <span class="summary_desc"><div class='inline'><p>Custom filter pattern when provided in configuration.</p>
+</div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#last_operation_result-instance_method" title="#last_operation_result (instance method)">#<strong>last_operation_result</strong>  &#x21d2; Object<sup>?</sup> </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Last operation result object returned by the ldap library (if any).</p>
 </div></span>
   
 </li>
@@ -379,7 +472,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute last_password_policy_response.</p>
+    <span class="summary_desc"><div class='inline'><p>Read-only attributes exposing connection and configuration state.</p>
 </div></span>
   
 </li>
@@ -388,7 +481,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#password-instance_method" title="#password (instance method)">#<strong>password</strong>  &#x21d2; Object </a>
+      <a href="#password-instance_method" title="#password (instance method)">#<strong>password</strong>  &#x21d2; String<sup>?</sup> </a>
     
 
     
@@ -405,7 +498,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute password.</p>
+    <span class="summary_desc"><div class='inline'><p>The bind password (may be nil for anonymous binds).</p>
 </div></span>
   
 </li>
@@ -414,35 +507,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#password_policy-instance_method" title="#password_policy (instance method)">#<strong>password_policy</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-    
-      <span class="note title readonly">readonly</span>
-    
-    
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute password_policy.</p>
-</div></span>
-  
-</li>
-
-    
-      <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#uid-instance_method" title="#uid (instance method)">#<strong>uid</strong>  &#x21d2; Object </a>
+      <a href="#password_policy-instance_method" title="#password_policy (instance method)">#<strong>password_policy</strong>  &#x21d2; Boolean </a>
     
 
     
@@ -461,7 +526,35 @@
   
 
   
-    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute uid.</p>
+    <span class="summary_desc"><div class='inline'><p>Whether to request LDAP Password Policy controls.</p>
+</div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#uid-instance_method" title="#uid (instance method)">#<strong>uid</strong>  &#x21d2; String </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The user id attribute used for lookups (e.g., ‘sAMAccountName’).</p>
 </div></span>
   
 </li>
@@ -483,7 +576,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#validate-class_method" title="validate (class method)">.<strong>validate</strong>(configuration = {})  &#x21d2; Object </a>
+      <a href="#validate-class_method" title="validate (class method)">.<strong>validate</strong>(configuration = {})  &#x21d2; void </a>
     
 
     
@@ -497,7 +590,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
+    <span class="summary_desc"><div class='inline'><p>Validate that a minimal configuration is present.</p>
 </div></span>
   
 </li>
@@ -515,7 +608,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#bind_as-instance_method" title="#bind_as (instance method)">#<strong>bind_as</strong>(args = {})  &#x21d2; Object </a>
+      <a href="#bind_as-instance_method" title="#bind_as (instance method)">#<strong>bind_as</strong>(args = {})  &#x21d2; Net::LDAP::Entry, ... </a>
     
 
     
@@ -538,7 +631,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(configuration = {})  &#x21d2; Adaptor </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(configuration = {})  &#x21d2; OmniAuth::LDAP::Adaptor </a>
     
 
     
@@ -554,7 +647,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'><p>A new instance of Adaptor.</p>
+    <span class="summary_desc"><div class='inline'><p>Create a new adaptor instance backed by a Net::LDAP connection.</p>
 </div></span>
   
 </li>
@@ -569,7 +662,7 @@
     <div class="method_details first">
   <h3 class="signature first" id="initialize-instance_method">
   
-    #<strong>initialize</strong>(configuration = {})  &#x21d2; <tt><span class='object_link'><a href="" title="OmniAuth::LDAP::Adaptor (class)">Adaptor</a></span></tt> 
+    #<strong>initialize</strong>(configuration = {})  &#x21d2; <tt><span class='object_link'><a href="" title="OmniAuth::LDAP::Adaptor (class)">OmniAuth::LDAP::Adaptor</a></span></tt> 
   
 
   
@@ -577,13 +670,55 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>Returns a new instance of Adaptor.</p>
+    <p>Create a new adaptor instance backed by a Net::LDAP connection.</p>
+
+<p>The constructor does not immediately open a network connection but<br />
+prepares the Net::LDAP instance according to the provided configuration.<br />
+It also applies timeout settings where supported by the installed net-ldap version.</p>
 
 
   </div>
 </div>
 <div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
   
+    <li>
+      
+        <span class='name'>configuration</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>user-provided configuration options</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>ArgumentError</tt>, <tt><span class='object_link'><a href="Adaptor/ConfigurationError.html" title="OmniAuth::LDAP::Adaptor::ConfigurationError (class)">ConfigurationError</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>on invalid configuration</p>
+</div>
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -591,56 +726,56 @@
       <pre class="lines">
 
 
-80
-81
-82
-83
-84
-85
-86
-87
-88
-89
-90
-91
-92
-93
-94
-95
-96
-97
-98
-99
-100
-101
-102
-103
-104
-105
-106
-107
-108
-109
-110
-111
-112
-113
-114
-115
-116
-117
-118
-119
-120
-121
-122
-123
-124
-125
-126</pre>
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/omniauth-ldap/adaptor.rb', line 80</span>
+      <pre class="code"><span class="info file"># File 'lib/omniauth-ldap/adaptor.rb', line 155</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_configuration'>configuration</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="" title="OmniAuth::LDAP::Adaptor (class)">Adaptor</a></span></span><span class='period'>.</span><span class='id identifier rubyid_validate'><span class='object_link'><a href="#validate-class_method" title="OmniAuth::LDAP::Adaptor.validate (method)">validate</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_configuration'>configuration</span><span class='rparen'>)</span>
@@ -704,7 +839,7 @@
       <div class="method_details first">
   <h3 class="signature first" id="auth-instance_method">
   
-    #<strong>auth</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+    #<strong>auth</strong>  &#x21d2; <tt>Hash</tt>  <span class="extras">(readonly)</span>
   
 
   
@@ -712,13 +847,26 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>Returns the value of attribute auth.</p>
+    <p>The final auth structure used by net-ldap.</p>
 
 
   </div>
 </div>
 <div class="tags">
   
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -726,16 +874,12 @@
       <pre class="lines">
 
 
-66
-67
-68</pre>
+126</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/omniauth-ldap/adaptor.rb', line 66</span>
+      <pre class="code"><span class="info file"># File 'lib/omniauth-ldap/adaptor.rb', line 126</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_auth'>auth</span>
-  <span class='ivar'>@auth</span>
-<span class='kw'>end</span></pre>
+<span class='id identifier rubyid_attr_reader'>attr_reader</span> <span class='symbol'>:connection</span><span class='comma'>,</span> <span class='symbol'>:uid</span><span class='comma'>,</span> <span class='symbol'>:base</span><span class='comma'>,</span> <span class='symbol'>:auth</span><span class='comma'>,</span> <span class='symbol'>:filter</span><span class='comma'>,</span> <span class='symbol'>:password_policy</span><span class='comma'>,</span> <span class='symbol'>:last_operation_result</span><span class='comma'>,</span> <span class='symbol'>:last_password_policy_response</span></pre>
     </td>
   </tr>
 </table>
@@ -746,7 +890,7 @@
       <div class="method_details ">
   <h3 class="signature " id="base-instance_method">
   
-    #<strong>base</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+    #<strong>base</strong>  &#x21d2; <tt>String</tt>  <span class="extras">(readonly)</span>
   
 
   
@@ -754,13 +898,26 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>Returns the value of attribute base.</p>
+    <p>The base DN for searches.</p>
 
 
   </div>
 </div>
 <div class="tags">
   
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -768,16 +925,12 @@
       <pre class="lines">
 
 
-66
-67
-68</pre>
+126</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/omniauth-ldap/adaptor.rb', line 66</span>
+      <pre class="code"><span class="info file"># File 'lib/omniauth-ldap/adaptor.rb', line 126</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_base'>base</span>
-  <span class='ivar'>@base</span>
-<span class='kw'>end</span></pre>
+<span class='id identifier rubyid_attr_reader'>attr_reader</span> <span class='symbol'>:connection</span><span class='comma'>,</span> <span class='symbol'>:uid</span><span class='comma'>,</span> <span class='symbol'>:base</span><span class='comma'>,</span> <span class='symbol'>:auth</span><span class='comma'>,</span> <span class='symbol'>:filter</span><span class='comma'>,</span> <span class='symbol'>:password_policy</span><span class='comma'>,</span> <span class='symbol'>:last_operation_result</span><span class='comma'>,</span> <span class='symbol'>:last_password_policy_response</span></pre>
     </td>
   </tr>
 </table>
@@ -788,7 +941,7 @@
       <div class="method_details ">
   <h3 class="signature " id="bind_dn-instance_method">
   
-    #<strong>bind_dn</strong>  &#x21d2; <tt>Object</tt> 
+    #<strong>bind_dn</strong>  &#x21d2; <tt>String</tt><sup>?</sup> 
   
 
   
@@ -796,13 +949,26 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>Returns the value of attribute bind_dn.</p>
+    <p>The distinguished name used for binding when provided in configuration.</p>
 
 
   </div>
 </div>
 <div class="tags">
   
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>String</tt>, <tt>nil</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -810,12 +976,12 @@
       <pre class="lines">
 
 
-65
-66
-67</pre>
+99
+100
+101</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/omniauth-ldap/adaptor.rb', line 65</span>
+      <pre class="code"><span class="info file"># File 'lib/omniauth-ldap/adaptor.rb', line 99</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_bind_dn'>bind_dn</span>
   <span class='ivar'>@bind_dn</span>
@@ -830,7 +996,7 @@
       <div class="method_details ">
   <h3 class="signature " id="connection-instance_method">
   
-    #<strong>connection</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+    #<strong>connection</strong>  &#x21d2; <tt>Net::LDAP</tt>  <span class="extras">(readonly)</span>
   
 
   
@@ -838,13 +1004,26 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>Returns the value of attribute connection.</p>
+    <p>The underlying Net::LDAP connection object.</p>
 
 
   </div>
 </div>
 <div class="tags">
   
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Net::LDAP</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -852,12 +1031,12 @@
       <pre class="lines">
 
 
-66
-67
-68</pre>
+126
+127
+128</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/omniauth-ldap/adaptor.rb', line 66</span>
+      <pre class="code"><span class="info file"># File 'lib/omniauth-ldap/adaptor.rb', line 126</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_connection'>connection</span>
   <span class='ivar'>@connection</span>
@@ -872,7 +1051,7 @@
       <div class="method_details ">
   <h3 class="signature " id="filter-instance_method">
   
-    #<strong>filter</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+    #<strong>filter</strong>  &#x21d2; <tt>String</tt><sup>?</sup>  <span class="extras">(readonly)</span>
   
 
   
@@ -880,13 +1059,26 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>Returns the value of attribute filter.</p>
+    <p>Custom filter pattern when provided in configuration.</p>
 
 
   </div>
 </div>
 <div class="tags">
   
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>String</tt>, <tt>nil</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -894,16 +1086,12 @@
       <pre class="lines">
 
 
-66
-67
-68</pre>
+126</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/omniauth-ldap/adaptor.rb', line 66</span>
+      <pre class="code"><span class="info file"># File 'lib/omniauth-ldap/adaptor.rb', line 126</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_filter'>filter</span>
-  <span class='ivar'>@filter</span>
-<span class='kw'>end</span></pre>
+<span class='id identifier rubyid_attr_reader'>attr_reader</span> <span class='symbol'>:connection</span><span class='comma'>,</span> <span class='symbol'>:uid</span><span class='comma'>,</span> <span class='symbol'>:base</span><span class='comma'>,</span> <span class='symbol'>:auth</span><span class='comma'>,</span> <span class='symbol'>:filter</span><span class='comma'>,</span> <span class='symbol'>:password_policy</span><span class='comma'>,</span> <span class='symbol'>:last_operation_result</span><span class='comma'>,</span> <span class='symbol'>:last_password_policy_response</span></pre>
     </td>
   </tr>
 </table>
@@ -914,7 +1102,7 @@
       <div class="method_details ">
   <h3 class="signature " id="last_operation_result-instance_method">
   
-    #<strong>last_operation_result</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+    #<strong>last_operation_result</strong>  &#x21d2; <tt>Object</tt><sup>?</sup>  <span class="extras">(readonly)</span>
   
 
   
@@ -922,13 +1110,26 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>Returns the value of attribute last_operation_result.</p>
+    <p>Last operation result object returned by the ldap library (if any)</p>
 
 
   </div>
 </div>
 <div class="tags">
   
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Object</tt>, <tt>nil</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -936,16 +1137,12 @@
       <pre class="lines">
 
 
-66
-67
-68</pre>
+126</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/omniauth-ldap/adaptor.rb', line 66</span>
+      <pre class="code"><span class="info file"># File 'lib/omniauth-ldap/adaptor.rb', line 126</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_last_operation_result'>last_operation_result</span>
-  <span class='ivar'>@last_operation_result</span>
-<span class='kw'>end</span></pre>
+<span class='id identifier rubyid_attr_reader'>attr_reader</span> <span class='symbol'>:connection</span><span class='comma'>,</span> <span class='symbol'>:uid</span><span class='comma'>,</span> <span class='symbol'>:base</span><span class='comma'>,</span> <span class='symbol'>:auth</span><span class='comma'>,</span> <span class='symbol'>:filter</span><span class='comma'>,</span> <span class='symbol'>:password_policy</span><span class='comma'>,</span> <span class='symbol'>:last_operation_result</span><span class='comma'>,</span> <span class='symbol'>:last_password_policy_response</span></pre>
     </td>
   </tr>
 </table>
@@ -964,7 +1161,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>Returns the value of attribute last_password_policy_response.</p>
+    <p>Read-only attributes exposing connection and configuration state.</p>
 
 
   </div>
@@ -978,16 +1175,12 @@
       <pre class="lines">
 
 
-66
-67
-68</pre>
+126</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/omniauth-ldap/adaptor.rb', line 66</span>
+      <pre class="code"><span class="info file"># File 'lib/omniauth-ldap/adaptor.rb', line 126</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_last_password_policy_response'>last_password_policy_response</span>
-  <span class='ivar'>@last_password_policy_response</span>
-<span class='kw'>end</span></pre>
+<span class='id identifier rubyid_attr_reader'>attr_reader</span> <span class='symbol'>:connection</span><span class='comma'>,</span> <span class='symbol'>:uid</span><span class='comma'>,</span> <span class='symbol'>:base</span><span class='comma'>,</span> <span class='symbol'>:auth</span><span class='comma'>,</span> <span class='symbol'>:filter</span><span class='comma'>,</span> <span class='symbol'>:password_policy</span><span class='comma'>,</span> <span class='symbol'>:last_operation_result</span><span class='comma'>,</span> <span class='symbol'>:last_password_policy_response</span></pre>
     </td>
   </tr>
 </table>
@@ -998,7 +1191,7 @@
       <div class="method_details ">
   <h3 class="signature " id="password-instance_method">
   
-    #<strong>password</strong>  &#x21d2; <tt>Object</tt> 
+    #<strong>password</strong>  &#x21d2; <tt>String</tt><sup>?</sup> 
   
 
   
@@ -1006,13 +1199,26 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>Returns the value of attribute password.</p>
+    <p>The bind password (may be nil for anonymous binds)</p>
 
 
   </div>
 </div>
 <div class="tags">
   
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>String</tt>, <tt>nil</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -1020,16 +1226,12 @@
       <pre class="lines">
 
 
-65
-66
-67</pre>
+99</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/omniauth-ldap/adaptor.rb', line 65</span>
+      <pre class="code"><span class="info file"># File 'lib/omniauth-ldap/adaptor.rb', line 99</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_password'>password</span>
-  <span class='ivar'>@password</span>
-<span class='kw'>end</span></pre>
+<span class='id identifier rubyid_attr_accessor'>attr_accessor</span> <span class='symbol'>:bind_dn</span><span class='comma'>,</span> <span class='symbol'>:password</span></pre>
     </td>
   </tr>
 </table>
@@ -1040,7 +1242,7 @@
       <div class="method_details ">
   <h3 class="signature " id="password_policy-instance_method">
   
-    #<strong>password_policy</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+    #<strong>password_policy</strong>  &#x21d2; <tt>Boolean</tt>  <span class="extras">(readonly)</span>
   
 
   
@@ -1048,13 +1250,26 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>Returns the value of attribute password_policy.</p>
+    <p>Whether to request LDAP Password Policy controls.</p>
 
 
   </div>
 </div>
 <div class="tags">
   
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -1062,16 +1277,12 @@
       <pre class="lines">
 
 
-66
-67
-68</pre>
+126</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/omniauth-ldap/adaptor.rb', line 66</span>
+      <pre class="code"><span class="info file"># File 'lib/omniauth-ldap/adaptor.rb', line 126</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_password_policy'>password_policy</span>
-  <span class='ivar'>@password_policy</span>
-<span class='kw'>end</span></pre>
+<span class='id identifier rubyid_attr_reader'>attr_reader</span> <span class='symbol'>:connection</span><span class='comma'>,</span> <span class='symbol'>:uid</span><span class='comma'>,</span> <span class='symbol'>:base</span><span class='comma'>,</span> <span class='symbol'>:auth</span><span class='comma'>,</span> <span class='symbol'>:filter</span><span class='comma'>,</span> <span class='symbol'>:password_policy</span><span class='comma'>,</span> <span class='symbol'>:last_operation_result</span><span class='comma'>,</span> <span class='symbol'>:last_password_policy_response</span></pre>
     </td>
   </tr>
 </table>
@@ -1082,7 +1293,7 @@
       <div class="method_details ">
   <h3 class="signature " id="uid-instance_method">
   
-    #<strong>uid</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+    #<strong>uid</strong>  &#x21d2; <tt>String</tt>  <span class="extras">(readonly)</span>
   
 
   
@@ -1090,13 +1301,26 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>Returns the value of attribute uid.</p>
+    <p>The user id attribute used for lookups (e.g., ‘sAMAccountName’)</p>
 
 
   </div>
 </div>
 <div class="tags">
   
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -1104,16 +1328,12 @@
       <pre class="lines">
 
 
-66
-67
-68</pre>
+126</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/omniauth-ldap/adaptor.rb', line 66</span>
+      <pre class="code"><span class="info file"># File 'lib/omniauth-ldap/adaptor.rb', line 126</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_uid'>uid</span>
-  <span class='ivar'>@uid</span>
-<span class='kw'>end</span></pre>
+<span class='id identifier rubyid_attr_reader'>attr_reader</span> <span class='symbol'>:connection</span><span class='comma'>,</span> <span class='symbol'>:uid</span><span class='comma'>,</span> <span class='symbol'>:base</span><span class='comma'>,</span> <span class='symbol'>:auth</span><span class='comma'>,</span> <span class='symbol'>:filter</span><span class='comma'>,</span> <span class='symbol'>:password_policy</span><span class='comma'>,</span> <span class='symbol'>:last_operation_result</span><span class='comma'>,</span> <span class='symbol'>:last_password_policy_response</span></pre>
     </td>
   </tr>
 </table>
@@ -1129,7 +1349,7 @@
       <div class="method_details first">
   <h3 class="signature first" id="validate-class_method">
   
-    .<strong>validate</strong>(configuration = {})  &#x21d2; <tt>Object</tt> 
+    .<strong>validate</strong>(configuration = {})  &#x21d2; <tt>void</tt> 
   
 
   
@@ -1137,13 +1357,35 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
+    <p class="note returns_void">This method returns an undefined value.</p><p>Validate that a minimal configuration is present. Raises ArgumentError when required<br />
+keys are missing. This is a convenience to provide early feedback to callers.</p>
 
 
   </div>
 </div>
 <div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
   
+    <li>
+      
+        <span class='name'>configuration</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>configuration hash passed to the adaptor</p>
+</div>
+      
+    </li>
+  
+</ul>
+
 <p class="tag_title">Raises:</p>
 <ul class="raise">
   
@@ -1153,6 +1395,10 @@
         <span class='type'>(<tt>ArgumentError</tt>)</span>
       
       
+      
+        &mdash;
+        <div class='inline'><p>when required keys are missing</p>
+</div>
       
     </li>
   
@@ -1164,20 +1410,20 @@
       <pre class="lines">
 
 
-68
-69
-70
-71
-72
-73
-74
-75
-76
-77
-78</pre>
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/omniauth-ldap/adaptor.rb', line 68</span>
+      <pre class="code"><span class="info file"># File 'lib/omniauth-ldap/adaptor.rb', line 134</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_validate'>validate</span><span class='lparen'>(</span><span class='id identifier rubyid_configuration'>configuration</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_message'>message</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
@@ -1204,7 +1450,7 @@
       <div class="method_details first">
   <h3 class="signature first" id="bind_as-instance_method">
   
-    #<strong>bind_as</strong>(args = {})  &#x21d2; <tt>Object</tt> 
+    #<strong>bind_as</strong>(args = {})  &#x21d2; <tt>Net::LDAP::Entry</tt>, ... 
   
 
   
@@ -1216,11 +1462,114 @@
 :filter =&gt; “(mail=#user)”,<br />
 :password =&gt; psw</p>
 
+<p>Attempt to locate a user entry and bind as that entry using the supplied<br />
+password. Returns the entry on success, or false/nil on failure.</p>
+
 
   </div>
 </div>
 <div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
   
+    <li>
+      
+        <span class='name'>args</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>search and bind options forwarded to net-ldap’s search</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+  
+    
+    
+    <p class="tag_title">Options Hash (<tt>args</tt>):</p>
+    <ul class="option">
+      
+        <li>
+          <span class="name">:filter</span>
+          <span class="type">(<tt>Net::LDAP::Filter</tt>, <tt>String</tt>)</span>
+          <span class="default">
+            
+          </span>
+          
+            &mdash; <div class='inline'><p>LDAP filter to use</p>
+</div>
+          
+        </li>
+      
+        <li>
+          <span class="name">:size</span>
+          <span class="type">(<tt>Integer</tt>)</span>
+          <span class="default">
+            
+          </span>
+          
+            &mdash; <div class='inline'><p>maximum number of results to fetch</p>
+</div>
+          
+        </li>
+      
+        <li>
+          <span class="name">:password</span>
+          <span class="type">(<tt>String</tt>, <tt>Proc</tt>)</span>
+          <span class="default">
+            
+          </span>
+          
+            &mdash; <div class='inline'><p>a password string or callable returning a password</p>
+</div>
+          
+        </li>
+      
+    </ul>
+  
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Net::LDAP::Entry</tt>, <tt>false</tt>, <tt>nil</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>the found entry on successful bind, otherwise false/nil</p>
+</div>
+      
+    </li>
+  
+</ul>
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Adaptor/ConnectionError.html" title="OmniAuth::LDAP::Adaptor::ConnectionError (class)">ConnectionError</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>if the underlying LDAP search fails</p>
+</div>
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -1228,57 +1577,57 @@
       <pre class="lines">
 
 
-131
-132
-133
-134
-135
-136
-137
-138
-139
-140
-141
-142
-143
-144
-145
-146
-147
-148
-149
-150
-151
-152
-153
-154
-155
-156
-157
-158
-159
-160
-161
-162
-163
-164
-165
-166
-167
-168
-169
-170
-171
-172
-173
-174
-175
-176
-177
-178</pre>
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/omniauth-ldap/adaptor.rb', line 131</span>
+      <pre class="code"><span class="info file"># File 'lib/omniauth-ldap/adaptor.rb', line 216</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_bind_as'>bind_as</span><span class='lparen'>(</span><span class='id identifier rubyid_args'>args</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_result'>result</span> <span class='op'>=</span> <span class='kw'>false</span>
@@ -1338,7 +1687,7 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Nov  7 14:40:48 2025 by
+  Generated on Mon Nov 10 14:11:47 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.7).
 </div>

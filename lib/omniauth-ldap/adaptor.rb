@@ -10,12 +10,36 @@ require "sasl"
 
 module OmniAuth
   module LDAP
+    # Adaptor encapsulates the behavior required to connect to an LDAP server
+    # and perform searches and binds. It maps user-provided configuration into
+    # a Net::LDAP connection and provides compatibility helpers for different
+    # net-ldap and SASL versions. The adaptor is intentionally defensive and
+    # provides a small, stable API used by the OmniAuth strategy.
+    #
+    # @example Initialize with minimal config
+    #   adaptor = OmniAuth::LDAP::Adaptor.new(base: 'dc=example,dc=com', host: 'ldap.example.com')
+    #
+    # @note Public API: {validate}, {initialize}, {bind_as}, and attr readers such as {connection}, {uid}
     class Adaptor
+      # Generic adaptor error super-class
+      # @see Error classes that inherit from this class
       class LdapError < StandardError; end
+
+      # Raised when configuration is invalid
+      # @example
+      #   raise ConfigurationError, 'missing base'
       class ConfigurationError < StandardError; end
+
+      # Raised when authentication fails
       class AuthenticationError < StandardError; end
+
+      # Raised on connection-related failures
       class ConnectionError < StandardError; end
 
+      # Valid configuration keys accepted by the adaptor. These correspond to
+      # the options supported by the gem and are used during initialization.
+      #
+      # @return [Array<Symbol>]
       VALID_ADAPTER_CONFIGURATION_KEYS = [
         :hosts,
         :host,
@@ -42,7 +66,9 @@ module OmniAuth
         :ssl_version,
       ]
 
-      # A list of needed keys. Possible alternatives are specified using sub-lists.
+      # Required configuration keys. This may include alternatives as sub-lists
+      # (e.g., [:hosts, :host] means either key is acceptable).
+      # @return [Array]
       MUST_HAVE_KEYS = [
         :base,
         [:encryption, :method], # :method is deprecated
@@ -51,6 +77,8 @@ module OmniAuth
         [:uid, :filter],
       ]
 
+      # Supported encryption method mapping for configuration readability.
+      # @return [Hash<Symbol,Symbol,nil>]
       ENCRYPTION_METHOD = {
         simple_tls: :simple_tls,
         start_tls: :start_tls,
@@ -62,9 +90,47 @@ module OmniAuth
         tls: :start_tls,
       }
 
+      # @!attribute [rw] bind_dn
+      #   The distinguished name used for binding when provided in configuration.
+      #   @return [String, nil]
+      # @!attribute [rw] password
+      #   The bind password (may be nil for anonymous binds)
+      #   @return [String, nil]
       attr_accessor :bind_dn, :password
+
+      # Read-only attributes exposing connection and configuration state.
+      # @!attribute [r] connection
+      #   The underlying Net::LDAP connection object.
+      #   @return [Net::LDAP]
+      # @!attribute [r] uid
+      #   The user id attribute used for lookups (e.g., 'sAMAccountName')
+      #   @return [String]
+      # @!attribute [r] base
+      #   The base DN for searches.
+      #   @return [String]
+      # @!attribute [r] auth
+      #   The final auth structure used by net-ldap.
+      #   @return [Hash]
+      # @!attribute [r] filter
+      #   Custom filter pattern when provided in configuration.
+      #   @return [String, nil]
+      # @!attribute [r] password_policy
+      #   Whether to request LDAP Password Policy controls.
+      #   @return [Boolean]
+      # @!attribute [r] last_operation_result
+      #   Last operation result object returned by the ldap library (if any)
+      #   @return [Object, nil]
+      # @!attribute [r] last_password_policy_response
+      #   Last extracted password policy response control (if any)
+      #   @return [Object, nil]
       attr_reader :connection, :uid, :base, :auth, :filter, :password_policy, :last_operation_result, :last_password_policy_response
 
+      # Validate that a minimal configuration is present. Raises ArgumentError when required
+      # keys are missing. This is a convenience to provide early feedback to callers.
+      #
+      # @param configuration [Hash] configuration hash passed to the adaptor
+      # @raise [ArgumentError] when required keys are missing
+      # @return [void]
       def self.validate(configuration = {})
         message = []
         MUST_HAVE_KEYS.each do |names|
@@ -77,6 +143,15 @@ module OmniAuth
         raise ArgumentError.new(message.join(",") + " MUST be provided") unless message.empty?
       end
 
+      # Create a new adaptor instance backed by a Net::LDAP connection.
+      #
+      # The constructor does not immediately open a network connection but
+      # prepares the Net::LDAP instance according to the provided configuration.
+      # It also applies timeout settings where supported by the installed net-ldap version.
+      #
+      # @param configuration [Hash] user-provided configuration options
+      # @raise [ArgumentError, ConfigurationError] on invalid configuration
+      # @return [OmniAuth::LDAP::Adaptor]
       def initialize(configuration = {})
         Adaptor.validate(configuration)
         @configuration = configuration.dup
@@ -128,6 +203,16 @@ module OmniAuth
       #:base => "dc=yourcompany, dc=com",
       # :filter => "(mail=#{user})",
       # :password => psw
+      #
+      # Attempt to locate a user entry and bind as that entry using the supplied
+      # password. Returns the entry on success, or false/nil on failure.
+      #
+      # @param args [Hash] search and bind options forwarded to net-ldap's search
+      # @option args [Net::LDAP::Filter,String] :filter LDAP filter to use
+      # @option args [Integer] :size maximum number of results to fetch
+      # @option args [String,Proc] :password a password string or callable returning a password
+      # @return [Net::LDAP::Entry, false, nil] the found entry on successful bind, otherwise false/nil
+      # @raise [ConnectionError] if the underlying LDAP search fails
       def bind_as(args = {})
         result = false
         @last_operation_result = nil
@@ -179,6 +264,9 @@ module OmniAuth
 
       private
 
+      # Build encryption options for Net::LDAP given the configured method
+      #
+      # @return [Hash, nil] encryption options or nil for plain (no encryption)
       def encryption_options
         translated_method = translate_method
         return unless translated_method
@@ -189,6 +277,10 @@ module OmniAuth
         }
       end
 
+      # Normalize the user-provided encryption/method option and map to known values.
+      #
+      # @raise [ConfigurationError] when an unknown method is provided
+      # @return [Symbol, nil]
       def translate_method
         method = @encryption || @method
         method ||= "plain"
@@ -203,6 +295,10 @@ module OmniAuth
         ENCRYPTION_METHOD[normalized_method]
       end
 
+      # Build TLS options including backward-compatibility for deprecated keys.
+      #
+      # @param translated_method [Symbol] the normalized encryption method
+      # @return [Hash] a hash suitable for passing as :tls_options
       def tls_options(translated_method)
         return {} if translated_method.nil? # (plain)
 
@@ -223,6 +319,10 @@ module OmniAuth
         options
       end
 
+      # Build a list of SASL auth structures for each requested mechanism.
+      #
+      # @param options [Hash] options such as :username and :password
+      # @return [Array<Hash>] list of auth structures
       def sasl_auths(options = {})
         auths = []
         sasl_mechanisms = options[:sasl_mechanisms] || @sasl_mechanisms
@@ -241,6 +341,9 @@ module OmniAuth
         auths
       end
 
+      # Prepare SASL DIGEST-MD5 bind details
+      # @param options [Hash]
+      # @return [Array] initial_credential and a challenge response proc
       def sasl_bind_setup_digest_md5(options)
         bind_dn = options[:username]
         initial_credential = ""
@@ -253,6 +356,9 @@ module OmniAuth
         [initial_credential, challenge_response]
       end
 
+      # Prepare SASL GSS-SPNEGO bind details
+      # @param options [Hash]
+      # @return [Array] initial Type1 message and a nego proc
       def sasl_bind_setup_gss_spnego(options)
         bind_dn = options[:username]
         psw = options[:password]
@@ -268,8 +374,9 @@ module OmniAuth
         [Net::NTLM::Message::Type1.new.serialize, nego]
       end
 
-      private
-
+      # Default TLS/OpenSSL options used when not explicitly configured.
+      #
+      # @return [Hash]
       def default_options
         if @disable_verify_certificates
           # It is important to explicitly set verify_mode for two reasons:
@@ -286,6 +393,9 @@ module OmniAuth
       #
       # This gem may not always be in the context of Rails so we
       # do this rather than `.blank?`.
+      #
+      # @param hash [Hash]
+      # @return [Hash] sanitized hash with blank values removed
       def sanitize_hash_values(hash)
         hash.delete_if do |_, value|
           value.nil? ||
@@ -293,6 +403,10 @@ module OmniAuth
         end
       end
 
+      # Convert string keys to symbol keys for options hashes.
+      #
+      # @param hash [Hash]
+      # @return [Hash<Symbol, Object>]
       def symbolize_hash_keys(hash)
         hash.each_with_object({}) do |(key, value), result|
           result[key.to_sym] = value
@@ -300,6 +414,12 @@ module OmniAuth
       end
 
       # Capture the operation result and extract any Password Policy response control if present.
+      #
+      # This method is defensive: if the server or the installed net-ldap gem doesn't
+      # support controls, the method will swallow errors and leave policy fields nil.
+      #
+      # @param conn [Net::LDAP]
+      # @return [void]
       def capture_password_policy(conn)
         return unless @password_policy
         return unless conn.respond_to?(:get_operation_result)

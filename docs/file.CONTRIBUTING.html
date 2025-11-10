@@ -85,14 +85,14 @@ the <a href="https://gitlab.com/omniauth/omniauth-ldap/-/blob/main/CODE_OF_CONDU
 
 <h2 id="executables-vs-rake-tasks">Executables vs Rake tasks</h2>
 
-<p>Executables shipped by dependencies, such as omniauth-ldap, and stone_checksums, are available<br>
+<p>Executables shipped by dependencies, such as kettle-dev, and stone_checksums, are available<br>
 after running <code>bin/setup</code>. These include:</p>
 
 <ul>
   <li>gem_checksums</li>
   <li>kettle-changelog</li>
   <li>kettle-commit-msg</li>
-  <li>omniauth-ldap-setup</li>
+  <li>kettle-dev-setup</li>
   <li>kettle-dvcs</li>
   <li>kettle-pre-release</li>
   <li>kettle-readme-backers</li>
@@ -137,7 +137,13 @@ Tip: When running a single spec file locally, you may want <code>K_SOUP_COV_MIN_
 <ul>
   <li>SKIP_GEM_SIGNING: If set, skip gem signing during build/release</li>
   <li>GEM_CERT_USER: Username for selecting your public cert in <code>certs/&lt;USER&gt;.pem</code> (defaults to $USER)</li>
-  <li>SOURCE_DATE_EPOCH: Reproducible build timestamp. <code>kettle-release</code> will set this automatically for the session.</li>
+  <li>SOURCE_DATE_EPOCH: Reproducible build timestamp.
+    <ul>
+      <li>
+<code>kettle-release</code> will set this automatically for the session.</li>
+      <li>Not needed on bundler &gt;= 2.7.0, as reproducible builds have become the default.</li>
+    </ul>
+  </li>
 </ul>
 
 <p>Git hooks and commit message helpers (exe/kettle-commit-msg)</p>
@@ -243,6 +249,7 @@ See: <a href="https://guides.rubygems.org/security/#building-gems">RubyGems Secu
   <li>Update version.rb to contain the correct version-to-be-released.</li>
   <li>Run <code>bundle exec kettle-changelog</code>.</li>
   <li>Run <code>bundle exec kettle-release</code>.</li>
+  <li>Stay awake and monitor the release process for any errors, and answer any prompts.</li>
 </ol>
 
 <h4 id="manual-process">Manual process</h4>
@@ -295,7 +302,7 @@ push git commits and tags, and push the <code>.gem</code> file to the gem host c
 </div></div>
 
       <div id="footer">
-  Generated on Fri Nov  7 14:40:47 2025 by
+  Generated on Mon Nov 10 14:11:46 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.7).
 </div>

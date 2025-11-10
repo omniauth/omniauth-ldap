@@ -1,6 +1,6 @@
 {
-  "lib/omniauth-ldap/adaptor.rb:928056405": [
-    [68, 7, 413, "Style/ClassMethodsDefinitions: Use `class << self` to define a class method.", 105664470]
+  "lib/omniauth-ldap/adaptor.rb:4205312053": [
+    [134, 7, 413, "Style/ClassMethodsDefinitions: Use `class << self` to define a class method.", 105664470]
   ],
   "spec/integration/middleware_spec.rb:2185613788": [
     [3, 16, 39, "RSpec/DescribeClass: The first argument to describe should be the class or module being tested.", 638096201],

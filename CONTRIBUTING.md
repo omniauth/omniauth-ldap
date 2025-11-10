@@ -24,13 +24,13 @@ Follow these instructions:
 
 ## Executables vs Rake tasks
 
-Executables shipped by dependencies, such as omniauth-ldap, and stone_checksums, are available
+Executables shipped by dependencies, such as kettle-dev, and stone_checksums, are available
 after running `bin/setup`. These include:
 
 - gem_checksums
 - kettle-changelog
 - kettle-commit-msg
-- omniauth-ldap-setup
+- kettle-dev-setup
 - kettle-dvcs
 - kettle-pre-release
 - kettle-readme-backers
@@ -68,7 +68,9 @@ GitHub API and CI helpers
 Releasing and signing
 - SKIP_GEM_SIGNING: If set, skip gem signing during build/release
 - GEM_CERT_USER: Username for selecting your public cert in `certs/<USER>.pem` (defaults to $USER)
-- SOURCE_DATE_EPOCH: Reproducible build timestamp. `kettle-release` will set this automatically for the session.
+- SOURCE_DATE_EPOCH: Reproducible build timestamp.
+  - `kettle-release` will set this automatically for the session.
+  - Not needed on bundler >= 2.7.0, as reproducible builds have become the default.
 
 Git hooks and commit message helpers (exe/kettle-commit-msg)
 - GIT_HOOK_BRANCH_VALIDATE: Branch name validation mode (e.g., `jira`) or `false` to disable
@@ -166,6 +168,7 @@ NOTE: To build without signing the gem set `SKIP_GEM_SIGNING` to any value in th
 1. Update version.rb to contain the correct version-to-be-released.
 2. Run `bundle exec kettle-changelog`.
 3. Run `bundle exec kettle-release`.
+4. Stay awake and monitor the release process for any errors, and answer any prompts.
 
 #### Manual process
 
