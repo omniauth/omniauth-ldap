@@ -85,7 +85,7 @@ workflow:
     - bundle exec appraisal ${APPRAISAL} bin/rake --tasks
     # Run tests, skipping those that won't work in CI
     - >
-      bundle exec appraisal unlocked_deps \
+      bundle exec appraisal ${APPRAISAL} \
         bin/rspec spec \
           --tag \~ci_skip \
           --format progress \
@@ -106,7 +106,7 @@ ruby-current:
 ruby-ruby3_1:
   variables:
     RUBYGEMS_VERSION: "3.6.9"
-    APPRAISAL: ruby_3_1
+    APPRAISAL: ruby-3-1
     K_SOUP_COV_DO: false
   <<: *test_definition-legacy
   parallel:
@@ -116,7 +116,7 @@ ruby-ruby3_1:
 ruby-ruby3_0:
   variables:
     RUBYGEMS_VERSION: "3.5.23"
-    APPRAISAL: ruby_3_0
+    APPRAISAL: ruby-3-0
     K_SOUP_COV_DO: false
   <<: *test_definition-legacy
   parallel:
@@ -126,7 +126,7 @@ ruby-ruby3_0:
 ruby-ruby2_7:
   variables:
     RUBYGEMS_VERSION: "3.4.22"
-    APPRAISAL: ruby_2_7
+    APPRAISAL: ruby-2-7
     K_SOUP_COV_DO: false
   <<: *test_definition-legacy
   parallel:
