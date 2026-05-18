@@ -132,7 +132,7 @@ RSpec.describe OmniAuth::LDAP::Adaptor do
       context "when tls_options are specified" do
         it "passes the values along with defaults" do
           cert = OpenSSL::X509::Certificate.new
-          key = OpenSSL::PKey::RSA.new
+          key = OpenSSL::PKey::RSA.generate(2048)
 
           adaptor = described_class.new({host: "192.168.1.145", encryption: "ssl", base: "dc=intridea, dc=com", port: 636, uid: "sAMAccountName", bind_dn: "bind_dn", password: "password", tls_options: {ca_file: "/etc/ca.pem", ssl_version: "TLSv1_2", cert: cert, key: key}})
           expect(adaptor.connection.instance_variable_get(:@encryption)).to include tls_options: OpenSSL::SSL::SSLContext::DEFAULT_PARAMS.merge(ca_file: "/etc/ca.pem", ssl_version: "TLSv1_2", cert: cert, key: key)

@@ -97,12 +97,18 @@ module OmniAuth
       option :name_proc, lambda { |n| n }
 
       # Trusted header SSO support (disabled by default)
-      # :header_auth - when true and the header is present, the strategy trusts the upstream gateway
-      #                 and searches the directory for the user without requiring a user password.
-      # :header_name - which header/env key to read (default: "REMOTE_USER"). We will also check the
-      #                 standard Rack "HTTP_" variant automatically.
+      # :header_auth - when true and the configured header/env key is present, the strategy trusts
+      #                 the upstream gateway and searches the directory for the user without
+      #                 requiring a user password.
+      # :header_name - which header/env key to read (default: "REMOTE_USER").
+      # :header_auth_source - :env trusts only server-set env variables. :http_header trusts only
+      #                       Rack HTTP header keys, and should only be used behind a proxy that
+      #                       strips client-supplied copies of the header.
+      # :header_auth_require_tls - require a TLS request for header auth.
       option :header_auth, false
       option :header_name, "REMOTE_USER"
+      option :header_auth_source, :env
+      option :header_auth_require_tls, true
 
       # Optional timeouts (forwarded to Net::LDAP when supported)
       option :connect_timeout, nil
@@ -123,6 +129,8 @@ module OmniAuth
         if OMNIAUTH_GTE_V2 && request.get?
           return Rack::Response.new("", 404, {"Content-Type" => "text/plain"}).finish
         end
+
+        validate_header_auth_configuration!
 
         # Fast-path: if a trusted identity header is present, skip the login form
         # and jump to the callback where we will complete using directory lookup.
@@ -162,6 +170,8 @@ module OmniAuth
         @adaptor = OmniAuth::LDAP::Adaptor.new(@options)
 
         return fail!(:invalid_request_method) unless valid_request_method?
+
+        validate_header_auth_configuration!
 
         # Header-based SSO (REMOTE_USER-style) path
         if (hu = header_username)
@@ -311,22 +321,60 @@ module OmniAuth
         @env["action_dispatch.request.request_parameters"] || request.params
       end
 
-      # Extract a normalized username from a trusted header when enabled.
+      # Extract a normalized username from a trusted header/env key when enabled.
       # Returns nil when not configured or not present.
       #
-      # The method will attempt the raw env key (e.g. "REMOTE_USER") and the Rack
-      # HTTP_ variant (e.g. "HTTP_REMOTE_USER" or "HTTP_X_REMOTE_USER").
+      # The source is intentionally explicit: :env reads the raw env key
+      # (e.g. "REMOTE_USER"), while :http_header reads the Rack HTTP_ variant
+      # (e.g. "HTTP_REMOTE_USER" or "HTTP_X_REMOTE_USER").
       #
       # @return [String, nil] normalized username or nil if not present
       def header_username
         return unless options[:header_auth]
 
-        name = options[:header_name] || "REMOTE_USER"
-        # Try both the raw env var (e.g., REMOTE_USER) and the Rack HTTP_ variant (e.g., HTTP_REMOTE_USER or HTTP_X_REMOTE_USER)
-        raw = request.env[name] || request.env["HTTP_#{name.upcase.tr("-", "_")}"]
+        raw = request.env[header_auth_env_key]
         return if raw.nil? || raw.to_s.strip.empty?
 
         options[:name_proc].call(raw.to_s)
+      end
+
+      # Validate trusted header auth before reading the configured identity key.
+      #
+      # @raise [ArgumentError] when the header auth options are unsafe or invalid
+      # @return [void]
+      def validate_header_auth_configuration!
+        return unless options[:header_auth]
+
+        log_header_auth_warning
+
+        source = (options[:header_auth_source] || :env).to_sym
+        unless [:env, :http_header].include?(source)
+          raise ArgumentError, "header_auth_source must be :env or :http_header"
+        end
+
+        if options[:header_auth_require_tls] && !request.ssl?
+          raise ArgumentError, "header_auth requires TLS unless header_auth_require_tls is disabled"
+        end
+      end
+
+      # Rack env key selected by the explicit header auth source option.
+      #
+      # @return [String]
+      def header_auth_env_key
+        name = options[:header_name] || "REMOTE_USER"
+        return name if (options[:header_auth_source] || :env).to_sym == :env
+
+        "HTTP_#{name.upcase.tr("-", "_")}"
+      end
+
+      # Warn operators that trusted header auth delegates authentication to the upstream gateway.
+      #
+      # @return [void]
+      def log_header_auth_warning
+        logger = OmniAuth.config.respond_to?(:logger) ? OmniAuth.config.logger : nil
+        return unless logger&.respond_to?(:warn)
+
+        logger.warn("[omniauth-ldap] SECURITY WARNING: header_auth is enabled. This trusts upstream authentication completely; only enable it behind a trusted proxy that strips client-supplied identity headers.")
       end
 
       # Perform a directory lookup for the given username using the strategy configuration

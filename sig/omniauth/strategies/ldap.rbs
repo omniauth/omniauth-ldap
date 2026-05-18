@@ -22,6 +22,12 @@ module OmniAuth
       # Extract username from a trusted header when enabled
       def header_username: () -> (String | nil)
 
+      def validate_header_auth_configuration!: () -> void
+
+      def header_auth_env_key: () -> String
+
+      def log_header_auth_warning: () -> void
+
       # Perform a directory lookup for a given username; returns an Entry or nil
       def directory_lookup: (OmniAuth::LDAP::Adaptor, String) -> untyped
 

@@ -607,15 +607,19 @@ Note: You generally do not need this override. Prefer configuring your proxy to 
 
 ### Trusted header SSO (REMOTE_USER and friends)
 
-Some deployments terminate SSO at a reverse proxy or portal and forward the already-authenticated user identity via an HTTP header such as `REMOTE_USER`.
+Some deployments terminate SSO at a reverse proxy or portal and forward the already-authenticated user identity via a server-set environment variable or HTTP header such as `REMOTE_USER`.
 When you enable this mode, the LDAP strategy will trust the upstream header, perform a directory lookup for that user, and complete OmniAuth without asking the user for a password.
 
-Important: Only enable this behind a trusted front-end that strips and sets the header itself. Never enable on a public endpoint without such a gateway, or an attacker could spoof the header.
+Important: Only enable this behind a trusted front-end that authenticates users before they can reach the OmniAuth endpoint. When `header_auth` is enabled the strategy logs a prominent security warning because it trusts the upstream identity completely.
 
 Configuration options:
 
 - `:header_auth` (Boolean, default: false) — Enable trusted header SSO.
-- `:header_name` (String, default: "REMOTE_USER") — The env/header key to read. The strategy checks both `env["REMOTE_USER"]` and the Rack variant `env["HTTP_REMOTE_USER"]`.
+- `:header_name` (String, default: "REMOTE_USER") — The env/header key to read.
+- `:header_auth_source` (`:env` or `:http_header`, default: `:env`) — Which Rack env key form to trust.
+  - `:env` reads only the exact server-set environment key, such as `env["REMOTE_USER"]`.
+  - `:http_header` reads only the Rack HTTP header key, such as `env["HTTP_REMOTE_USER"]`. Only use this behind a proxy that strips client-sent copies of the header before setting its trusted value.
+- `:header_auth_require_tls` (Boolean, default: true) — Raise an error if trusted header SSO is used on a non-TLS request.
 - `:name_proc` is applied to the header value before search (e.g., to strip a domain part).
 - Search is done using your configured `:uid` or `:filter` and the service bind (`:bind_dn`/`:password`) or anonymous bind if allowed.
 
@@ -629,8 +633,9 @@ use OmniAuth::Builder do
     uid: "uid",
     bind_dn: "cn=search,dc=example,dc=com",
     password: ENV["LDAP_SEARCH_PASSWORD"],
-    header_auth: true,                 # trust REMOTE_USER
-    header_name: "REMOTE_USER",       # default
+    header_auth: true,                  # trust the configured upstream identity
+    header_name: "REMOTE_USER",        # default
+    header_auth_source: :env,           # default; reads env["REMOTE_USER"]
     name_proc: proc { |n| n.split("@").first }
 end
 ```
@@ -648,6 +653,7 @@ Rails.application.config.middleware.use(OmniAuth::Builder) do
     password: ENV["LDAP_SEARCH_PASSWORD"],
     header_auth: true,
     header_name: "REMOTE_USER",
+    header_auth_source: :env,
     # Optionally restrict with a group filter while using the header value
     filter: "(&(sAMAccountName=%{username})(memberOf=cn=myapp-users,ou=groups,dc=acme,dc=corp))",
     name_proc: proc { |n| n.gsub(/@.*$/, "") }
@@ -662,8 +668,9 @@ Flow:
 
 Security checklist:
 
-- Ensure your reverse proxy strips user-controlled copies of the header and sets the canonical `REMOTE_USER` itself.
-- Prefer TLS-secured internal links between the proxy and your app.
+- Prefer `header_auth_source: :env` for server-set variables such as `REMOTE_USER`.
+- Use `header_auth_source: :http_header` only when your reverse proxy strips user-controlled copies of the header and sets the canonical value itself.
+- Keep `header_auth_require_tls` enabled unless a separate trusted channel protects traffic between the proxy and your app.
 - Consider also restricting with a group-based `:filter` so only authorized users can sign in.
 
 ## 🦷 FLOSS Funding

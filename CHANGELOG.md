@@ -22,7 +22,13 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Added
 
+- Add `header_auth_source` to require explicit selection of trusted header identity source (`:env` or `:http_header`)
+- Add `header_auth_require_tls` to require TLS for trusted header SSO by default
+- Log a prominent security warning when `header_auth` is enabled
+
 ### Changed
+
+- Trusted header SSO now defaults to trusting only server-set env variables and no longer checks Rack `HTTP_` header variants unless `header_auth_source: :http_header` is configured
 
 ### Deprecated
 
@@ -30,7 +36,11 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Fixed
 
+- Fix OpenSSL 3/Ruby 4 compatibility in the TLS options adaptor spec
+
 ### Security
+
+- Harden trusted header SSO against spoofing by removing automatic fallback from `REMOTE_USER` to `HTTP_REMOTE_USER`
 
 ## [2.3.3] - 2025-11-10
 

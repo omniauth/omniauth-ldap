@@ -545,25 +545,33 @@ sn: User
       conn
     end
 
+    def tls_env(env = {})
+      {"HTTPS" => "on"}.merge(env)
+    end
+
+    def plain_env(env = {})
+      {"HTTPS" => "off", "rack.url_scheme" => "http"}.merge(env)
+    end
+
     it "redirects from request phase when header present" do
-      env = {"rack.session" => {}, "REQUEST_METHOD" => "POST", "PATH_INFO" => "/auth/ldap", "REMOTE_USER" => "alice"}
+      env = tls_env("rack.session" => {}, "REQUEST_METHOD" => "POST", "PATH_INFO" => "/auth/ldap", "REMOTE_USER" => "alice")
       post "/auth/ldap", nil, env
       expect(last_response).to be_redirect
-      expect(last_response.headers["Location"]).to eq "http://example.org/auth/ldap/callback"
+      expect(last_response.headers["Location"]).to eq "https://example.org/auth/ldap/callback"
     end
 
     it "redirects including subdirectory when header present and app is mounted under a subdirectory" do
-      env = {"rack.session" => {}, "REQUEST_METHOD" => "POST", "PATH_INFO" => "/auth/ldap", "SCRIPT_NAME" => "/subdir", "REMOTE_USER" => "alice"}
+      env = tls_env("rack.session" => {}, "REQUEST_METHOD" => "POST", "PATH_INFO" => "/auth/ldap", "SCRIPT_NAME" => "/subdir", "REMOTE_USER" => "alice")
       post "/auth/ldap", nil, env
       expect(last_response).to be_redirect
-      expect(last_response.headers["Location"]).to eq "http://example.org/subdir/auth/ldap/callback"
+      expect(last_response.headers["Location"]).to eq "https://example.org/subdir/auth/ldap/callback"
     end
 
     it "redirects including nested subdirectory when header present and app is mounted under a nested subdirectory" do
-      env = {"rack.session" => {}, "REQUEST_METHOD" => "POST", "PATH_INFO" => "/auth/ldap", "SCRIPT_NAME" => "/nested/app", "REMOTE_USER" => "alice"}
+      env = tls_env("rack.session" => {}, "REQUEST_METHOD" => "POST", "PATH_INFO" => "/auth/ldap", "SCRIPT_NAME" => "/nested/app", "REMOTE_USER" => "alice")
       post "/auth/ldap", nil, env
       expect(last_response).to be_redirect
-      expect(last_response.headers["Location"]).to eq "http://example.org/nested/app/auth/ldap/callback"
+      expect(last_response.headers["Location"]).to eq "https://example.org/nested/app/auth/ldap/callback"
     end
 
     it "authenticates on callback without password using REMOTE_USER" do
@@ -573,7 +581,7 @@ mail: alice@example.com
 })
       allow(@adaptor).to receive(:connection).and_return(connection_returning(entry))
 
-      post "/auth/ldap/callback", nil, {"REMOTE_USER" => "alice"}
+      post "/auth/ldap/callback", nil, tls_env("REMOTE_USER" => "alice")
 
       expect(last_response).not_to be_redirect
       auth = last_request.env["omniauth.auth"]
@@ -581,16 +589,63 @@ mail: alice@example.com
       expect(auth.info.nickname).to eq "alice"
     end
 
-    it "authenticates on callback with HTTP_ header variant" do
-      entry = Net::LDAP::Entry.from_single_ldif_string(%{dn: cn=alice, dc=example, dc=com
+    it "ignores the HTTP_ header variant when source is :env" do
+      post "/auth/ldap/callback", nil, tls_env("HTTP_REMOTE_USER" => "alice")
+      expect(last_response).to be_redirect
+      expect(last_response.headers["Location"]).to match(/missing_credentials/)
+    end
+
+    context "when configured to trust HTTP headers" do
+      let(:app) do
+        Rack::Builder.new do
+          use OmniAuth::Test::PhonySession
+          use MyHeaderProvider,
+            name: "ldap",
+            title: "Header LDAP",
+            host: "ldap.example.com",
+            base: "dc=example,dc=com",
+            uid: "uid",
+            header_auth: true,
+            header_name: "REMOTE_USER",
+            header_auth_source: :http_header,
+            name_proc: proc { |n| n.gsub(/@.*$/, "") }
+          run lambda { |env| [404, {"Content-Type" => "text/plain"}, [env.key?("omniauth.auth").to_s]] }
+        end.to_app
+      end
+
+      it "authenticates on callback with HTTP_ header variant" do
+        entry = Net::LDAP::Entry.from_single_ldif_string(%{dn: cn=alice, dc=example, dc=com
 uid: alice
 })
-      allow(@adaptor).to receive(:connection).and_return(connection_returning(entry))
+        allow(@adaptor).to receive(:connection).and_return(connection_returning(entry))
 
-      post "/auth/ldap/callback", nil, {"HTTP_REMOTE_USER" => "alice"}
-      expect(last_response).not_to be_redirect
-      auth = last_request.env["omniauth.auth"]
-      expect(auth.info.nickname).to eq "alice"
+        post "/auth/ldap/callback", nil, tls_env("HTTP_REMOTE_USER" => "alice")
+
+        expect(last_response).not_to be_redirect
+        auth = last_request.env["omniauth.auth"]
+        expect(auth.info.nickname).to eq "alice"
+      end
+    end
+
+    it "fails when header auth is used without TLS by default" do
+      post "http://example.org/auth/ldap/callback", nil, plain_env("REMOTE_USER" => "alice")
+
+      expect(last_response).to be_redirect
+      expect(last_request.env["omniauth.error"]).to be_a(ArgumentError)
+      expect(last_request.env["omniauth.error"].message).to match(/requires TLS/)
+    end
+
+    it "logs a security warning when header auth is enabled" do
+      logger = double("logger")
+      allow(logger).to receive(:debug)
+      allow(logger).to receive(:error)
+      allow(logger).to receive(:warn)
+      allow(OmniAuth.config).to receive(:logger).and_return(logger)
+      allow(@adaptor).to receive(:connection).and_return(connection_returning(nil))
+
+      post "/auth/ldap/callback", nil, tls_env("REMOTE_USER" => "alice")
+
+      expect(logger).to have_received(:warn).with(/SECURITY WARNING: header_auth is enabled/)
     end
 
     it "applies name_proc and filter mapping when provided" do
@@ -604,7 +659,7 @@ uid: alice
       )
       expect(Net::LDAP::Filter).to receive(:construct).with("uid=alice").and_call_original
 
-      post "/auth/ldap/callback", nil, {"REMOTE_USER" => "alice@example.com"}
+      post "/auth/ldap/callback", nil, tls_env("REMOTE_USER" => "alice@example.com")
       expect(last_response).not_to be_redirect
     end
 
@@ -618,13 +673,13 @@ uid: al(ice)
       )
       expect(Net::LDAP::Filter).to receive(:construct).with('uid=al\28ice\29').and_call_original
 
-      post "/auth/ldap/callback", nil, {"REMOTE_USER" => "al(ice)"}
+      post "/auth/ldap/callback", nil, tls_env("REMOTE_USER" => "al(ice)")
       expect(last_response).not_to be_redirect
     end
 
     it "fails when directory lookup returns no entry" do
       allow(@adaptor).to receive(:connection).and_return(connection_returning(nil))
-      post "/auth/ldap/callback", nil, {"REMOTE_USER" => "missing"}
+      post "/auth/ldap/callback", nil, tls_env("REMOTE_USER" => "missing")
       expect(last_response).to be_redirect
       expect(last_response.headers["Location"]).to match(/invalid_credentials/)
     end
@@ -641,7 +696,7 @@ uid: alice
         connection: connection_returning(entry),
       )
 
-      post "/auth/ldap/callback", nil, {"REMOTE_USER" => "alice@example.com"}
+      post "/auth/ldap/callback", nil, tls_env("REMOTE_USER" => "alice@example.com")
       expect(last_response).not_to be_redirect
     end
 
@@ -671,7 +726,7 @@ telephonenumber: 555-555-5555
 })
         allow(@adaptor).to receive(:connection).and_return(connection_returning(entry))
 
-        post "/auth/ldap/callback", nil, {"REMOTE_USER" => "bob"}
+        post "/auth/ldap/callback", nil, tls_env("REMOTE_USER" => "bob")
         expect(last_response).not_to be_redirect
         auth = last_request.env["omniauth.auth"]
         # phone should come from mobile due to custom mapping override
