@@ -1,32 +1,3 @@
-| 📍 NOTE                                                                                                                                                           |
-|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| RubyGems (the [GitHub org][rubygems-org], not the website) [suffered][draper-security] a [hostile takeover][ellen-takeover] in September 2025.                    |
-| Ultimately [4 maintainers][simi-removed] were [hard removed][martin-removed] and a reason has been given for only 1 of those, while 2 others resigned in protest. |
-| It is a [complicated story][draper-takeover] which is difficult to [parse quickly][draper-lies].                                                                  |
-| I'm adding notes like this to gems because I [don't condone theft][draper-theft] of repositories or gems from their rightful owners.                              |
-| If a similar theft happened with my repos/gems, I'd hope some would stand up for me.                                                                              |
-| Disenfranchised former-maintainers have started [gem.coop][gem-coop].                                                                                             |
-| Once available I will publish there exclusively; unless RubyCentral makes amends with the community.                                                              |
-| The ["Technology for Humans: Joel Draper"][reinteractive-podcast] podcast episode by [reinteractive][reinteractive] is the most cogent summary I'm aware of.      |
-| See [here][gem-naming], [here][gem-coop] and [here][martin-ann] for more info on what comes next.                                                                 |
-| What I'm doing: A (WIP) proposal for [bundler/gem scopes][gem-scopes], and a (WIP) proposal for a federated [gem server][gem-server].                             |
-
-[rubygems-org]: https://github.com/rubygems/
-[draper-security]: https://joel.drapper.me/p/ruby-central-security-measures/
-[draper-takeover]: https://joel.drapper.me/p/ruby-central-takeover/
-[ellen-takeover]: https://pup-e.com/blog/goodbye-rubygems/
-[simi-removed]: https://www.reddit.com/r/ruby/s/gOk42POCaV
-[martin-removed]: https://bsky.app/profile/martinemde.com/post/3m3occezxxs2q
-[draper-lies]: https://joel.drapper.me/p/ruby-central-fact-check/
-[draper-theft]: https://joel.drapper.me/p/ruby-central/
-[reinteractive]: https://reinteractive.com/ruby-on-rails
-[gem-coop]: https://gem.coop
-[gem-naming]: https://github.com/gem-coop/gem.coop/issues/12
-[martin-ann]: https://martinemde.com/2025/10/05/announcing-gem-coop.html
-[gem-scopes]: https://github.com/galtzo-floss/bundle-namespace
-[gem-server]: https://github.com/galtzo-floss/gem-server
-[reinteractive-podcast]: https://youtu.be/_H4qbtC5qzU?si=BvuBU90R2wAqD2E6
-
 [![Galtzo FLOSS Logo by Aboling0, CC BY-SA 4.0][🖼️galtzo-i]][🖼️galtzo-discord] [![ruby-lang Logo, Yukihiro Matsumoto, Ruby Visual Identity Team, CC BY-SA 2.5][🖼️ruby-lang-i]][🖼️ruby-lang] [![omniauth Logo (presumed to be) by tomeara, (presumed to be) MIT License][🖼️omniauth-i]][🖼️omniauth]
 
 [🖼️galtzo-i]: https://logos.galtzo.com/assets/images/galtzo-floss/avatar-192px.svg
@@ -47,6 +18,13 @@
 `if ci_badges.map(&:color).all? { it == "green"}` 👇️ send money so I can do more of this. FLOSS maintenance is now my full-time job.
 
 [![Sponsor Me on Github][🖇sponsor-img]][🖇sponsor] [![Liberapay Goal Progress][⛳liberapay-img]][⛳liberapay] [![Donate on PayPal][🖇paypal-img]][🖇paypal] [![Buy me a coffee][🖇buyme-small-img]][🖇buyme] [![Donate on Polar][🖇polar-img]][🖇polar] [![Donate at ko-fi.com][🖇kofi-img]][🖇kofi]
+
+<details>
+    <summary>👣 How will this project approach the September 2025 hostile takeover of RubyGems? 🚑️</summary>
+
+I've summarized my thoughts in [this blog post](https://dev.to/galtzo/hostile-takeover-of-rubygems-my-thoughts-5hlo).
+
+</details>
 
 ## 🌻 Synopsis
 
@@ -79,7 +57,9 @@ use OmniAuth::Strategies::LDAP,
 # use OmniAuth::Strategies::LDAP, filter: '(&(uid=%{username})(memberOf=cn=myapp-users,ou=groups,dc=example,dc=com))'
 ```
 
-All of the listed options are required, with the exception of `:title`, `:name_proc`, `:bind_dn`, and `:password`.
+At minimum you normally configure `:host`, `:base`, and either `:uid` or `:filter`. The other options shown above customize connection behavior, TLS, username normalization, timeouts, and returned auth info.
+
+For trusted header SSO, enable `header_auth: true` and explicitly choose the trusted identity source with `header_auth_source: :env` or `header_auth_source: :http_header`. See [Trusted header SSO](#trusted-header-sso-remote_user-and-friends) for the security requirements.
 
 ### TLS certificate verification
 
@@ -228,14 +208,14 @@ The following options are available for configuring the OmniAuth LDAP strategy:
 ### Required Options
 
 - `:host` - The hostname or IP address of the LDAP server.
-- `:port` - The port number of the LDAP server (default: 389).
-- `:method` - The connection method. Allowed values: `:plain`, `:ssl`, `:tls` (default: `:plain`).
 - `:base` - The base DN for the LDAP search.
 - `:uid` or `:filter` - Either `:uid` (the LDAP attribute for username, default: "sAMAccountName") or `:filter` (LDAP filter for searching user entries). If `:filter` is provided, `:uid` is not required. Note: This `:uid` option is the search attribute, not the top-level `auth.uid` in the OmniAuth result.
 
 ### Optional Options
 
 - `:title` - The title for the authentication form (default: "LDAP Authentication").
+- `:port` - The port number of the LDAP server (default: 389).
+- `:encryption` - The connection method. Allowed values: `:plain`, `:ssl`, `:tls` (default: `:plain`). `:method` is still accepted for compatibility, but is deprecated.
 - `:bind_dn` - The DN to bind with for searching users (required if anonymous access is not allowed).
 - `:password` - The password for the bind DN.
 - `:name_proc` - A proc to process the username before using it in the search (default: identity proc that returns the username unchanged).
@@ -249,6 +229,10 @@ The following options are available for configuring the OmniAuth LDAP strategy:
 - `:connect_timeout` - Maximum time in seconds to wait when establishing the TCP connection to the LDAP server. Forwarded to `Net::LDAP`.
 - `:read_timeout` - Maximum time in seconds to wait for reads during LDAP operations (search/bind). Forwarded to `Net::LDAP`.
 - `:mapping` - Customize how LDAP attributes map to the returned `auth.info` hash. A sensible default mapping is built into the strategy and will be merged with your overrides. See `lib/omniauth/strategies/ldap.rb` for the default keys and behavior; values can be a String (single attribute), an Array (first present attribute wins), or a Hash (string pattern with placeholders like `%0` combined from multiple attributes).
+- `:header_auth` - Enable trusted upstream identity SSO (default: false). When enabled, the strategy trusts the configured header/env key, performs an LDAP lookup, and skips the user password bind.
+- `:header_name` - Header/env key used for trusted header SSO (default: "REMOTE_USER").
+- `:header_auth_source` - Trusted identity source for header SSO (default: `:env`). Use `:env` to read only `env["REMOTE_USER"]`-style server variables. Use `:http_header` to read only Rack `HTTP_` header keys such as `env["HTTP_REMOTE_USER"]`; only configure this behind a proxy that strips client-supplied copies.
+- `:header_auth_require_tls` - Require TLS for trusted header SSO requests (default: true).
 
 Example enabling password policy:
 
@@ -284,7 +268,7 @@ Where to find the "username"-style value
 - You can also read the raw attribute from `auth.extra.raw_info` (a `Net::LDAP::Entry`):
 
 ```ruby
-get "/auth/ldap/callback" do
+post "/auth/ldap/callback" do
   auth = request.env["omniauth.auth"]
   dn = auth.uid                                # => "cn=alice,ou=users,dc=example,dc=com"
   username = auth.info.nickname                # => "alice" (from uid/sAMAccountName)
@@ -300,7 +284,7 @@ If you need top-level `auth.uid` to be something other than the DN (for example,
 ## 🔧 Basic Usage
 
 The strategy exposes a simple Rack middleware and can be used in plain Rack apps, Sinatra, or Rails.
-Direct users to `/auth/ldap` to start authentication and handle the callback at `/auth/ldap/callback`.
+With OmniAuth 2.x, initiate authentication with `POST /auth/ldap`; `GET /auth/ldap` returns 404 by default. Older OmniAuth 1.x deployments may still render the form on `GET /auth/ldap`. Handle the callback at `/auth/ldap/callback`.
 
 Below are several concrete examples to get you started.
 
@@ -316,7 +300,7 @@ use OmniAuth::Builder do
   provider :ldap,
     host: "ldap.example.com",
     port: 389,
-    method: :plain,
+    encryption: :plain,
     base: "dc=example,dc=com",
     uid: "uid",
     title: "Example LDAP"
@@ -325,7 +309,7 @@ end
 run lambda { |env| [404, {"Content-Type" => "text/plain"}, [env.key?("omniauth.auth").to_s]] }
 ```
 
-Visit `GET /auth/ldap` to initiate authentication (the middleware will render a login form unless you POST to `/auth/ldap`).
+Submit `POST /auth/ldap` to initiate authentication. With OmniAuth 2.x, the middleware renders the login form on POST when credentials are not already present; with OmniAuth 1.x, `GET /auth/ldap` can also render the form.
 
 ### Sinatra example
 
@@ -344,10 +328,10 @@ use OmniAuth::Builder do
 end
 
 get "/" do
-  '<a href="/auth/ldap">Sign in with LDAP</a>'
+  '<form action="/auth/ldap" method="post"><button type="submit">Sign in with LDAP</button></form>'
 end
 
-get "/auth/ldap/callback" do
+post "/auth/ldap/callback" do
   auth = request.env["omniauth.auth"]
   "Hello, #{auth.info["name"]}"
 end
@@ -371,7 +355,7 @@ Rails.application.config.middleware.use(OmniAuth::Builder) do
 end
 ```
 
-Then link users to `/auth/ldap` in your app (for example, in a Devise sign-in page).
+Then submit users to `/auth/ldap` with POST in your app (for example, from a Devise sign-in page).
 
 ### Use JSON Body
 
@@ -422,7 +406,7 @@ Examples
 
 Notes
 
-- You can still initiate authentication by visiting `GET /auth/ldap` to render the HTML form and then submitting it (form-encoded). JSON is an additional option, not a replacement.
+- You can still initiate authentication with a regular form POST and then submit credentials as form-encoded data. JSON is an additional option, not a replacement.
 - In the callback phase (`POST /auth/ldap/callback`), the strategy reads JSON credentials the same way; Rails exposes them via `action_dispatch.request.request_parameters` and non-Rails apps should use a JSON parser middleware.
 
 ### Using a custom filter
@@ -802,7 +786,7 @@ See [LICENSE.txt][📄license] for the official [Copyright Notice][📄copyright
 
 <ul>
     <li>
-        Copyright (c) 2025 Peter H. Boling, of
+        Copyright (c) 2025 - 2026 Peter H. Boling, of
         <a href="https://discord.gg/3qme4XHNKN">
             Galtzo.com
             <picture>

@@ -2,6 +2,12 @@
   "lib/omniauth-ldap/adaptor.rb:4205312053": [
     [134, 7, 413, "Style/ClassMethodsDefinitions: Use `class << self` to define a class method.", 105664470]
   ],
+  "lib/omniauth/strategies/ldap.rb:2791660842": [
+    [375, 29, 2, "Lint/Syntax: unexpected token error\n(Using Ruby 2.0 parser; configure using `TargetRubyVersion` parameter, under `AllCops`)", 5858765]
+  ],
+  "spec/config/debug.rb:3834056880": [
+    [2, 1, 41, "RSpec/Output: Do not write to stdout in specs.", 3485259047]
+  ],
   "spec/integration/middleware_spec.rb:2185613788": [
     [3, 16, 39, "RSpec/DescribeClass: The first argument to describe should be the class or module being tested.", 638096201],
     [30, 14, 10, "RSpec/ExpectActual: Provide the actual value you are testing to `expect(...)`.", 837117997],
@@ -12,7 +18,7 @@
     [4, 3, 12, "RSpec/BeforeAfterAll: Beware of using `before(:all)` as it may cause state to leak between tests. If you are using `rspec-rails`, and `use_transactional_fixtures` is enabled, then records created in `before(:all)` are not automatically rolled back.", 86334566],
     [70, 16, 5, "RSpec/ExpectActual: Provide the actual value you are testing to `expect(...)`.", 237881235]
   ],
-  "spec/omniauth-ldap/adaptor_spec.rb:1839434473": [
+  "spec/omniauth-ldap/adaptor_spec.rb:3583621745": [
     [3, 1, 38, "RSpec/SpecFilePathFormat: Spec path should end with `omni_auth/ldap/adaptor*_spec.rb`.", 1973618936],
     [239, 9, 26, "RSpec/StubbedMock: Prefer `allow` over `expect` when configuring a response.", 1924417310],
     [240, 9, 26, "RSpec/StubbedMock: Prefer `allow` over `expect` when configuring a response.", 1924417310]
@@ -23,7 +29,7 @@
     [47, 7, 38, "RSpec/AnyInstance: Avoid stubbing using `allow_any_instance_of`.", 3627954156],
     [84, 7, 48, "RSpec/AnyInstance: Avoid stubbing using `allow_any_instance_of`.", 2759780562]
   ],
-  "spec/omniauth/strategies/ldap_spec.rb:2130811218": [
+  "spec/omniauth/strategies/ldap_spec.rb:525604150": [
     [138, 13, 9, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 1130140517],
     [193, 17, 28, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 3444838747],
     [202, 17, 23, "RSpec/ContextWording: Context description should match /^when\\b/, /^with\\b/, or /^without\\b/.", 1584148894],
