@@ -22,6 +22,25 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Added
 
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+## [2.3.4] - 2026-05-18
+
+- TAG: [v2.3.4][2.3.4t]
+- COVERAGE: 97.44% -- 304/312 lines in 4 files
+- BRANCH COVERAGE: 79.58% -- 113/142 branches in 4 files
+- 94.44% documented
+
+### Added
+
 - Add `header_auth_source` to require explicit selection of trusted header identity source (`:env` or `:http_header`)
 - Add `header_auth_require_tls` to require TLS for trusted header SSO by default
 - Log a prominent security warning when `header_auth` is enabled
@@ -29,10 +48,6 @@ Please file a bug if you notice a violation of semantic versioning.
 ### Changed
 
 - Trusted header SSO now defaults to trusting only server-set env variables and no longer checks Rack `HTTP_` header variants unless `header_auth_source: :http_header` is configured
-
-### Deprecated
-
-### Removed
 
 ### Fixed
 
@@ -250,7 +265,9 @@ Please file a bug if you notice a violation of semantic versioning.
 [1.0.0]: https://github.com/omniauth/omniauth-ldap/compare/5656da80d4193e0d0584f44bac493a87695e580f...v1.0.0
 [1.0.0t]: https://github.com/omniauth/omniauth-ldap/releases/tag/v1.0.0
 
-[Unreleased]: https://github.com/omniauth/omniauth-ldap/compare/v2.3.3...HEAD
+[Unreleased]: https://github.com/omniauth/omniauth-ldap/compare/v2.3.4...HEAD
+[2.3.4]: https://github.com/omniauth/omniauth-ldap/compare/v2.3.3...v2.3.4
+[2.3.4t]: https://github.com/omniauth/omniauth-ldap/releases/tag/v2.3.4
 [2.3.3]: https://github.com/omniauth/omniauth-ldap/compare/v2.3.2...v2.3.3
 [2.3.3t]: https://github.com/omniauth/omniauth-ldap/releases/tag/v2.3.3
 [2.3.2]: https://github.com/omniauth/omniauth-ldap/compare/v2.3.1...v2.3.2
