@@ -372,7 +372,7 @@ module OmniAuth
       # @return [void]
       def log_header_auth_warning
         logger = OmniAuth.config.respond_to?(:logger) ? OmniAuth.config.logger : nil
-        return unless logger&.respond_to?(:warn)
+        return unless logger && logger.respond_to?(:warn)
 
         logger.warn("[omniauth-ldap] SECURITY WARNING: header_auth is enabled. This trusts upstream authentication completely; only enable it behind a trusted proxy that strips client-supplied identity headers.")
       end

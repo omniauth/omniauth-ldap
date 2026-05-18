@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-RSpec.describe "Roda integration with OmniAuth::Strategies::LDAP", :integration do
-  before(:all) do
+# rubocop:disable RSpec/SpecFilePathFormat
+RSpec.describe OmniAuth::Strategies::LDAP, :integration do
+  before do
     begin
       require "roda"
+      require_relative "../sample/roda_app"
     rescue LoadError
       skip "roda gem not installed; skipping roda integration specs"
-    else
-      require_relative "../sample/roda_app"
     end
   end
 
@@ -67,7 +67,7 @@ RSpec.describe "Roda integration with OmniAuth::Strategies::LDAP", :integration 
         expect(last_response.body).to include("Signed in")
       else
         # Some OmniAuth versions may return 404 for GET /auth/:provider (acceptable)
-        expect([404]).to include(last_response.status)
+        expect(last_response.status).to eq(404)
       end
     ensure
       OmniAuth.config.mock_auth.delete(:ldap)
@@ -75,3 +75,4 @@ RSpec.describe "Roda integration with OmniAuth::Strategies::LDAP", :integration 
     end
   end
 end
+# rubocop:enable RSpec/SpecFilePathFormat

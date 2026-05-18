@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable RSpec/SpecFilePathFormat
 RSpec.describe OmniAuth::LDAP::Adaptor do
   describe "initialize" do
     it "throws exception when must have field is not set" do
@@ -236,8 +237,8 @@ RSpec.describe OmniAuth::LDAP::Adaptor do
 
       it "adds a Password Policy request control to the bind" do
         adaptor = described_class.new({host: "127.0.0.1", encryption: "plain", base: "dc=example, dc=com", port: 389, uid: "sAMAccountName", bind_dn: "bind_dn", password: "password", password_policy: true})
-        expect(adaptor.connection).to receive(:open).and_yield(adaptor.connection)
-        expect(adaptor.connection).to receive(:search).with(args).and_return([rs])
+        allow(adaptor.connection).to receive(:open).and_yield(adaptor.connection)
+        allow(adaptor.connection).to receive(:search).with(args).and_return([rs])
         expect(adaptor.connection).to receive(:bind) do |bind_args|
           expect(bind_args).to be_a(Hash)
           expect(bind_args[:controls]).to be_a(Array)
@@ -321,3 +322,4 @@ RSpec.describe OmniAuth::LDAP::Adaptor do
     end
   end
 end
+# rubocop:enable RSpec/SpecFilePathFormat

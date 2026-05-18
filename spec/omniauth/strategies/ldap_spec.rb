@@ -135,7 +135,7 @@ RSpec.describe "OmniAuth::Strategies::LDAP" do
       allow(OmniAuth::LDAP::Adaptor).to receive(:new) { @adaptor }
     end
 
-    context "failure" do
+    context "when authentication fails" do
       before do
         allow(@adaptor).to receive(:bind_as).and_return(false)
       end
@@ -190,7 +190,7 @@ RSpec.describe "OmniAuth::Strategies::LDAP" do
       end
 
       context "when username is present" do
-        context "and password is not preset" do
+        context "when password is not preset" do
           it "redirects to error page" do
             post("/auth/ldap/callback", {username: "ping"})
 
@@ -199,7 +199,7 @@ RSpec.describe "OmniAuth::Strategies::LDAP" do
           end
         end
 
-        context "and password is empty" do
+        context "when password is empty" do
           it "redirects to error page" do
             post("/auth/ldap/callback", {username: "ping", password: ""})
 
@@ -210,7 +210,7 @@ RSpec.describe "OmniAuth::Strategies::LDAP" do
       end
 
       context "when username and password are present" do
-        context "and bind on LDAP server failed" do
+        context "when bind on LDAP server failed" do
           it "redirects to error page" do
             post("/auth/ldap/callback", {username: "ping", password: "password"})
 
@@ -252,7 +252,7 @@ RSpec.describe "OmniAuth::Strategies::LDAP" do
             expect(policy[:grace_authns_remaining]).to eq(0)
           end
 
-          context "and filter is set" do
+          context "when filter is set" do
             it "binds with filter" do
               allow(@adaptor).to receive(:filter).and_return("uid=%{username}")
               expect(Net::LDAP::Filter).to receive(:construct).with("uid=ping")
@@ -278,7 +278,7 @@ RSpec.describe "OmniAuth::Strategies::LDAP" do
           end
         end
 
-        context "and communication with LDAP server caused an exception" do
+        context "when communication with LDAP server caused an exception" do
           before do
             allow(@adaptor).to receive(:bind_as).and_raise(StandardError.new("connection_error"))
           end
@@ -293,7 +293,7 @@ RSpec.describe "OmniAuth::Strategies::LDAP" do
       end
     end
 
-    context "success" do
+    context "when authentication succeeds" do
       let(:auth_hash) { last_request.env["omniauth.auth"] }
 
       before do
@@ -347,7 +347,7 @@ description: omniauth-ldap
         expect(last_response).not_to be_redirect
       end
 
-      context "and filter is set" do
+      context "when filter is set" do
         it "binds with filter" do
           allow(@adaptor).to receive(:filter).and_return("uid=%{username}")
           expect(Net::LDAP::Filter).to receive(:construct).with("uid=ping")

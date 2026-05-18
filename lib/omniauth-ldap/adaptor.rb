@@ -131,16 +131,18 @@ module OmniAuth
       # @param configuration [Hash] configuration hash passed to the adaptor
       # @raise [ArgumentError] when required keys are missing
       # @return [void]
-      def self.validate(configuration = {})
-        message = []
-        MUST_HAVE_KEYS.each do |names|
-          names = [names].flatten
-          missing_keys = names.select { |name| configuration[name].nil? }
-          if missing_keys == names
-            message << names.join(" or ")
+      class << self
+        def validate(configuration = {})
+          message = []
+          MUST_HAVE_KEYS.each do |names|
+            names = [names].flatten
+            missing_keys = names.select { |name| configuration[name].nil? }
+            if missing_keys == names
+              message << names.join(" or ")
+            end
           end
+          raise ArgumentError.new(message.join(",") + " MUST be provided") unless message.empty?
         end
-        raise ArgumentError.new(message.join(",") + " MUST be provided") unless message.empty?
       end
 
       # Create a new adaptor instance backed by a Net::LDAP connection.

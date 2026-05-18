@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable RSpec/SpecFilePathFormat
 RSpec.describe OmniAuth::LDAP::Adaptor do
   let(:valid_config) { {host: "127.0.0.1", port: 389, method: "plain", uid: "uid", base: "dc=test,dc=local"} }
 
@@ -43,10 +44,12 @@ RSpec.describe OmniAuth::LDAP::Adaptor do
 
     it "sasl_auths calls the private setup methods for known mechanisms" do
       # Stub the two private setup methods so we don't exercise heavy external logic
-      allow_any_instance_of(described_class).to receive(:sasl_bind_setup_digest_md5).and_return(["ic", proc {}])
-      allow_any_instance_of(described_class).to receive(:sasl_bind_setup_gss_spnego).and_return(["i2", proc {}])
-
       a = described_class.new(valid_config.merge(sasl_mechanisms: ["DIGEST-MD5", "GSS-SPNEGO"]))
+      allow(a).to receive_messages(
+        sasl_bind_setup_digest_md5: ["ic", proc {}],
+        sasl_bind_setup_gss_spnego: ["i2", proc {}],
+      )
+
       auths = a.send(:sasl_auths, {sasl_mechanisms: ["DIGEST-MD5", "GSS-SPNEGO"]})
 
       expect(auths).to be_an(Array)
@@ -81,7 +84,8 @@ RSpec.describe OmniAuth::LDAP::Adaptor do
       allow(t2).to receive(:target_name=)
       # Stub encode_utf16le helper used by the adaptor
       allow(Net::NTLM).to receive(:encode_utf16le).and_return("encoded-domain")
-      allow_any_instance_of(Net::NTLM::Message::Type1).to receive(:serialize).and_return("type1")
+      type1 = instance_double(Net::NTLM::Message::Type1, serialize: "type1")
+      allow(Net::NTLM::Message::Type1).to receive(:new).and_return(type1)
 
       a = described_class.new(valid_config)
       type1, proc_obj = a.send(:sasl_bind_setup_gss_spnego, {username: 'user\\DOMAIN', password: "pw"})
@@ -90,3 +94,4 @@ RSpec.describe OmniAuth::LDAP::Adaptor do
     end
   end
 end
+# rubocop:enable RSpec/SpecFilePathFormat

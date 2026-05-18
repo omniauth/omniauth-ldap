@@ -1,7 +1,26 @@
 # frozen_string_literal: true
 
-RSpec.describe "OmniAuth LDAP middleware (Rack stack)", type: :integration do
+# rubocop:disable RSpec/SpecFilePathFormat
+RSpec.describe OmniAuth::Strategies::LDAP, type: :integration do
   include Rack::Test::Methods
+
+  before do
+    stub_const(
+      "TestCallbackSetter",
+      Class.new do
+        def initialize(app)
+          @app = app
+        end
+
+        def call(env)
+          if env["PATH_INFO"] == "/auth/ldap/callback" && OmniAuth.config.respond_to?(:mock_auth)
+            env["omniauth.auth"] ||= OmniAuth.config.mock_auth[:ldap]
+          end
+          @app.call(env)
+        end
+      end,
+    )
+  end
 
   let(:app) do
     Rack::Builder.new do
@@ -27,7 +46,7 @@ RSpec.describe "OmniAuth LDAP middleware (Rack stack)", type: :integration do
     if Gem::Version.new(OmniAuth::VERSION) >= Gem::Version.new("2.0.0")
       # OmniAuth 2.x intends GET /auth/:provider to be unsupported (404), but some environments
       # may still render a form. Accept either 404 or the form HTML so the test is resilient.
-      expect([404, 200]).to include(last_response.status)
+      expect(last_response.status).to eq(404).or eq(200)
       if last_response.status == 200
         expect(last_response.body).to include("<form").or include("false")
       end
@@ -125,19 +144,5 @@ RSpec.describe "OmniAuth LDAP middleware (Rack stack)", type: :integration do
       OmniAuth.config.test_mode = false
     end
   end
-
-  unless defined?(TestCallbackSetter)
-    class TestCallbackSetter
-      def initialize(app)
-        @app = app
-      end
-
-      def call(env)
-        if env["PATH_INFO"] == "/auth/ldap/callback" && OmniAuth.config.respond_to?(:mock_auth)
-          env["omniauth.auth"] ||= OmniAuth.config.mock_auth[:ldap]
-        end
-        @app.call(env)
-      end
-    end
-  end
 end
+# rubocop:enable RSpec/SpecFilePathFormat
