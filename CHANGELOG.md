@@ -22,7 +22,11 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Added
 
+- Add `auth-sanitizer` runtime dependency to redact sensitive LDAP adaptor inspection output
+
 ### Changed
+
+- Minimum supported Ruby version is now 2.2.0
 
 ### Deprecated
 

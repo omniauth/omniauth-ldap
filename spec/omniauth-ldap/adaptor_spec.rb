@@ -210,6 +210,29 @@ RSpec.describe OmniAuth::LDAP::Adaptor do
         expect(adaptor.connection.instance_variable_get(:@read_timeout)).to be_nil
       end
     end
+
+    it "redacts sensitive connection settings from inspect output" do
+      adaptor = described_class.new(
+        host: "192.168.1.145",
+        encryption: "ssl",
+        base: "dc=intridea, dc=com",
+        port: 636,
+        uid: "sAMAccountName",
+        bind_dn: "bind_dn",
+        password: "super-secret",
+        tls_options: {ca_file: "/etc/ca.pem", key: "private-key"},
+      )
+
+      inspected = adaptor.inspect
+
+      expect(inspected).to include("@password=[FILTERED]")
+      expect(inspected).to include("@auth=[FILTERED]")
+      expect(inspected).to include("@configuration=[FILTERED]")
+      expect(inspected).to include("@connection=[FILTERED]")
+      expect(inspected).to include("@tls_options=[FILTERED]")
+      expect(inspected).not_to include("super-secret")
+      expect(inspected).not_to include("private-key")
+    end
   end
 
   describe "bind_as" do

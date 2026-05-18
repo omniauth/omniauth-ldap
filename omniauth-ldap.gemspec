@@ -27,7 +27,7 @@ Gem::Specification.new do |spec|
   spec.description = "📁 LDAP strategy for OmniAuth."
   spec.homepage = "https://github.com/omniauth/omniauth-ldap"
   spec.licenses = ["MIT"]
-  spec.required_ruby_version = ">= 2.0"
+  spec.required_ruby_version = ">= 2.2.0"
 
   # Linux distros often package gems and securely certify them independent
   #   of the official RubyGem certification process. Allowed via ENV["SKIP_GEM_SIGNING"]
@@ -97,6 +97,7 @@ Gem::Specification.new do |spec|
   # Listed files are the relative paths from bindir above.
   spec.executables = []
 
+  spec.add_dependency("auth-sanitizer", "~> 0.1", ">= 0.1.2")   # ruby >= 2.2.0
   spec.add_dependency("net-ldap", "~> 0.16", "< 1")             # ruby >= 2.0
   spec.add_dependency("omniauth", ">= 1.2", "< 3")              # ruby >= 0.0
   spec.add_dependency("pyu-ruby-sasl", ">= 0.0.3.3", "< 0.1")   # ruby >= 0.0
@@ -110,7 +111,7 @@ Gem::Specification.new do |spec|
   #       visibility and discoverability.
   #       However, development dependencies in gemspec will install on
   #       all versions of Ruby that will run in CI.
-  #       This gem, and its gemspec runtime dependencies, will install on Ruby down to 2.0.
+  #       This gem, and its gemspec runtime dependencies, will install on Ruby down to 2.2.
   #       This gem, and its gemspec development dependencies, will install on Ruby down to 2.3.
   #       Thus, dev dependencies in gemspec must have
   #

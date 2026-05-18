@@ -3,6 +3,7 @@
 # this code borrowed pieces from activeldap and net-ldap
 
 # External Gems
+require "auth/sanitizer"
 require "net/ldap"
 require "net/ntlm"
 require "rack"
@@ -21,6 +22,10 @@ module OmniAuth
     #
     # @note Public API: {validate}, {initialize}, {bind_as}, and attr readers such as {connection}, {uid}
     class Adaptor
+      include Auth::Sanitizer::FilteredAttributes
+
+      filtered_attributes :@auth, :@configuration, :@connection, :@password, :@tls_options
+
       # Generic adaptor error super-class
       # @see Error classes that inherit from this class
       class LdapError < StandardError; end
