@@ -3,7 +3,6 @@
 # this code borrowed pieces from activeldap and net-ldap
 
 # External Gems
-require "auth_sanitizer/loader"
 require "net/ldap"
 require "net/ntlm"
 require "rack"
@@ -11,7 +10,27 @@ require "sasl"
 
 module OmniAuth
   module LDAP
-    AUTH_SANITIZER = AuthSanitizer::Loader.load unless const_defined?(:AUTH_SANITIZER, false)
+    AUTH_SANITIZER = unless const_defined?(:AUTH_SANITIZER, false)
+      auth_sanitizer_loader_path = $LOAD_PATH
+        .map { |load_path| File.join(load_path, "auth_sanitizer/loader.rb") }
+        .find { |path| File.file?(path) }
+
+      unless auth_sanitizer_loader_path
+        raise LoadError, "cannot load such file -- auth_sanitizer/loader"
+      end
+
+      auth_sanitizer_loader_namespace = Module.new
+      auth_sanitizer_loader_namespace.module_eval(
+        File.read(auth_sanitizer_loader_path),
+        auth_sanitizer_loader_path,
+        1,
+      )
+
+      auth_sanitizer_loader_namespace
+        .const_get(:AuthSanitizer)
+        .const_get(:Loader)
+        .load_isolated
+    end
 
     # Adaptor encapsulates the behavior required to connect to an LDAP server
     # and perform searches and binds. It maps user-provided configuration into

@@ -236,10 +236,11 @@ RSpec.describe OmniAuth::LDAP::Adaptor do
       expect(inspected).not_to include("private-key")
     end
 
-    it "does not define the top-level Auth namespace" do
+    it "does not define sanitizer top-level namespaces" do
       script = [
         'require "omniauth/ldap/adaptor"',
         'raise "Auth was defined" if Object.const_defined?(:Auth, false)',
+        'raise "AuthSanitizer was defined" if Object.const_defined?(:AuthSanitizer, false)',
       ].join("; ")
 
       output, status = Open3.capture2e(RbConfig.ruby, "-Ilib", "-e", script)
