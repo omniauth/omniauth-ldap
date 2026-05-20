@@ -3,7 +3,7 @@
 # this code borrowed pieces from activeldap and net-ldap
 
 # External Gems
-require "auth/sanitizer"
+require "auth_sanitizer/loader"
 require "net/ldap"
 require "net/ntlm"
 require "rack"
@@ -11,6 +11,8 @@ require "sasl"
 
 module OmniAuth
   module LDAP
+    AUTH_SANITIZER = AuthSanitizer::Loader.load unless const_defined?(:AUTH_SANITIZER, false)
+
     # Adaptor encapsulates the behavior required to connect to an LDAP server
     # and perform searches and binds. It maps user-provided configuration into
     # a Net::LDAP connection and provides compatibility helpers for different
@@ -22,7 +24,7 @@ module OmniAuth
     #
     # @note Public API: {validate}, {initialize}, {bind_as}, and attr readers such as {connection}, {uid}
     class Adaptor
-      include Auth::Sanitizer::FilteredAttributes
+      include AUTH_SANITIZER::FilteredAttributes
 
       filtered_attributes :@auth, :@configuration, :@connection, :@password, :@tls_options
 

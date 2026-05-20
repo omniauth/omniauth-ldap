@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "open3"
+
 # rubocop:disable RSpec/SpecFilePathFormat
 RSpec.describe OmniAuth::LDAP::Adaptor do
   describe "initialize" do
@@ -232,6 +234,16 @@ RSpec.describe OmniAuth::LDAP::Adaptor do
       expect(inspected).to include("@tls_options=[FILTERED]")
       expect(inspected).not_to include("super-secret")
       expect(inspected).not_to include("private-key")
+    end
+
+    it "does not define the top-level Auth namespace" do
+      script = [
+        'require "omniauth/ldap/adaptor"',
+        'raise "Auth was defined" if Object.const_defined?(:Auth, false)',
+      ].join("; ")
+
+      output, status = Open3.capture2e(RbConfig.ruby, "-Ilib", "-e", script)
+      expect(status).to be_success, output
     end
   end
 

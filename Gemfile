@@ -12,6 +12,8 @@ git_source(:gitlab) { |repo_name| "https://gitlab.com/#{repo_name}" }
 # Include dependencies from <gem name>.gemspec
 gemspec
 
+gem "auth-sanitizer", path: "../auth-sanitizer"
+
 group :development, :test do
   gem "guard"
   gem "guard-rspec"
