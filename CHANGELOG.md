@@ -22,23 +22,36 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Added
 
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+## [3.0.0] - 2026-05-21
+
+- TAG: [v3.0.0][3.0.0t]
+- COVERAGE: 97.52% -- 315/323 lines in 6 files
+- BRANCH COVERAGE: 79.41% -- 108/136 branches in 6 files
+- 94.59% documented
+
+### Added
+
 - Add `auth-sanitizer` runtime dependency to redact sensitive LDAP adaptor inspection output without defining top-level `Auth` or `AuthSanitizer`
 
 ### Changed
 
 - Minimum supported Ruby version is now 2.2.0
 
-### Deprecated
-
 ### Removed
 
 - Remove deprecated (since `v2.1.0-gl` in 2018) top-level `:ca_file` and `:ssl_version` LDAP configuration options; use `:tls_options` instead
 - Remove adaptor backward-compatibility that translated top-level `:ca_file` and `:ssl_version` into TLS options
 - Remove deprecated direct-option specs for top-level `:ca_file` and `:ssl_version`
-
-### Fixed
-
-### Security
 
 ## [2.3.4] - 2026-05-18
 
@@ -273,7 +286,9 @@ Please file a bug if you notice a violation of semantic versioning.
 [1.0.0]: https://github.com/omniauth/omniauth-ldap/compare/5656da80d4193e0d0584f44bac493a87695e580f...v1.0.0
 [1.0.0t]: https://github.com/omniauth/omniauth-ldap/releases/tag/v1.0.0
 
-[Unreleased]: https://github.com/omniauth/omniauth-ldap/compare/v2.3.4...HEAD
+[Unreleased]: https://github.com/omniauth/omniauth-ldap/compare/v3.0.0...HEAD
+[3.0.0]: https://github.com/omniauth/omniauth-ldap/compare/v2.3.4...v3.0.0
+[3.0.0t]: https://github.com/omniauth/omniauth-ldap/releases/tag/v3.0.0
 [2.3.4]: https://github.com/omniauth/omniauth-ldap/compare/v2.3.3...v2.3.4
 [2.3.4t]: https://github.com/omniauth/omniauth-ldap/releases/tag/v2.3.4
 [2.3.3]: https://github.com/omniauth/omniauth-ldap/compare/v2.3.2...v2.3.3
