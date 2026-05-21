@@ -151,7 +151,6 @@ RSpec.describe OmniAuth::LDAP::Adaptor do
           expect(adaptor.connection.instance_variable_get(:@encryption)).to include tls_options: OpenSSL::SSL::SSLContext::DEFAULT_PARAMS
         end
       end
-
     end
 
     context "when encryption is tls" do
