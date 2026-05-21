@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe "OmniAuth::Strategies::LDAP" do
+RSpec.describe OmniAuth::Strategies::LDAP do
   # :title => "My LDAP",
   # :host => '10.101.10.1',
   # :port => 389,
@@ -12,7 +12,7 @@ RSpec.describe "OmniAuth::Strategies::LDAP" do
   # :bind_dn => 'default_bind_dn'
   # :password => 'password'
   before do
-    ldap_strategy = Class.new(OmniAuth::Strategies::LDAP)
+    ldap_strategy = Class.new(described_class)
     stub_const("MyLdapProvider", ldap_strategy)
   end
 
@@ -483,7 +483,7 @@ description: omniauth-ldap
     end
 
     before do
-      ldap_strategy = Class.new(OmniAuth::Strategies::LDAP)
+      ldap_strategy = Class.new(described_class)
       stub_const("MySamaccountnameProvider", ldap_strategy)
       @adaptor = double(OmniAuth::LDAP::Adaptor, {uid: "sAMAccountName"})
       allow(@adaptor).to receive(:filter)
@@ -531,7 +531,7 @@ sn: User
     end
 
     before do
-      ldap_strategy = Class.new(OmniAuth::Strategies::LDAP)
+      ldap_strategy = Class.new(described_class)
       stub_const("MyHeaderProvider", ldap_strategy)
       @adaptor = double(OmniAuth::LDAP::Adaptor, {uid: "uid", filter: nil})
       allow(OmniAuth::LDAP::Adaptor).to receive(:new) { @adaptor }

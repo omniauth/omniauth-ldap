@@ -92,7 +92,7 @@ Gem::Specification.new do |spec|
   # Listed files are the relative paths from bindir above.
   spec.executables = []
 
-  spec.add_dependency("auth-sanitizer", "~> 0.1", ">= 0.1.3")   # ruby >= 2.2.0
+  spec.add_dependency("auth-sanitizer", "~> 0.1", ">= 0.1.4")   # ruby >= 2.2.0
   spec.add_dependency("net-ldap", "~> 0.16", "< 1")             # ruby >= 2.0
   spec.add_dependency("omniauth", ">= 1.2", "< 3")              # ruby >= 0.0
   spec.add_dependency("pyu-ruby-sasl", ">= 0.0.3.3", "< 0.1")   # ruby >= 0.0

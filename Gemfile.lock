@@ -13,14 +13,14 @@ GIT
 PATH
   remote: ../auth-sanitizer
   specs:
-    auth-sanitizer (0.1.3)
+    auth-sanitizer (0.1.4)
       version_gem (~> 1.1, >= 1.1.9)
 
 PATH
   remote: .
   specs:
     omniauth-ldap (2.3.4)
-      auth-sanitizer (~> 0.1, >= 0.1.3)
+      auth-sanitizer (~> 0.1, >= 0.1.4)
       net-ldap (~> 0.16, < 1)
       omniauth (>= 1.2, < 3)
       pyu-ruby-sasl (>= 0.0.3.3, < 0.1)
@@ -470,7 +470,7 @@ CHECKSUMS
   ansi (1.6.0) sha256=ac9ea0c0ea8d32fb4e271348e609963ac78882f34b73836c2a02b3622e666658
   appraisal2 (3.0.6) sha256=09387896b6c8c8c0ff0749af691ddff5e3168de2f06b591a80d8fd8b6394d147
   ast (2.4.3) sha256=954615157c1d6a382bc27d690d973195e79db7f55e9765ac7c481c60bdb4d383
-  auth-sanitizer (0.1.3)
+  auth-sanitizer (0.1.4)
   backports (3.25.3) sha256=94298d32dc3c40ca15633b54e282780b49e2db0c045f602ea1907e4f63a17235
   base64 (0.3.0) sha256=27337aeabad6ffae05c265c450490628ef3ebd4b67be58257393227588f5a97b
   benchmark (0.5.0) sha256=465df122341aedcb81a2a24b4d3bd19b6c67c1530713fd533f3ff034e419236c

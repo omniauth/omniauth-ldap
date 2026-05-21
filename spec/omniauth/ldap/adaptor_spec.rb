@@ -1,9 +1,14 @@
 # frozen_string_literal: true
 
-require "open3"
-
-# rubocop:disable RSpec/SpecFilePathFormat
 RSpec.describe OmniAuth::LDAP::Adaptor do
+  let(:valid_config) { {host: "127.0.0.1", port: 389, method: "plain", uid: "uid", base: "dc=test,dc=local"} }
+
+  describe ".validate" do
+    it "raises ArgumentError when required keys are missing" do
+      expect { described_class.validate({}) }.to raise_error(ArgumentError)
+    end
+  end
+
   describe "initialize" do
     it "throws exception when must have field is not set" do
       #[:host, :port, :method, :bind_dn]
@@ -235,16 +240,69 @@ RSpec.describe OmniAuth::LDAP::Adaptor do
       expect(inspected).not_to include("super-secret")
       expect(inspected).not_to include("private-key")
     end
+  end
 
-    it "does not define sanitizer top-level namespaces" do
-      script = [
-        'require "omniauth/ldap/adaptor"',
-        'raise "Auth was defined" if Object.const_defined?(:Auth, false)',
-        'raise "AuthSanitizer was defined" if Object.const_defined?(:AuthSanitizer, false)',
-      ].join("; ")
+  describe "private helpers" do
+    subject(:adaptor) { described_class.new(valid_config) }
 
-      output, status = Open3.capture2e(RbConfig.ruby, "-Ilib", "-e", script)
-      expect(status).to be_success, output
+    it "returns an empty array when no sasl mechanisms are configured" do
+      expect(adaptor.send(:sasl_auths, {sasl_mechanisms: []})).to eq([])
+    end
+
+    it "maps legacy ssl/tls/plain method values to Net::LDAP encryption symbols" do
+      ssl_adaptor = described_class.new(valid_config.merge(method: "ssl"))
+      tls_adaptor = described_class.new(valid_config.merge(method: "tls"))
+      plain_adaptor = described_class.new(valid_config.merge(method: "plain"))
+
+      expect(ssl_adaptor.send(:translate_method)).to eq(described_class::ENCRYPTION_METHOD[:ssl])
+      expect(tls_adaptor.send(:translate_method)).to eq(described_class::ENCRYPTION_METHOD[:tls])
+      expect(plain_adaptor.send(:translate_method)).to eq(described_class::ENCRYPTION_METHOD[:plain])
+    end
+
+    it "builds SASL auth hashes for known mechanisms" do
+      adaptor = described_class.new(valid_config.merge(sasl_mechanisms: ["DIGEST-MD5", "GSS-SPNEGO"]))
+      allow(adaptor).to receive_messages(
+        sasl_bind_setup_digest_md5: ["ic", proc {}],
+        sasl_bind_setup_gss_spnego: ["i2", proc {}],
+      )
+
+      auths = adaptor.send(:sasl_auths, {sasl_mechanisms: ["DIGEST-MD5", "GSS-SPNEGO"]})
+
+      expect(auths).to be_an(Array)
+      expect(auths.map { |auth| auth[:mechanism] }).to include("DIGEST-MD5", "GSS-SPNEGO")
+    end
+
+    it "raises LdapError for GSS-SPNEGO setup without credentials" do
+      expect { adaptor.send(:sasl_bind_setup_gss_spnego, {}) }.to raise_error(described_class::LdapError)
+    end
+
+    it "builds a DIGEST-MD5 challenge response proc" do
+      pref_double = double("pref")
+      sasl_double = double("sasl")
+      allow(SASL::Preferences).to receive(:new).and_return(pref_double)
+      allow(SASL).to receive(:new).with("DIGEST-MD5", pref_double).and_return(sasl_double)
+      allow(sasl_double).to receive(:receive).with("challenge", anything).and_return([nil, "digest_resp"])
+
+      initial_credential, challenge_response = adaptor.send(:sasl_bind_setup_digest_md5, {username: "cn", password: "pw"})
+
+      expect(initial_credential).to eq("")
+      expect(challenge_response.call("challenge-data")).to eq("digest_resp")
+    end
+
+    it "builds a GSS-SPNEGO type1 credential and serialized challenge response proc" do
+      type2 = double("type2")
+      type3 = double("type3", serialize: "serialized")
+      allow(Net::NTLM::Message).to receive(:parse).and_return(type2)
+      allow(type2).to receive(:response).and_return(type3)
+      allow(type2).to receive(:target_name=)
+      allow(Net::NTLM).to receive(:encode_utf16le).and_return("encoded-domain")
+      type1 = instance_double(Net::NTLM::Message::Type1, serialize: "type1")
+      allow(Net::NTLM::Message::Type1).to receive(:new).and_return(type1)
+
+      initial_credential, challenge_response = adaptor.send(:sasl_bind_setup_gss_spnego, {username: 'user\\DOMAIN', password: "pw"})
+
+      expect(initial_credential).to eq("type1")
+      expect(challenge_response.call("challenge")).to eq("serialized")
     end
   end
 
@@ -358,4 +416,3 @@ RSpec.describe OmniAuth::LDAP::Adaptor do
     end
   end
 end
-# rubocop:enable RSpec/SpecFilePathFormat

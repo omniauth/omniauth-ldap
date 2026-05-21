@@ -28,3 +28,7 @@ RSpec/DescribeClass:
 
 RSpec/MultipleMemoizedHelpers:
   Enabled: false
+
+# Because the gem namespace is OmniAuth, but the path is not omni_auth
+RSpec/SpecFilePathFormat:
+  Enabled: false

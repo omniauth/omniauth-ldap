@@ -9,6 +9,7 @@
 require "version_gem"
 
 require_relative "ldap/version"
+require_relative "ldap/auth_sanitizer"
 require_relative "ldap/adaptor"
 require_relative "strategies/ldap"
 
