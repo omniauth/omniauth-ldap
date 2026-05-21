@@ -32,6 +32,10 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Removed
 
+- Remove deprecated (since `v2.1.0-gl` in 2018) top-level `:ca_file` and `:ssl_version` LDAP configuration options; use `:tls_options` instead
+- Remove adaptor backward-compatibility that translated top-level `:ca_file` and `:ssl_version` into TLS options
+- Remove deprecated direct-option specs for top-level `:ca_file` and `:ssl_version`
+
 ### Fixed
 
 ### Security

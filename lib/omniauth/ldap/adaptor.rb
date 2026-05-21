@@ -63,11 +63,7 @@ module OmniAuth
         # Timeouts
         :connect_timeout,
         :read_timeout,
-
-        # Deprecated
         :method,
-        :ca_file,
-        :ssl_version,
       ]
 
       # Required configuration keys. This may include alternatives as sub-lists
@@ -301,7 +297,7 @@ module OmniAuth
         ENCRYPTION_METHOD[normalized_method]
       end
 
-      # Build TLS options including backward-compatibility for deprecated keys.
+      # Build TLS options from explicit :tls_options configuration.
       #
       # @param translated_method [Symbol] the normalized encryption method
       # @return [Hash] a hash suitable for passing as :tls_options
@@ -317,10 +313,6 @@ module OmniAuth
 
           options.merge!(configured_options)
         end
-
-        # Retain backward compatibility until deprecated configs are removed.
-        options[:ca_file] = @ca_file if @ca_file
-        options[:ssl_version] = @ssl_version if @ssl_version
 
         options
       end

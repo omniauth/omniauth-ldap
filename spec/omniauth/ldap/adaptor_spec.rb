@@ -152,21 +152,6 @@ RSpec.describe OmniAuth::LDAP::Adaptor do
         end
       end
 
-      # DEPRECATED
-      context "when ca_file is specified" do
-        it "sets the encryption tls_options ca_file" do
-          adaptor = described_class.new({host: "192.168.1.145", encryption: "ssl", base: "dc=intridea, dc=com", port: 636, uid: "sAMAccountName", bind_dn: "bind_dn", password: "password", ca_file: "/etc/ca.pem"})
-          expect(adaptor.connection.instance_variable_get(:@encryption)).to include tls_options: OpenSSL::SSL::SSLContext::DEFAULT_PARAMS.merge(ca_file: "/etc/ca.pem")
-        end
-      end
-
-      # DEPRECATED
-      context "when ssl_version is specified" do
-        it "overwrites the encryption tls_options ssl_version" do
-          adaptor = described_class.new({host: "192.168.1.145", encryption: "ssl", base: "dc=intridea, dc=com", port: 636, uid: "sAMAccountName", bind_dn: "bind_dn", password: "password", ssl_version: "TLSv1_2"})
-          expect(adaptor.connection.instance_variable_get(:@encryption)).to include tls_options: OpenSSL::SSL::SSLContext::DEFAULT_PARAMS.merge(ssl_version: "TLSv1_2")
-        end
-      end
     end
 
     context "when encryption is tls" do

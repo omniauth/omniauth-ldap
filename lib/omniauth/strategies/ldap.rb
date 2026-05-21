@@ -91,8 +91,6 @@ module OmniAuth
       option :port, 389
       option :method, :plain
       option :disable_verify_certificates, false
-      option :ca_file, nil
-      option :ssl_version, nil # use OpenSSL default if nil
       option :uid, "sAMAccountName"
       option :name_proc, lambda { |n| n }
 
