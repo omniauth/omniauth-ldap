@@ -48,10 +48,11 @@ jobs:
           # Coverage
           - ruby: "ruby"
             appraisal: "coverage"
-            exec_cmd: "rake test"
+            exec_cmd: "rake spec"
             gemfile: "Appraisal.root"
             rubygems: latest
             bundler: latest
+            experimental: false
 
     steps:
       - name: Checkout
@@ -75,19 +76,26 @@ jobs:
       - name: Tests for ${{ matrix.ruby }}@current via ${{ matrix.exec_cmd }}
         run: bundle exec appraisal ${{ matrix.appraisal }} bundle exec ${{ matrix.exec_cmd }}
 
+      - name: Verify coverage reports
+        run: |
+          ls -la coverage
+          test -s coverage/lcov.info
+          test -s coverage/coverage.xml
+          test -s coverage/.resultset.json
+
       # Do SaaS coverage uploads first
       - name: Upload coverage to Coveralls
         if: ${{ !env.ACT }}
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: ${{ matrix.experimental != 'false' }}
+        continue-on-error: ${{ matrix.experimental }}
 
       - uses: qltysh/qlty-action/coverage@v2
         with:
           token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
           files: coverage/lcov.info,coverage/.resultset.json
-        continue-on-error: ${{ matrix.experimental != 'false' }}
+        continue-on-error: ${{ matrix.experimental }}
 
       # Build will fail here if coverage upload fails
       #   which will hopefully be noticed for the lack of code coverage comments
@@ -114,7 +122,7 @@ jobs:
           indicators: true
           output: both
           thresholds: '97 78'
-        continue-on-error: ${{ matrix.experimental != 'false' }}
+        continue-on-error: ${{ matrix.experimental }}
 
       - name: Add Coverage PR Comment
         uses: marocchino/sticky-pull-request-comment@v3
@@ -122,4 +130,4 @@ jobs:
         with:
           recreate: true
           path: code-coverage-results.md
-        continue-on-error: ${{ matrix.experimental != 'false' }}
+        continue-on-error: ${{ matrix.experimental }}
