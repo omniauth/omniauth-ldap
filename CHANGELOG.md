@@ -37,8 +37,8 @@ Please file a bug if you notice a violation of semantic versioning.
 ### Security
 
 - Hardened `OmniAuth::LDAP::Adaptor#inspect` redaction so LDAP bind passwords
-  and TLS private key values are filtered from nested connection/configuration
-  output when using current `auth-sanitizer`.
+  and TLS private key values are filtered anywhere they appear in nested
+  connection/configuration output.
 
 ## [3.0.0] - 2026-05-21
 
