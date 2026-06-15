@@ -72,7 +72,7 @@ module OmniAuth
         "uid" => "dn",
         "url" => ["wwwhomepage"],
         "image" => "jpegPhoto",
-        "description" => "description",
+        "description" => "description"
       }
 
       # Default title shown on the login form.

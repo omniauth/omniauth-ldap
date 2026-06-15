@@ -1,8 +1,6 @@
 # Default ignored files
 /shelf/
 /workspace.xml
-# Ignored default folder with query files
-/queries/
 # Editor-based HTTP Client requests
 /httpRequests/
 # Datasource local storage ignored files
@@ -16,8 +14,8 @@
 # Local project config
 *.iml
 
-# Added: Ignore plugin migration/state artifacts (machine-specific)
-/copilot.data.migration.*.xml
+# Added: Ignore plugin state artifacts (machine-specific)
+/copilot*.xml
 /GitLink.xml
 
 # Added: Ignore task & usage statistics (contain local timestamps / paths)
@@ -44,4 +42,3 @@
 
 # Commit: Dictionary files (local spellcheck customizations)
 # /dictionaries/
-

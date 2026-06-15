@@ -29,7 +29,7 @@ RSpec.describe OmniAuth::LDAP::Adaptor do
           hosts: [["192.168.1.145", 389], ["192.168.1.146", 389]],
           encryption: "plain",
           base: "dc=example,dc=com",
-          uid: "uid",
+          uid: "uid"
         )
       }.not_to raise_error
     end
@@ -82,7 +82,7 @@ RSpec.describe OmniAuth::LDAP::Adaptor do
         encryption: "plain",
         base: "dc=example,dc=com",
         port: 3890,
-        uid: "uid",
+        uid: "uid"
       )
 
       expect(adapter.connection.host).to eq("192.168.1.145")
@@ -95,7 +95,7 @@ RSpec.describe OmniAuth::LDAP::Adaptor do
         hosts: [["192.168.1.145", 636], ["192.168.1.146", 636]],
         encryption: "plain",
         base: "dc=example,dc=com",
-        uid: "uid",
+        uid: "uid"
       )
 
       expect(adapter.connection.host).to eq("127.0.0.1")
@@ -211,16 +211,14 @@ RSpec.describe OmniAuth::LDAP::Adaptor do
         uid: "sAMAccountName",
         bind_dn: "bind_dn",
         password: "super-secret",
-        tls_options: {ca_file: "/etc/ca.pem", key: "private-key"},
+        tls_options: {ca_file: "/etc/ca.pem", key: "private-key"}
       )
 
       inspected = adaptor.inspect
 
       expect(inspected).to include("@password=[FILTERED]")
-      expect(inspected).to include("@auth=[FILTERED]")
-      expect(inspected).to include("@configuration=[FILTERED]")
-      expect(inspected).to include("@connection=[FILTERED]")
-      expect(inspected).to include("@tls_options=[FILTERED]")
+      expect(inspected).to include("password: [FILTERED]")
+      expect(inspected).to include("key: [FILTERED]")
       expect(inspected).not_to include("super-secret")
       expect(inspected).not_to include("private-key")
     end
@@ -230,7 +228,7 @@ RSpec.describe OmniAuth::LDAP::Adaptor do
     subject(:adaptor) { described_class.new(valid_config) }
 
     it "returns an empty array when no sasl mechanisms are configured" do
-      expect(adaptor.send(:sasl_auths, {sasl_mechanisms: []})).to eq([])
+      expect(adaptor.send(:sasl_auths, {sasl_mechanisms: []})).to be_empty
     end
 
     it "maps legacy ssl/tls/plain method values to Net::LDAP encryption symbols" do
@@ -247,7 +245,7 @@ RSpec.describe OmniAuth::LDAP::Adaptor do
       adaptor = described_class.new(valid_config.merge(sasl_mechanisms: ["DIGEST-MD5", "GSS-SPNEGO"]))
       allow(adaptor).to receive_messages(
         sasl_bind_setup_digest_md5: ["ic", proc {}],
-        sasl_bind_setup_gss_spnego: ["i2", proc {}],
+        sasl_bind_setup_gss_spnego: ["i2", proc {}]
       )
 
       auths = adaptor.send(:sasl_auths, {sasl_mechanisms: ["DIGEST-MD5", "GSS-SPNEGO"]})

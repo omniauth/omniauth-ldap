@@ -2,9 +2,7 @@
 
 [![SemVer 2.0.0][📌semver-img]][📌semver] [![Keep-A-Changelog 1.0.0][📗keep-changelog-img]][📗keep-changelog]
 
-Since version v2.3.1, all notable changes to this project will be documented in this file.
-
-This changelog lists the releases of the original omniauth-ldap, and the GitLab forked versions, up until v2.3.0.
+All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][📗keep-changelog],
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html),
@@ -24,6 +22,10 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Changed
 
+- Retemplated generated project metadata, support documentation, CI workflows,
+  binstubs, and development dependency floors with the current `kettle-jem`
+  template.
+
 ### Deprecated
 
 ### Removed
@@ -31,6 +33,7 @@ Please file a bug if you notice a violation of semantic versioning.
 ### Fixed
 
 - Restored `docs/CNAME` so the generated documentation site keeps its custom domain.
+
 ### Security
 
 ## [3.0.0] - 2026-05-21

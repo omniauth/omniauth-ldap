@@ -23,7 +23,7 @@ module OmniAuth
     class Adaptor
       include OmniAuth::LDAP::AUTH_SANITIZER::FilteredAttributes
 
-      filtered_attributes :@auth, :@configuration, :@connection, :@password, :@tls_options
+      filtered_attributes :auth, :configuration, :connection, :key, :password, :tls_options
 
       # Generic adaptor error super-class
       # @see Error classes that inherit from this class
@@ -63,7 +63,7 @@ module OmniAuth
         # Timeouts
         :connect_timeout,
         :read_timeout,
-        :method,
+        :method
       ]
 
       # Required configuration keys. This may include alternatives as sub-lists
@@ -74,7 +74,7 @@ module OmniAuth
         [:encryption, :method], # :method is deprecated
         [:hosts, :host],
         [:hosts, :port],
-        [:uid, :filter],
+        [:uid, :filter]
       ]
 
       # Supported encryption method mapping for configuration readability.
@@ -87,7 +87,7 @@ module OmniAuth
         # Deprecated. This mapping aimed to be user-friendly, but only caused
         # confusion. Better to pass through the actual `Net::LDAP` encryption type.
         ssl: :simple_tls,
-        tls: :start_tls,
+        tls: :start_tls
       }
 
       # @!attribute [rw] bind_dn
@@ -167,7 +167,7 @@ module OmniAuth
           hosts: @hosts,
           host: @host,
           port: @port,
-          encryption: encryption_options,
+          encryption: encryption_options
         }
         # Remove passing timeouts here to avoid issues on older net-ldap versions.
         # We'll set them after initialization if the connection responds to writers.
@@ -181,7 +181,7 @@ module OmniAuth
         @auth ||= {
           method: @bind_method,
           username: @bind_dn,
-          password: @password,
+          password: @password
         }
         config[:auth] = @auth
         @connection = Net::LDAP.new(config)
@@ -235,7 +235,7 @@ module OmniAuth
                 {
                   method: :simple,
                   username: dn,
-                  password: password,
+                  password: password
                 }
               end
 
@@ -275,7 +275,7 @@ module OmniAuth
 
         {
           method: translated_method,
-          tls_options: tls_options(translated_method),
+          tls_options: tls_options(translated_method)
         }
       end
 
@@ -333,7 +333,7 @@ module OmniAuth
             method: :sasl,
             initial_credential: initial_credential,
             mechanism: mechanism,
-            challenge_response: challenge_response,
+            challenge_response: challenge_response
           }
         end
         auths
@@ -437,7 +437,7 @@ module OmniAuth
             end
             @last_password_policy_response = ctrl if ctrl
           end
-        rescue StandardError
+        rescue
           # Swallow errors to keep authentication flow unaffected when server or gem doesn't support controls
           @last_password_policy_response = nil
         end

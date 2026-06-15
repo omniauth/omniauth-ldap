@@ -5,7 +5,7 @@ RSpec.describe OmniAuth::LDAP do
     script = [
       'require "omniauth-ldap"',
       'raise "Auth was defined" if Object.const_defined?(:Auth, false)',
-      'raise "AuthSanitizer was defined" if Object.const_defined?(:AuthSanitizer, false)',
+      'raise "AuthSanitizer was defined" if Object.const_defined?(:AuthSanitizer, false)'
     ].join("; ")
 
     output, status = Open3.capture2e(RbConfig.ruby, "-Ilib", "-e", script)

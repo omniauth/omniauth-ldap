@@ -60,7 +60,7 @@ RSpec.describe OmniAuth::Strategies::LDAP do
         "REQUEST_METHOD" => "POST",
         "PATH_INFO" => path,
         "rack.session" => {},
-        "rack.input" => StringIO.new("test=true"),
+        "rack.input" => StringIO.new("test=true")
       }.merge(props)
     end
 
@@ -92,7 +92,7 @@ RSpec.describe OmniAuth::Strategies::LDAP do
         "REQUEST_METHOD" => "POST",
         "CONTENT_TYPE" => "application/json",
         # Rails places parsed JSON params here
-        "action_dispatch.request.request_parameters" => {"username" => "json_alice", "password" => "json_secret"},
+        "action_dispatch.request.request_parameters" => {"username" => "json_alice", "password" => "json_secret"}
       }
       post "/auth/ldap", nil, env
       expect(last_response).to be_redirect
@@ -104,7 +104,7 @@ RSpec.describe OmniAuth::Strategies::LDAP do
         make_env("/auth/ldap", {
           "SCRIPT_NAME" => "/subdirectory",
           "rack.session" => {csrf: csrf_token},
-          "rack.input" => StringIO.new("authenticity_token=#{escaped_token}"),
+          "rack.input" => StringIO.new("authenticity_token=#{escaped_token}")
         })
       end
 
@@ -118,7 +118,7 @@ RSpec.describe OmniAuth::Strategies::LDAP do
         nested_env = make_env("/auth/ldap", {
           "SCRIPT_NAME" => "/nested/app",
           "rack.session" => {csrf: csrf_token},
-          "rack.input" => StringIO.new("authenticity_token=#{escaped_token}"),
+          "rack.input" => StringIO.new("authenticity_token=#{escaped_token}")
         })
         post "/auth/ldap", nil, nested_env
         expect(last_response.status).to eq 200
@@ -143,7 +143,7 @@ RSpec.describe OmniAuth::Strategies::LDAP do
       it "fails with missing_credentials" do
         post("/auth/ldap/callback", {})
         expect(last_response).to be_redirect
-        expect(last_response.headers["Location"]).to match(%r{missing_credentials})
+        expect(last_response.headers["Location"]).to include("missing_credentials")
       end
 
       it "redirects to error page" do
@@ -158,7 +158,7 @@ RSpec.describe OmniAuth::Strategies::LDAP do
         allow(@adaptor).to receive(:bind_as).and_raise(StandardError.new("connection_error"))
         post("/auth/ldap/callback", {username: "ping", password: "password"})
         expect(last_response).to be_redirect
-        expect(last_response.headers["Location"]).to match(%r{ldap_error})
+        expect(last_response.headers["Location"]).to include("ldap_error")
       end
 
       context "when wrong request method" do
@@ -176,7 +176,7 @@ RSpec.describe OmniAuth::Strategies::LDAP do
 
           # expect(last_response).to be redirect
           expect(last_response).to be_redirect
-          expect(last_response.headers["Location"]).to match %r{missing_credentials}
+          expect(last_response.headers["Location"]).to include("missing_credentials")
         end
       end
 
@@ -185,7 +185,7 @@ RSpec.describe OmniAuth::Strategies::LDAP do
           post("/auth/ldap/callback", {username: ""})
 
           expect(last_response).to be_redirect
-          expect(last_response.headers["Location"]).to match %r{missing_credentials}
+          expect(last_response.headers["Location"]).to include("missing_credentials")
         end
       end
 
@@ -195,7 +195,7 @@ RSpec.describe OmniAuth::Strategies::LDAP do
             post("/auth/ldap/callback", {username: "ping"})
 
             expect(last_response).to be_redirect
-            expect(last_response.headers["Location"]).to match %r{missing_credentials}
+            expect(last_response.headers["Location"]).to include("missing_credentials")
           end
         end
 
@@ -204,7 +204,7 @@ RSpec.describe OmniAuth::Strategies::LDAP do
             post("/auth/ldap/callback", {username: "ping", password: ""})
 
             expect(last_response).to be_redirect
-            expect(last_response.headers["Location"]).to match %r{missing_credentials}
+            expect(last_response.headers["Location"]).to include("missing_credentials")
           end
         end
       end
@@ -287,7 +287,7 @@ RSpec.describe OmniAuth::Strategies::LDAP do
             post("/auth/ldap/callback", {username: "ping", password: "password"})
 
             expect(last_response).to be_redirect
-            expect(last_response.headers["Location"]).to match %r{ldap_error}
+            expect(last_response.headers["Location"]).to include("ldap_error")
           end
         end
       end
@@ -300,7 +300,7 @@ RSpec.describe OmniAuth::Strategies::LDAP do
         allow(@adaptor).to receive(:filter)
         allow(@adaptor).to receive(:bind_as) {
           Net::LDAP::Entry.from_single_ldif_string(
-            %{dn: cn=ping, dc=intridea, dc=com
+            %(dn: cn=ping, dc=intridea, dc=com
 mail: ping@intridea.com
 givenname: Ping
 sn: Yu
@@ -316,7 +316,7 @@ postofficebox: 20001
 wwwhomepage: www.intridea.com
 jpegphoto: http://www.intridea.com/ping.jpg
 description: omniauth-ldap
-},
+)
           )
         }
       end
@@ -366,9 +366,9 @@ description: omniauth-ldap
         it "binds with complex group filter and applies name_proc" do
           allow(@adaptor).to receive(:bind_as) {
             Net::LDAP::Entry.from_single_ldif_string(
-              %{dn: cn=alice, dc=example, dc=com
+              %(dn: cn=alice, dc=example, dc=com
 uid: alice
-},
+)
             )
           }
           allow(@adaptor).to receive(:filter).and_return("(&(uid=%{username})(memberOf=cn=forum-users,ou=groups,dc=example,dc=com))")
@@ -406,7 +406,7 @@ uid: alice
       before do
         allow(@adaptor).to receive(:filter)
         allow(@adaptor).to receive(:bind_as).and_return(Net::LDAP::Entry.from_single_ldif_string(
-          %{dn: cn=ping, dc=intridea, dc=com
+          %(dn: cn=ping, dc=intridea, dc=com
 userprincipalname: ping@intridea.com
 givenname: Ping
 sn: Yu
@@ -422,7 +422,7 @@ postofficebox: 20001
 wwwhomepage: www.intridea.com
 jpegphoto: http://www.intridea.com/ping.jpg
 description: omniauth-ldap
-},
+)
         ))
       end
 
@@ -491,13 +491,13 @@ description: omniauth-ldap
       # Return an entry that includes sAMAccountName but not uid, so nickname maps from sAMAccountName
       allow(@adaptor).to receive(:bind_as).and_return(
         Net::LDAP::Entry.from_single_ldif_string(
-          %{dn: cn=ping, dc=snip, dc=example, dc=com
+          %(dn: cn=ping, dc=snip, dc=example, dc=com
 samaccountname: ping
 mail: ping@example.com
 givenname: Ping
 sn: User
-},
-        ),
+)
+        )
       )
     end
 
@@ -575,10 +575,10 @@ sn: User
     end
 
     it "authenticates on callback without password using REMOTE_USER" do
-      entry = Net::LDAP::Entry.from_single_ldif_string(%{dn: cn=alice, dc=example, dc=com
+      entry = Net::LDAP::Entry.from_single_ldif_string(%(dn: cn=alice, dc=example, dc=com
 uid: alice
 mail: alice@example.com
-})
+))
       allow(@adaptor).to receive(:connection).and_return(connection_returning(entry))
 
       post "/auth/ldap/callback", nil, tls_env("REMOTE_USER" => "alice")
@@ -592,7 +592,7 @@ mail: alice@example.com
     it "ignores the HTTP_ header variant when source is :env" do
       post "/auth/ldap/callback", nil, tls_env("HTTP_REMOTE_USER" => "alice")
       expect(last_response).to be_redirect
-      expect(last_response.headers["Location"]).to match(/missing_credentials/)
+      expect(last_response.headers["Location"]).to include("missing_credentials")
     end
 
     context "when configured to trust HTTP headers" do
@@ -614,9 +614,9 @@ mail: alice@example.com
       end
 
       it "authenticates on callback with HTTP_ header variant" do
-        entry = Net::LDAP::Entry.from_single_ldif_string(%{dn: cn=alice, dc=example, dc=com
+        entry = Net::LDAP::Entry.from_single_ldif_string(%(dn: cn=alice, dc=example, dc=com
 uid: alice
-})
+))
         allow(@adaptor).to receive(:connection).and_return(connection_returning(entry))
 
         post "/auth/ldap/callback", nil, tls_env("HTTP_REMOTE_USER" => "alice")
@@ -632,7 +632,7 @@ uid: alice
 
       expect(last_response).to be_redirect
       expect(last_request.env["omniauth.error"]).to be_a(ArgumentError)
-      expect(last_request.env["omniauth.error"].message).to match(/requires TLS/)
+      expect(last_request.env["omniauth.error"].message).to include("requires TLS")
     end
 
     it "logs a security warning when header auth is enabled" do
@@ -650,12 +650,12 @@ uid: alice
 
     it "applies name_proc and filter mapping when provided" do
       # search result
-      entry = Net::LDAP::Entry.from_single_ldif_string(%{dn: cn=alice, dc=example, dc=com
+      entry = Net::LDAP::Entry.from_single_ldif_string(%(dn: cn=alice, dc=example, dc=com
         uid: alice
-      })
+      ))
       allow(@adaptor).to receive_messages(
         filter: "uid=%{username}",
-        connection: connection_returning(entry),
+        connection: connection_returning(entry)
       )
       expect(Net::LDAP::Filter).to receive(:construct).with("uid=alice").and_call_original
 
@@ -669,7 +669,7 @@ uid: al(ice)
 })
       allow(@adaptor).to receive_messages(
         connection: connection_returning(entry),
-        filter: "uid=%{username}",
+        filter: "uid=%{username}"
       )
       expect(Net::LDAP::Filter).to receive(:construct).with('uid=al\28ice\29').and_call_original
 
@@ -681,19 +681,19 @@ uid: al(ice)
       allow(@adaptor).to receive(:connection).and_return(connection_returning(nil))
       post "/auth/ldap/callback", nil, tls_env("REMOTE_USER" => "missing")
       expect(last_response).to be_redirect
-      expect(last_response.headers["Location"]).to match(/invalid_credentials/)
+      expect(last_response.headers["Location"]).to include("invalid_credentials")
     end
 
     it "supports complex group filter with %{username} in header SSO path" do
       # Expect that the complex filter string is constructed with the processed username
       expect(Net::LDAP::Filter).to receive(:construct).with("(&(uid=alice)(memberOf=cn=forum-users,ou=groups,dc=example,dc=com))").and_call_original
 
-      entry = Net::LDAP::Entry.from_single_ldif_string(%{dn: cn=alice, dc=example, dc=com
+      entry = Net::LDAP::Entry.from_single_ldif_string(%(dn: cn=alice, dc=example, dc=com
 uid: alice
-})
+))
       allow(@adaptor).to receive_messages(
         filter: "(&(uid=%{username})(memberOf=cn=forum-users,ou=groups,dc=example,dc=com))",
-        connection: connection_returning(entry),
+        connection: connection_returning(entry)
       )
 
       post "/auth/ldap/callback", nil, tls_env("REMOTE_USER" => "alice@example.com")
@@ -719,11 +719,11 @@ uid: alice
       end
 
       it "applies the custom mapping in header SSO path" do
-        entry = Net::LDAP::Entry.from_single_ldif_string(%{dn: cn=bob, dc=example, dc=com
+        entry = Net::LDAP::Entry.from_single_ldif_string(%(dn: cn=bob, dc=example, dc=com
 uid: bob
 mobile: 444-444-4444
 telephonenumber: 555-555-5555
-})
+))
         allow(@adaptor).to receive(:connection).and_return(connection_returning(entry))
 
         post "/auth/ldap/callback", nil, tls_env("REMOTE_USER" => "bob")

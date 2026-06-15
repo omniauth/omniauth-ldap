@@ -18,7 +18,7 @@ RSpec.describe OmniAuth::Strategies::LDAP, type: :integration do
           end
           @app.call(env)
         end
-      end,
+      end
     )
   end
 
@@ -87,7 +87,7 @@ RSpec.describe OmniAuth::Strategies::LDAP, type: :integration do
 
       env = {
         "CONTENT_TYPE" => "application/json",
-        "action_dispatch.request.request_parameters" => {"username" => "bob", "password" => "secret"},
+        "action_dispatch.request.request_parameters" => {"username" => "bob", "password" => "secret"}
       }
       post "/auth/ldap", nil, env
 
@@ -110,23 +110,23 @@ RSpec.describe OmniAuth::Strategies::LDAP, type: :integration do
   it "POST /auth/ldap/callback with JSON missing username and password redirects with missing_credentials" do
     env = {
       "CONTENT_TYPE" => "application/json",
-      "action_dispatch.request.request_parameters" => {},
+      "action_dispatch.request.request_parameters" => {}
     }
     post "/auth/ldap/callback", nil, env
 
     expect(last_response.status).to eq 302
-    expect(last_response.headers["Location"]).to match(/missing_credentials/)
+    expect(last_response.headers["Location"]).to include("missing_credentials")
   end
 
   it "POST /auth/ldap/callback with JSON username but missing password redirects with missing_credentials" do
     env = {
       "CONTENT_TYPE" => "application/json",
-      "action_dispatch.request.request_parameters" => {"username" => "bob"},
+      "action_dispatch.request.request_parameters" => {"username" => "bob"}
     }
     post "/auth/ldap/callback", nil, env
 
     expect(last_response.status).to eq 302
-    expect(last_response.headers["Location"]).to match(/missing_credentials/)
+    expect(last_response.headers["Location"]).to include("missing_credentials")
   end
 
   it "honors SCRIPT_NAME when mounted under a subdirectory for redirect to callback" do

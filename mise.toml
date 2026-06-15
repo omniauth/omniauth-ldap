@@ -17,6 +17,8 @@ KETTLE_DEV_DEBUG = "false"
 DEBUG = "false"
 FLOSS_CFG_FUND_DEBUG = "false"
 FLOSS_CFG_FUND_LOGFILE = "tmp/log/debug.log"
+FUNDING_ORG = "false"
+OPENCOLLECTIVE_HANDLE = "false"
 RUBOCOP_LTS_LOCAL = "false"
 _.path = ["exe", "bin"]
 _.file = { path = ".env.local", redact = true }

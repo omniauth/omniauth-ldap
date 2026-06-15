@@ -32,3 +32,20 @@ RSpec/MultipleMemoizedHelpers:
 # Because the gem namespace is OmniAuth, but the path is not omni_auth
 RSpec/SpecFilePathFormat:
   Enabled: false
+RSpec/SpecFilePathSuffix:
+  Exclude:
+    - 'spec/README.md'
+RSpec/NoExpectationExample:
+  Exclude:
+    - 'spec/README.md'
+RSpec/MultipleDescribes:
+  Exclude:
+    - 'spec/README.md'
+RSpec/RepeatedExampleGroupDescription:
+  Exclude:
+    - 'spec/README.md'
+RSpec/Output:
+  Exclude:
+    - 'spec/support/**/*'
+    - 'spec/config/**/*'
+    - 'spec/fixtures/**/*'
