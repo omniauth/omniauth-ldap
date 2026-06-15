@@ -25,7 +25,9 @@ Please file a bug if you notice a violation of semantic versioning.
 - Retemplated generated project metadata, support documentation, CI workflows,
   binstubs, and development dependency floors with the current `kettle-jem`
   template.
-- Raised the `auth-sanitizer` runtime dependency floor to v0.2.1.
+- Raised the `auth-sanitizer` runtime dependency floor to `>= 0.2.1`, so
+  OmniAuth LDAP consumers get the current inspect redaction behavior and
+  downstream RBS duplicate-declaration fixes.
 
 ### Deprecated
 
