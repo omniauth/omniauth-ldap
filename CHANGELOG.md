@@ -36,6 +36,10 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Security
 
+- Hardened `OmniAuth::LDAP::Adaptor#inspect` redaction so LDAP bind passwords
+  and TLS private key values are filtered from nested connection/configuration
+  output when using current `auth-sanitizer`.
+
 ## [3.0.0] - 2026-05-21
 
 - TAG: [v3.0.0][3.0.0t]
