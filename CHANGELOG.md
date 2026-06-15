@@ -26,8 +26,8 @@ Please file a bug if you notice a violation of semantic versioning.
   binstubs, and development dependency floors with the current `kettle-jem`
   template.
 - Raised the `auth-sanitizer` runtime dependency floor to `>= 0.2.1`, so
-  OmniAuth LDAP consumers get the current inspect redaction behavior and
-  downstream RBS duplicate-declaration fixes.
+  OmniAuth LDAP consumers get hash and nested-attribute inspect redaction fixes
+  plus downstream RBS duplicate-declaration fixes.
 
 ### Deprecated
 
