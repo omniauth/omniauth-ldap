@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     omniauth-ldap (3.0.0)
-      auth-sanitizer (~> 0.1, >= 0.1.4)
+      auth-sanitizer (~> 0.2, >= 0.2.1)
       net-ldap (~> 0.16, < 1)
       omniauth (>= 1.2, < 3)
       pyu-ruby-sasl (>= 0.0.3.3, < 0.1)
