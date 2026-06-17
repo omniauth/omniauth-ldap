@@ -28,15 +28,12 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Fixed
 
-- Route unsafe trusted-header authentication configuration errors through
-  OmniAuth's failure flow consistently across supported OmniAuth versions.
-
 ### Security
 
 ## [3.0.1] - 2026-06-16
 
 - TAG: [v3.0.1][3.0.1t]
-- COVERAGE: 97.52% -- 315/323 lines in 6 files
+- COVERAGE: 97.53% -- 316/324 lines in 6 files
 - BRANCH COVERAGE: 79.41% -- 108/136 branches in 6 files
 - 89.19% documented
 
@@ -52,6 +49,9 @@ Please file a bug if you notice a violation of semantic versioning.
 ### Fixed
 
 - Restored `docs/CNAME` so the generated documentation site keeps its custom domain.
+
+- Route unsafe trusted-header authentication configuration errors through
+  OmniAuth's failure flow consistently across supported OmniAuth versions.
 
 ### Security
 

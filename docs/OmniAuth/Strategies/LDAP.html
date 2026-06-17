@@ -461,10 +461,6 @@ first available attribute from the corresponding list.</li>
       <pre class="lines">
 
 
-259
-260
-261
-262
 263
 264
 265
@@ -494,10 +490,14 @@ first available attribute from the corresponding list.</li>
 289
 290
 291
-292</pre>
+292
+293
+294
+295
+296</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/omniauth/strategies/ldap.rb', line 259</span>
+      <pre class="code"><span class="info file"># File 'lib/omniauth/strategies/ldap.rb', line 263</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_map_user'>map_user</span><span class='lparen'>(</span><span class='id identifier rubyid_mapper'>mapper</span><span class='comma'>,</span> <span class='id identifier rubyid_object'>object</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_user'>user</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
@@ -654,7 +654,11 @@ we perform a read-only directory lookup for the user and, if found, map attribut
 204
 205
 206
-207</pre>
+207
+208
+209
+210
+211</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/omniauth/strategies/ldap.rb', line 167</span>
@@ -664,7 +668,11 @@ we perform a read-only directory lookup for the user and, if found, map attribut
 
   <span class='kw'>return</span> <span class='id identifier rubyid_fail!'>fail!</span><span class='lparen'>(</span><span class='symbol'>:invalid_request_method</span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_valid_request_method?'>valid_request_method?</span>
 
-  <span class='id identifier rubyid_validate_header_auth_configuration!'>validate_header_auth_configuration!</span>
+  <span class='kw'>begin</span>
+    <span class='id identifier rubyid_validate_header_auth_configuration!'>validate_header_auth_configuration!</span>
+  <span class='kw'>rescue</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_e'>e</span>
+    <span class='kw'>return</span> <span class='id identifier rubyid_fail!'>fail!</span><span class='lparen'>(</span><span class='symbol'>:ldap_error</span><span class='comma'>,</span> <span class='id identifier rubyid_e'>e</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
 
   <span class='comment'># Header-based SSO (REMOTE_USER-style) path
 </span>  <span class='kw'>if</span> <span class='lparen'>(</span><span class='id identifier rubyid_hu'>hu</span> <span class='op'>=</span> <span class='id identifier rubyid_header_username'>header_username</span><span class='rparen'>)</span>
@@ -787,18 +795,18 @@ the configured uid attribute is used.</p>
       <pre class="lines">
 
 
-218
-219
-220
-221
 222
 223
 224
 225
-226</pre>
+226
+227
+228
+229
+230</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/omniauth/strategies/ldap.rb', line 218</span>
+      <pre class="code"><span class="info file"># File 'lib/omniauth/strategies/ldap.rb', line 222</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_filter'>filter</span><span class='lparen'>(</span><span class='id identifier rubyid_adaptor'>adaptor</span><span class='comma'>,</span> <span class='id identifier rubyid_username_override'>username_override</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_flt'>flt</span> <span class='op'>=</span> <span class='id identifier rubyid_adaptor'>adaptor</span><span class='period'>.</span><span class='id identifier rubyid_filter'>filter</span>
@@ -1069,7 +1077,7 @@ that populate <code>env['omniauth.auth']</code> can operate on the callback requ
 </div>
 
       <div id="footer">
-  Generated on Tue Jun 16 19:33:55 2026 by
+  Generated on Tue Jun 16 20:33:04 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.44 (ruby-4.0.5).
 </div>
