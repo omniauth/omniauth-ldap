@@ -20,7 +20,7 @@ gem_version =
 Gem::Specification.new do |spec|
   spec.name = "omniauth-ldap"
   spec.version = gem_version
-  spec.authors = ["Peter Boling", "Ping Yu", "Tom Milewski"]
+  spec.authors = ["Hubert", "Ping Yu", "angel brown", "Dmitriy Dzema", "Dmitriy Zaporozhets", "Pat Thoyts", "Rashit Azizbaev", "Samuel de Framond", "Terry Tai", "David Benko", "Jakub Jirutka", "Jason Hollingsworth", "Mack Talcott", "Drew Blessing", "Julian Kniephoff", "Mike Tierney", "Sasha Kotlyar", "Michael Kozono", "Tiago Botelho", "tmilewski", "Finn Bacall", "Stan Hu", "Peter H. Boling"]
   spec.email = ["floss@galtzo.com"]
 
   spec.summary = "📁 LDAP strategy for OmniAuth."
@@ -112,7 +112,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency("pyu-ruby-sasl", ">= 0.0.3.3", "< 0.1")   # ruby >= 0.0
   spec.add_dependency("rack", ">= 1", "< 4")                    # ruby >= 0.0
   spec.add_dependency("rubyntlm", "~> 0.6.2", "< 1")            # ruby >= 1.8.7
-  spec.add_dependency("version_gem", "~> 1.1", ">= 1.1.11")              # ruby >= 2.2.0
+  spec.add_dependency("version_gem", "~> 1.1", ">= 1.1.12")              # ruby >= 2.2.0
 
   # NOTE: It is preferable to list development dependencies in the gemspec due to increased
   #       visibility and discoverability.
