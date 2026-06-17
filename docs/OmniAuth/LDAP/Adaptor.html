@@ -6,7 +6,7 @@
 <title>
   Class: OmniAuth::LDAP::Adaptor
   
-    &mdash; Documentation by YARD 0.9.43
+    &mdash; Documentation by YARD 0.9.44
   
 </title>
 
@@ -112,7 +112,7 @@
     
   <div class="note notetag">
     <strong>Note:</strong>
-    <div class='inline'><p>Public API: <span class='object_link'><a href="#validate-class_method" title="OmniAuth::LDAP::Adaptor.validate (method)">Adaptor.validate</a></span>, <span class='object_link'><a href="#initialize-instance_method" title="OmniAuth::LDAP::Adaptor#initialize (method)">#initialize</a></span>, <span class='object_link'><a href="#bind_as-instance_method" title="OmniAuth::LDAP::Adaptor#bind_as (method)">#bind_as</a></span>, and attr readers such as <span class='object_link'><a href="#connection-instance_method" title="OmniAuth::LDAP::Adaptor#connection (method)">#connection</a></span>, <span class='object_link'><a href="#uid-instance_method" title="OmniAuth::LDAP::Adaptor#uid (method)">#uid</a></span></p>
+    <div class='inline'><p>Public API: {validate}, {initialize}, {bind_as}, and attr readers such as {connection}, {uid}</p>
 </div>
   </div>
 
@@ -204,7 +204,7 @@ the options supported by the gem and are used during initialization.</p>
   <span class='comment'># Timeouts
 </span>  <span class='symbol'>:connect_timeout</span><span class='comma'>,</span>
   <span class='symbol'>:read_timeout</span><span class='comma'>,</span>
-  <span class='symbol'>:method</span><span class='comma'>,</span>
+  <span class='symbol'>:method</span>
 <span class='rbracket'>]</span></pre></dd>
       
         <dt id="MUST_HAVE_KEYS-constant" class="">MUST_HAVE_KEYS =
@@ -239,7 +239,7 @@ the options supported by the gem and are used during initialization.</p>
   <span class='lbracket'>[</span><span class='symbol'>:encryption</span><span class='comma'>,</span> <span class='symbol'>:method</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='comment'># :method is deprecated
 </span>  <span class='lbracket'>[</span><span class='symbol'>:hosts</span><span class='comma'>,</span> <span class='symbol'>:host</span><span class='rbracket'>]</span><span class='comma'>,</span>
   <span class='lbracket'>[</span><span class='symbol'>:hosts</span><span class='comma'>,</span> <span class='symbol'>:port</span><span class='rbracket'>]</span><span class='comma'>,</span>
-  <span class='lbracket'>[</span><span class='symbol'>:uid</span><span class='comma'>,</span> <span class='symbol'>:filter</span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='lbracket'>[</span><span class='symbol'>:uid</span><span class='comma'>,</span> <span class='symbol'>:filter</span><span class='rbracket'>]</span>
 <span class='rbracket'>]</span></pre></dd>
       
         <dt id="ENCRYPTION_METHOD-constant" class="">ENCRYPTION_METHOD =
@@ -276,7 +276,7 @@ the options supported by the gem and are used during initialization.</p>
   <span class='comment'># Deprecated. This mapping aimed to be user-friendly, but only caused
 </span>  <span class='comment'># confusion. Better to pass through the actual `Net::LDAP` encryption type.
 </span>  <span class='label'>ssl:</span> <span class='symbol'>:simple_tls</span><span class='comma'>,</span>
-  <span class='label'>tls:</span> <span class='symbol'>:start_tls</span><span class='comma'>,</span>
+  <span class='label'>tls:</span> <span class='symbol'>:start_tls</span>
 <span class='rbrace'>}</span></pre></dd>
       
     </dl>
@@ -627,7 +627,7 @@ the options supported by the gem and are used during initialization.</p>
   
 
   
-    <span class="summary_desc"><div class='inline'><p>:base =&gt; “dc=yourcompany, dc=com”, :filter =&gt; “(mail=#user)”, :password =&gt; psw.</p>
+    <span class="summary_desc"><div class='inline'><p>:base =&gt; “dc=yourcompany, dc=com”, :filter =&gt; “(mail=#{user})”, :password =&gt; psw.</p>
 </div></span>
   
 </li>
@@ -797,7 +797,7 @@ It also applies timeout settings where supported by the installed net-ldap versi
     <span class='label'>hosts:</span> <span class='ivar'>@hosts</span><span class='comma'>,</span>
     <span class='label'>host:</span> <span class='ivar'>@host</span><span class='comma'>,</span>
     <span class='label'>port:</span> <span class='ivar'>@port</span><span class='comma'>,</span>
-    <span class='label'>encryption:</span> <span class='id identifier rubyid_encryption_options'>encryption_options</span><span class='comma'>,</span>
+    <span class='label'>encryption:</span> <span class='id identifier rubyid_encryption_options'>encryption_options</span>
   <span class='rbrace'>}</span>
   <span class='comment'># Remove passing timeouts here to avoid issues on older net-ldap versions.
 </span>  <span class='comment'># We&#39;ll set them after initialization if the connection responds to writers.
@@ -811,7 +811,7 @@ It also applies timeout settings where supported by the installed net-ldap versi
   <span class='ivar'>@auth</span> <span class='op'>||=</span> <span class='lbrace'>{</span>
     <span class='label'>method:</span> <span class='ivar'>@bind_method</span><span class='comma'>,</span>
     <span class='label'>username:</span> <span class='ivar'>@bind_dn</span><span class='comma'>,</span>
-    <span class='label'>password:</span> <span class='ivar'>@password</span><span class='comma'>,</span>
+    <span class='label'>password:</span> <span class='ivar'>@password</span>
   <span class='rbrace'>}</span>
   <span class='id identifier rubyid_config'>config</span><span class='lbracket'>[</span><span class='symbol'>:auth</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='ivar'>@auth</span>
   <span class='ivar'>@connection</span> <span class='op'>=</span> <span class='const'>Net</span><span class='op'>::</span><span class='const'>LDAP</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_config'>config</span><span class='rparen'>)</span>
@@ -1440,7 +1440,7 @@ It also applies timeout settings where supported by the installed net-ldap versi
 </h3><div class="docstring">
   <div class="discussion">
     <p>:base =&gt; “dc=yourcompany, dc=com”,<br />
-:filter =&gt; “(mail=#user)”,<br />
+:filter =&gt; “(mail=#{user})”,<br />
 :password =&gt; psw</p>
 
 <p>Attempt to locate a user entry and bind as that entry using the supplied<br />
@@ -1630,7 +1630,7 @@ password. Returns the entry on success, or false/nil on failure.</p>
           <span class='lbrace'>{</span>
             <span class='label'>method:</span> <span class='symbol'>:simple</span><span class='comma'>,</span>
             <span class='label'>username:</span> <span class='id identifier rubyid_dn'>dn</span><span class='comma'>,</span>
-            <span class='label'>password:</span> <span class='id identifier rubyid_password'>password</span><span class='comma'>,</span>
+            <span class='label'>password:</span> <span class='id identifier rubyid_password'>password</span>
           <span class='rbrace'>}</span>
         <span class='kw'>end</span>
 
@@ -1668,9 +1668,9 @@ password. Returns the entry on success, or false/nil on failure.</p>
 </div>
 
       <div id="footer">
-  Generated on Thu May 21 04:02:57 2026 by
+  Generated on Tue Jun 16 19:33:54 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.43 (ruby-4.0.4).
+  0.9.44 (ruby-4.0.5).
 </div>
 
     </div>

@@ -22,16 +22,29 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Changed
 
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+## [3.0.1] - 2026-06-16
+
+- TAG: [v3.0.1][3.0.1t]
+- COVERAGE: 97.52% -- 315/323 lines in 6 files
+- BRANCH COVERAGE: 79.41% -- 108/136 branches in 6 files
+- 89.19% documented
+
+### Changed
+
 - Retemplated generated project metadata, support documentation, CI workflows,
   binstubs, and development dependency floors with the current `kettle-jem`
   template.
 - Raised the `auth-sanitizer` runtime dependency floor to `>= 0.2.1`, so
   OmniAuth LDAP consumers get hash and nested-attribute inspect redaction fixes
   plus downstream RBS duplicate-declaration fixes.
-
-### Deprecated
-
-### Removed
 
 ### Fixed
 
@@ -297,7 +310,9 @@ Please file a bug if you notice a violation of semantic versioning.
 [1.0.0]: https://github.com/omniauth/omniauth-ldap/compare/5656da80d4193e0d0584f44bac493a87695e580f...v1.0.0
 [1.0.0t]: https://github.com/omniauth/omniauth-ldap/releases/tag/v1.0.0
 
-[Unreleased]: https://github.com/omniauth/omniauth-ldap/compare/v3.0.0...HEAD
+[Unreleased]: https://github.com/omniauth/omniauth-ldap/compare/v3.0.1...HEAD
+[3.0.1]: https://github.com/omniauth/omniauth-ldap/compare/v3.0.0...v3.0.1
+[3.0.1t]: https://github.com/omniauth/omniauth-ldap/releases/tag/v3.0.1
 [3.0.0]: https://github.com/omniauth/omniauth-ldap/compare/v2.3.4...v3.0.0
 [3.0.0t]: https://github.com/omniauth/omniauth-ldap/releases/tag/v3.0.0
 [2.3.4]: https://github.com/omniauth/omniauth-ldap/compare/v2.3.3...v2.3.4

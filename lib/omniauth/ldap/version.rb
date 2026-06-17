@@ -3,7 +3,7 @@
 module OmniAuth
   module LDAP
     module Version
-      VERSION = "3.0.0"
+      VERSION = "3.0.1"
     end
     VERSION = Version::VERSION # Traditional Constant Location
   end
