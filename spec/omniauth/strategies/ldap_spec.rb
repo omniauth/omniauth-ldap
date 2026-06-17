@@ -639,6 +639,7 @@ uid: alice
       logger = double("logger")
       allow(logger).to receive(:debug)
       allow(logger).to receive(:error)
+      allow(logger).to receive(:info)
       allow(logger).to receive(:warn)
       allow(OmniAuth.config).to receive(:logger).and_return(logger)
       allow(@adaptor).to receive(:connection).and_return(connection_returning(nil))

@@ -217,8 +217,8 @@ RSpec.describe OmniAuth::LDAP::Adaptor do
       inspected = adaptor.inspect
 
       expect(inspected).to include("@password=[FILTERED]")
-      expect(inspected).to include("password: [FILTERED]")
-      expect(inspected).to include("key: [FILTERED]")
+      expect(inspected).to match(/(?::password\s*=>\s*|password:\s*)"?\[FILTERED\]"?/)
+      expect(inspected).to match(/(?::key\s*=>\s*|key:\s*)"?\[FILTERED\]"?/)
       expect(inspected).not_to include("super-secret")
       expect(inspected).not_to include("private-key")
     end

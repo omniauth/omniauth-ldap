@@ -9,3 +9,6 @@ dependency:
     - name: "simplecov-rcov"
       version: "0.3.7"
       license: "MIT"
+    - name: "pyu-ruby-sasl"
+      version: "0.0.3.3"
+      license: "MIT"

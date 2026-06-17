@@ -28,6 +28,9 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Fixed
 
+- Route unsafe trusted-header authentication configuration errors through
+  OmniAuth's failure flow consistently across supported OmniAuth versions.
+
 ### Security
 
 ## [3.0.1] - 2026-06-16

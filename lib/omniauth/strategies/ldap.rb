@@ -169,7 +169,11 @@ module OmniAuth
 
         return fail!(:invalid_request_method) unless valid_request_method?
 
-        validate_header_auth_configuration!
+        begin
+          validate_header_auth_configuration!
+        rescue => e
+          return fail!(:ldap_error, e)
+        end
 
         # Header-based SSO (REMOTE_USER-style) path
         if (hu = header_username)
