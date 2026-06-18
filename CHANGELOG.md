@@ -22,6 +22,9 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Changed
 
+- Raised the `auth-sanitizer` runtime dependency floor to `>= 0.2.2` and
+  switched isolated sanitizer loading to the released `anonymous_loader` gem.
+
 ### Deprecated
 
 ### Removed
