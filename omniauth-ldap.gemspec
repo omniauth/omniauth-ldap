@@ -106,7 +106,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   # Utilities
-  spec.add_dependency("anonymous_loader", "~> 0.1", ">= 0.1.1") # ruby >= 2.2.0
+  spec.add_dependency("anonymous_loader", "~> 0.1", ">= 0.1.2") # ruby >= 2.2.0
   spec.add_dependency("auth-sanitizer", "~> 0.2", ">= 0.2.2")   # ruby >= 2.2.0
   spec.add_dependency("net-ldap", "~> 0.16", "< 1")             # ruby >= 2.0
   spec.add_dependency("omniauth", ">= 1.2", "< 3")              # ruby >= 0.0
