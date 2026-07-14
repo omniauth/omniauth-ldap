@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    omniauth-ldap (3.0.1)
+    omniauth-ldap (3.0.2)
       anonymous_loader (~> 0.1, >= 0.1.2)
       auth-sanitizer (~> 0.2, >= 0.2.2)
       net-ldap (~> 0.16, < 1)
@@ -516,7 +516,7 @@ CHECKSUMS
   nokogiri (1.19.4-x86_64-linux-musl) sha256=17dfb7c1fa194ae02fbf7c51a7afc8d278045ab3fdacfd86f91d02d7b274470b
   nomono (1.0.8) sha256=bf4b9b426cbf216ab17b70db474f691b8ae1f1e29de8db4b0ecd405e6e7e1c80
   omniauth (2.1.4) sha256=42a05b0496f0d22e1dd85d42aaf602f064e36bb47a6826a27ab55e5ba608763c
-  omniauth-ldap (3.0.1)
+  omniauth-ldap (3.0.2)
   openssl (4.0.2) sha256=1037ad2868ae58df9ad917891c0c0f9815a1172f6846d4bcdd508e4c2ee747c2
   ostruct (0.6.3) sha256=95a2ed4a4bd1d190784e666b47b2d3f078e4a9efda2fccf18f84ddc6538ed912
   parallel (1.28.0) sha256=33e6de1484baf2524792d178b0913fc8eb94c628d6cfe45599ad4458c638c970

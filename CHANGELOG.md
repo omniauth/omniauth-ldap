@@ -20,6 +20,25 @@ Please file a bug if you notice a violation of semantic versioning.
 
 ### Added
 
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+## [3.0.2] - 2026-07-14
+
+- TAG: [v3.0.2][3.0.2t]
+- COVERAGE: 97.50% -- 312/320 lines in 6 files
+- BRANCH COVERAGE: 79.41% -- 108/136 branches in 6 files
+- 89.19% documented
+
+### Added
+
 - Added support for JRuby 10.1 and TruffleRuby 34.0.
 
 ### Changed
@@ -30,15 +49,9 @@ Please file a bug if you notice a violation of semantic versioning.
 - Raised the `auth-sanitizer` runtime dependency floor to `>= 0.2.2` and
   switched isolated sanitizer loading to the released `anonymous_loader` gem.
 
-### Deprecated
-
-### Removed
-
 ### Fixed
 
 - Package configured license files in gem release file lists.
-
-### Security
 
 ## [3.0.1] - 2026-06-16
 
@@ -323,7 +336,9 @@ Please file a bug if you notice a violation of semantic versioning.
 [1.0.0]: https://github.com/omniauth/omniauth-ldap/compare/5656da80d4193e0d0584f44bac493a87695e580f...v1.0.0
 [1.0.0t]: https://github.com/omniauth/omniauth-ldap/releases/tag/v1.0.0
 
-[Unreleased]: https://github.com/omniauth/omniauth-ldap/compare/v3.0.1...HEAD
+[Unreleased]: https://github.com/omniauth/omniauth-ldap/compare/v3.0.2...HEAD
+[3.0.2]: https://github.com/omniauth/omniauth-ldap/compare/v3.0.1...v3.0.2
+[3.0.2t]: https://github.com/omniauth/omniauth-ldap/releases/tag/v3.0.2
 [3.0.1]: https://github.com/omniauth/omniauth-ldap/compare/v3.0.0...v3.0.1
 [3.0.1t]: https://github.com/omniauth/omniauth-ldap/releases/tag/v3.0.1
 [3.0.0]: https://github.com/omniauth/omniauth-ldap/compare/v2.3.4...v3.0.0
