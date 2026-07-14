@@ -19,19 +19,11 @@ git_source(:gitlab) { |repo_name| "https://gitlab.com/#{repo_name}" }
 gemspec
 
 # Local workspace dependency wiring for *_local.gemfile overrides
-nomono_requirements = ["~> 1.0", ">= 1.0.7"]
+nomono_requirements = ["~> 1.0", ">= 1.0.8"]
 gem "nomono", *nomono_requirements, require: false # ruby >= 2.2
 
 # Templating (env-switched: SMORG_RB_DEV=/path/to/structuredmerge/ruby/gems for local paths)
 eval_gemfile "gemfiles/modular/templating.gemfile" if ENV.fetch("K_JEM_TEMPLATING", "false").casecmp("true").zero?
-
-group :development, :test do
-  gem "growl"
-  gem "guard"
-  gem "guard-bundler"
-  gem "guard-rspec"
-  gem "rb-fsevent"
-end
 
 # Debugging
 eval_gemfile "gemfiles/modular/debug.gemfile"
