@@ -1,5 +1,9 @@
 module OmniAuth
   module LDAP
+    module Version
+      VERSION: String
+    end
+    VERSION: String
     class Adaptor
       class LdapError < ::StandardError
       end
