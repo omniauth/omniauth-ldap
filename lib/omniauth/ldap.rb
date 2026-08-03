@@ -6,13 +6,6 @@
 #   require 'omniauth-ldap'
 #   OmniAuth::LDAP::VERSION # => "2.3.2"
 
-require "version_gem"
-
 require_relative "ldap/auth_sanitizer"
 require_relative "ldap/adaptor"
 require_relative "strategies/ldap"
-require_relative "ldap/version"
-
-OmniAuth::LDAP::Version.class_eval do
-  extend VersionGem::Basic
-end
