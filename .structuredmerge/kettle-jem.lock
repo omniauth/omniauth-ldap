@@ -285,7 +285,7 @@ files:
   ".github/FUNDING.yml":
     recipe: template_source_application_github_FUNDING_yml
     action: write
-    dest_sha256: 43e4b9ecd69183527cb1697c07071672fc4d500df19575333267ab34414d9614
+    dest_sha256: 84ea310675407dfae7bec194cad360a5f54bbd1224a4106c9c0eaa6d5543843c
     input_fingerprint: ff09ae767fcd14f5aad74627749c6ae16e73bb906dddd2aeec391207a7686c37
     template_sources:
     - ".github/FUNDING.yml.no-osc.example"
