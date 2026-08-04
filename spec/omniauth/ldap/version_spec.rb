@@ -1,5 +1,5 @@
 require "anonymous_loader"
-require "omniauth/ldap"
+require "omniauth-ldap"
 RSpec.describe OmniAuth::LDAP::Version do
   it_behaves_like "a Version module", described_class
 
