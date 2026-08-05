@@ -2,7 +2,7 @@
 version: 1
 template_state:
   version: 7.1.0
-  applied_at: '2026-08-04'
+  applied_at: '2026-08-05'
   changelog_replay:
     last_entry_key: kettle-jem-template-20260802-001
     last_entry_date: '2026-08-02'
@@ -1084,7 +1084,7 @@ files:
     recipe: template_source_application_lib_omniauth_ldap_version_rb
     action: write
     dest_sha256: 76733f089735f2a5e8bea000b156bd2a32b460d4595ff6020d3b8b9f12f22d04
-    input_fingerprint: 220a34fd7eebb3b5893ef0c7470ec208a890640257d7ac5b446893568b2eeb50
+    input_fingerprint: 0c33fa68c76a6d0956768495efbf1f4a1e1a2c3f795b61976e893db23172967f
     template_sources:
     - lib/gem/version.rb.example
   mise.toml:
@@ -1098,7 +1098,7 @@ files:
     recipe: template_source_application_omniauth_ldap_gemspec
     action: write
     dest_sha256: 2720f59d3b958b5aa4ea32ebffda5bd6cc48806e6a18095863e7199621bd1a24
-    input_fingerprint: 910a1d89af5601cf92521b8a89d7d364b53eae155da047c4b0a25bc520ddae1d
+    input_fingerprint: 1cc7f9e71c67c86fc4f8bb737511d43d24f2a192f7cc031646c48b5f8789357a
     template_sources:
     - gem.gemspec.example
   parsers.toml:
