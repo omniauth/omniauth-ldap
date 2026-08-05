@@ -93,7 +93,7 @@
 #                              incompatible ranges remain an error.
 dependency_conflicts:
   # Set true only after every discovered conflict has an intentional action.
-  reviewed: false
+  reviewed: true
   resolve: []
 # This project's identifying emoji.
 # Used as the leading emoji in the README H1 heading and in the gemspec
