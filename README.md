@@ -103,7 +103,7 @@ Note: Net::LDAP historically defaulted to no certificate validation when `tls_op
 | Tokens to Remember | [![Gem name][⛳️name-img]][⛳️gem-name] [![Gem namespace][⛳️namespace-img]][⛳️gem-namespace] |
 |-------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Works with JRuby | [![JRuby 9.2 Compat][💎jruby-9.2i]][🚎jruby-9.2-wf] [![JRuby 9.3 Compat][💎jruby-9.3i]][🚎jruby-9.3-wf] <br/> [![JRuby 9.4 Compat][💎jruby-9.4i]][🚎jruby-9.4-wf] [![JRuby 10.0 Compat][💎jruby-10.0i]][🚎jruby-10.0-wf] [![JRuby current Compat][💎jruby-c-i]][🚎10-j-wf] [![JRuby HEAD Compat][💎jruby-headi]][🚎3-hd-wf]|
-| Works with Truffle Ruby | [![Truffle Ruby 22.3 Compat][💎truby-22.3i]][🚎truby-22.3-wf] [![Truffle Ruby 23.0 Compat][💎truby-23.0i]][🚎truby-23.0-wf] [![Truffle Ruby 23.1 Compat][💎truby-23.1i]][🚎truby-23.1-wf] <br/> [![Truffle Ruby 24.2 Compat][💎truby-24.2i]][🚎truby-24.2-wf] [![Truffle Ruby 25.0 Compat][💎truby-25.0i]][🚎truby-25.0-wf] [![Truffle Ruby 33.0 Compat][💎truby-33.0i]][🚎truby-33.0-wf] [![Truffle Ruby current Compat][💎truby-c-i]][🚎9-t-wf] [![Truffle Ruby HEAD Compat][💎truby-headi]][🚎3-hd-wf]|
+| Works with Truffle Ruby | [![Truffle Ruby 22.3 Compat][💎truby-22.3i]][🚎truby-22.3-wf] [![Truffle Ruby 23.1 Compat][💎truby-23.1i]][🚎truby-23.1-wf] <br/> [![Truffle Ruby 24.2 Compat][💎truby-24.2i]][🚎truby-24.2-wf] [![Truffle Ruby 25.0 Compat][💎truby-25.0i]][🚎truby-25.0-wf] [![Truffle Ruby 33.0 Compat][💎truby-33.0i]][🚎truby-33.0-wf] [![Truffle Ruby current Compat][💎truby-c-i]][🚎9-t-wf]|
 | Works with MRI Ruby 4 | [![Ruby current Compat][💎ruby-c-i]][🚎11-c-wf] [![Ruby HEAD Compat][💎ruby-headi]][🚎3-hd-wf]|
 | Works with MRI Ruby 3 | [![Ruby 3.0 Compat][💎ruby-3.0i]][🚎ruby-3.0-wf] [![Ruby 3.1 Compat][💎ruby-3.1i]][🚎ruby-3.1-wf] [![Ruby 3.2 Compat][💎ruby-3.2i]][🚎ruby-3.2-wf] [![Ruby 3.3 Compat][💎ruby-3.3i]][🚎ruby-3.3-wf] [![Ruby 3.4 Compat][💎ruby-3.4i]][🚎ruby-3.4-wf]|
 | Works with MRI Ruby 2 | ![Ruby 2.2 Compat][💎ruby-2.2i] ![Ruby 2.3 Compat][💎ruby-2.3i] <br/> [![Ruby 2.4 Compat][💎ruby-2.4i]][🚎ruby-2.4-wf] [![Ruby 2.5 Compat][💎ruby-2.5i]][🚎ruby-2.5-wf] [![Ruby 2.6 Compat][💎ruby-2.6i]][🚎ruby-2.6-wf] [![Ruby 2.7 Compat][💎ruby-2.7i]][🚎ruby-2.7-wf]|
@@ -117,11 +117,12 @@ Note: Net::LDAP historically defaulted to no certificate validation when `tls_op
 
 ### Compatibility
 
-Compatible with MRI Ruby 2.2.0+, and concordant releases of JRuby, and TruffleRuby.
+The gem's declared runtime compatibility floor is MRI Ruby 2.2.0+, with concordant releases of JRuby and TruffleRuby.
 CI workflows and Appraisals are generated for MRI Ruby 2.4+.
-This test floor is configured by `ruby.test_minimum` in `.kettle-jem.yml` and
-may be higher than the gem's runtime compatibility floor when legacy Rubies are
-not practical for the current toolchain.
+The current MRI CI lane runs on Linux and macOS.
+The test floor is configured by `ruby.test_minimum` in `.kettle-jem.yml`.
+When it is higher than the runtime floor, older runtime-compatible Rubies are
+not covered by the generated CI or Appraisal matrix.
 
 <a href="https://github.com/kettle-dev"><img alt="kettle-dev Logo by Aboling0, CC BY-SA 4.0" src="https://logos.galtzo.com/assets/images/kettle-dev/avatar-128px.svg" width="14%" align="right"/></a>
 
@@ -156,29 +157,14 @@ The _amazing_ test matrix is powered by the kettle-dev stack.
 
 </details>
 
-### Enterprise Support [![Tidelift](https://tidelift.com/badges/package/rubygems/omniauth-ldap)](https://tidelift.com/subscription/pkg/rubygems-omniauth-ldap?utm_source=rubygems-omniauth-ldap&utm_medium=referral&utm_campaign=readme)
+### Enterprise Support
 
-Available as part of the Tidelift Subscription.
+For enterprise support from the maintainer, use [Upwork][👨🏼‍🏫expsup-upwork] or [CodeMentor][👨🏼‍🏫expsup-codementor].
 
-<details markdown="1">
- <summary>Need enterprise-level guarantees?</summary>
-
-The maintainers of this and thousands of other packages are working with Tidelift to deliver commercial support and maintenance for the open source packages you use to build your applications. Save time, reduce risk, and improve code health, while paying the maintainers of the exact packages you use.
-
-[![Get help from me on Tidelift][🏙️entsup-tidelift-img]][🏙️entsup-tidelift]
-
-- 💡Subscribe for support guarantees covering _all_ your FLOSS dependencies
-- 💡Tidelift is part of [Sonar][🏙️entsup-tidelift-sonar]
-- 💡Tidelift pays maintainers to maintain the software you depend on!<br/>📊`@`Pointy Haired Boss: An [enterprise support][🏙️entsup-tidelift] subscription is "[never gonna let you down][🧮kloc]", and *supports* open source maintainers
-
-Alternatively:
+Other support channels:
 
 - [![Ruby Users Forum][✉️ruby-forum-img]][✉️ruby-forum]
 - [![Live Chat on Discord][✉️discord-invite-img-ftb]][✉️discord-invite]
-- [![Get help from me on Upwork][👨🏼‍🏫expsup-upwork-img]][👨🏼‍🏫expsup-upwork]
-- [![Get help from me on Codementor][👨🏼‍🏫expsup-codementor-img]][👨🏼‍🏫expsup-codementor]
-
-</details>
 
 ## ✨ Installation
 
@@ -659,18 +645,17 @@ We welcome both individual and corporate sponsors! We also offer a
 wide array of funding channels to account for your preferences.
 Currently, [GitHub Sponsors][🖇sponsor], and [Liberapay][⛳liberapay] are our preferred funding platforms.
 
+### Corporate Sponsorship
+
 **If you're working in a company that's making significant use of omniauth tools we'd
 appreciate it if you suggest to your company to become a omniauth sponsor.**
+
+### Individual Support
 
 You can support the development of omniauth tools via
 [GitHub Sponsors][🖇sponsor],
 [Liberapay][⛳liberapay],
-[PayPal][🖇paypal],
-and [Tidelift][🏙️entsup-tidelift].
-
-| 📍 NOTE |
-|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| If doing a sponsorship in the form of donation is problematic for your company <br/> from an accounting standpoint, we'd recommend the use of Tidelift, <br/> where you can get a support-like subscription instead. |
+and [PayPal][🖇paypal].
 
 ### Another way to support open-source
 
@@ -691,8 +676,7 @@ See [SECURITY.md][🔐security].
 ## 🤝 Contributing
 
 If you need some ideas of where to help, you could work on adding more code coverage,
-or if it is already 💯 (see [below](#code-coverage)) check [issues][🤝gh-issues] or [PRs][🤝gh-pulls],
-or use the gem and think about how it could be better.
+check [issues][🤝gh-issues] or [PRs][🤝gh-pulls], or use the gem and think about how it could be better.
 
 We [![Keep A Changelog][📗keep-changelog-img]][📗keep-changelog] so if you make changes, remember to update it.
 
@@ -727,19 +711,6 @@ chat rooms and mailing lists agrees to follow the [![Contributor Covenant 2.1][�
 Made with [contributors-img][🖐contrib-rocks].
 
 Also see GitLab Contributors: [https://gitlab.com/omniauth/omniauth-ldap/-/graphs/main][🚎contributors-gl]
-
-<details markdown="1">
- <summary>⭐️ Star History</summary>
-
-<a href="https://star-history.com/omniauth/omniauth-ldap&Date">
- <picture>
- <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=omniauth/omniauth-ldap&type=Date&theme=dark" />
- <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=omniauth/omniauth-ldap&type=Date" />
- <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=omniauth/omniauth-ldap&type=Date" />
- </picture>
-</a>
-
-</details>
 
 ## 📌 Versioning
 
@@ -792,14 +763,13 @@ See [LICENSE.md][📄license] for the official copyright notice.
 - Copyright (c) 2014 Jakub Jirutka
 - Copyright (c) 2014 Jason Hollingsworth
 - Copyright (c) 2014 Mack Talcott
-- Copyright (c) 2016-2018 Drew Blessing
+- Copyright (c) 2016-2019 Drew Blessing
 - Copyright (c) 2016 Julian Kniephoff
 - Copyright (c) 2016 Mike Tierney
 - Copyright (c) 2016 Sasha Kotlyar
 - Copyright (c) 2017 Michael Kozono
 - Copyright (c) 2017 Tiago Botelho
 - Copyright (c) 2018 tmilewski
-- Copyright (c) 2019 Drew Blessing
 - Copyright (c) 2022 Finn Bacall
 - Copyright (c) 2022 Stan Hu
 - Copyright (c) 2025-2026 Peter H. Boling
@@ -889,9 +859,6 @@ Thanks for RTFM. ☺️
 [👨🏼‍🏫expsup-upwork-img]: https://img.shields.io/badge/UpWork-13544E?style=for-the-badge&logo=Upwork&logoColor=white
 [👨🏼‍🏫expsup-codementor]: https://www.codementor.io/peterboling?utm_source=github&utm_medium=button&utm_term=peterboling&utm_campaign=github
 [👨🏼‍🏫expsup-codementor-img]: https://img.shields.io/badge/CodeMentor-Get_Help-1abc9c?style=for-the-badge&logo=CodeMentor&logoColor=white
-[🏙️entsup-tidelift]: https://tidelift.com/subscription/pkg/rubygems-omniauth-ldap?utm_source=rubygems-omniauth-ldap&utm_medium=referral&utm_campaign=readme
-[🏙️entsup-tidelift-img]: https://img.shields.io/badge/Tidelift_and_Sonar-Enterprise_Support-FD3456?style=for-the-badge&logo=sonar&logoColor=white
-[🏙️entsup-tidelift-sonar]: https://blog.tidelift.com/tidelift-joins-sonar
 [💁🏼‍♂️peterboling]: http://www.peterboling.com
 [🚂railsbling]: http://www.railsbling.com
 [📜src-gl-img]: https://img.shields.io/badge/GitLab-FBA326?style=for-the-badge&logo=Gitlab&logoColor=orange
@@ -932,7 +899,6 @@ Thanks for RTFM. ☺️
 [🚎jruby-9.4-wf]: https://github.com/omniauth/omniauth-ldap/actions/workflows/jruby-9.4.yml
 [🚎jruby-10.0-wf]: https://github.com/omniauth/omniauth-ldap/actions/workflows/jruby-10.0.yml
 [🚎truby-22.3-wf]: https://github.com/omniauth/omniauth-ldap/actions/workflows/truffleruby-22.3.yml
-[🚎truby-23.0-wf]: https://github.com/omniauth/omniauth-ldap/actions/workflows/truffleruby-23.0.yml
 [🚎truby-23.1-wf]: https://github.com/omniauth/omniauth-ldap/actions/workflows/truffleruby-23.1.yml
 [🚎truby-24.2-wf]: https://github.com/omniauth/omniauth-ldap/actions/workflows/truffleruby-24.2.yml
 [🚎truby-25.0-wf]: https://github.com/omniauth/omniauth-ldap/actions/workflows/truffleruby-25.0.yml
@@ -971,13 +937,11 @@ Thanks for RTFM. ☺️
 [💎ruby-c-i]: https://img.shields.io/badge/Ruby-current-CC342D?style=for-the-badge&logo=ruby&logoColor=green
 [💎ruby-headi]: https://img.shields.io/badge/Ruby-HEAD-CC342D?style=for-the-badge&logo=ruby&logoColor=blue
 [💎truby-22.3i]: https://img.shields.io/badge/Truffle_Ruby-22.3-34BCB1?style=for-the-badge&logo=ruby&logoColor=pink
-[💎truby-23.0i]: https://img.shields.io/badge/Truffle_Ruby-23.0-34BCB1?style=for-the-badge&logo=ruby&logoColor=pink
 [💎truby-23.1i]: https://img.shields.io/badge/Truffle_Ruby-23.1-34BCB1?style=for-the-badge&logo=ruby&logoColor=pink
 [💎truby-24.2i]: https://img.shields.io/badge/Truffle_Ruby-24.2-34BCB1?style=for-the-badge&logo=ruby&logoColor=pink
 [💎truby-25.0i]: https://img.shields.io/badge/Truffle_Ruby-25.0-34BCB1?style=for-the-badge&logo=ruby&logoColor=pink
 [💎truby-33.0i]: https://img.shields.io/badge/Truffle_Ruby-33.0-34BCB1?style=for-the-badge&logo=ruby&logoColor=pink
 [💎truby-c-i]: https://img.shields.io/badge/Truffle_Ruby-current-34BCB1?style=for-the-badge&logo=ruby&logoColor=green
-[💎truby-headi]: https://img.shields.io/badge/Truffle_Ruby-HEAD-34BCB1?style=for-the-badge&logo=ruby&logoColor=blue
 [💎jruby-9.2i]: https://img.shields.io/badge/JRuby-9.2-FBE742?style=for-the-badge&logo=ruby&logoColor=red
 [💎jruby-9.3i]: https://img.shields.io/badge/JRuby-9.3-FBE742?style=for-the-badge&logo=ruby&logoColor=red
 [💎jruby-9.4i]: https://img.shields.io/badge/JRuby-9.4-FBE742?style=for-the-badge&logo=ruby&logoColor=red
@@ -1040,5 +1004,5 @@ Thanks for RTFM. ☺️
 | Homepage | https://github.com/omniauth/omniauth-ldap |
 | Source | https://github.com/omniauth/omniauth-ldap |
 | License | `MIT` |
-| Funding | https://github.com/sponsors/pboling, https://ko-fi.com/pboling, https://liberapay.com/pboling/donate, https://thanks.dev/u/gh/pboling, https://tidelift.com/funding/github/rubygems/omniauth-ldap, https://www.buymeacoffee.com/pboling |
+| Funding | https://github.com/sponsors/pboling, https://ko-fi.com/pboling, https://liberapay.com/pboling/donate, https://thanks.dev/u/gh/pboling, https://www.buymeacoffee.com/pboling |
 <!-- kettle-jem:metadata:end -->

@@ -11,3 +11,5 @@ eval_gemfile("modular/optional.gemfile")
 eval_gemfile("modular/rack/r3/v3.2.gemfile")
 
 eval_gemfile("modular/x_std_libs.gemfile")
+
+eval_gemfile("modular/rspec.gemfile")

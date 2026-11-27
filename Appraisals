@@ -49,6 +49,10 @@ appraise "unlocked_deps" do
   eval_gemfile "modular/coverage.gemfile"
   eval_gemfile "modular/documentation.gemfile"
   eval_gemfile "modular/optional.gemfile"
+  # Development dependencies shunted out of the gemspec - see
+  # gemfiles/modular/shunted.gemfile's own header for exactly which ones
+  # and why.
+  eval_gemfile "modular/shunted.gemfile"
   eval_gemfile "modular/style.gemfile"
   eval_gemfile "modular/x_std_libs.gemfile"
 end
@@ -58,6 +62,7 @@ appraise "head" do
   eval_gemfile "modular/optional.gemfile"
   eval_gemfile "modular/rack/vHEAD.gemfile"
   eval_gemfile "modular/x_std_libs.gemfile"
+  eval_gemfile "modular/rspec.gemfile"
 end
 
 appraise "current" do
@@ -65,6 +70,7 @@ appraise "current" do
   eval_gemfile "modular/optional.gemfile"
   eval_gemfile "modular/rack/r3/v3.2.gemfile"
   eval_gemfile "modular/x_std_libs.gemfile"
+  eval_gemfile "modular/rspec.gemfile"
 end
 
 appraise "dep-heads" do
@@ -78,24 +84,28 @@ appraise "ruby-2-4" do
   eval_gemfile "modular/omniauth/r2/v1.8.gemfile"
   eval_gemfile "modular/rack/r2.3/v2.1.gemfile"
   eval_gemfile "modular/x_std_libs/r2.4/libs.gemfile"
+  eval_gemfile "modular/rspec_junit_formatter/r2/v0.6.gemfile"
 end
 
 appraise "ruby-2-5" do
   eval_gemfile "modular/omniauth/r2/v1.9.gemfile"
   eval_gemfile "modular/rack/r2.3/v2.2.gemfile"
   eval_gemfile "modular/x_std_libs/r2.6/libs.gemfile"
+  eval_gemfile "modular/rspec_junit_formatter/r2/v0.6.gemfile"
 end
 
 appraise "ruby-2-6" do
   eval_gemfile "modular/omniauth/r2/v2.0.gemfile"
   eval_gemfile "modular/rack/r2/v2.2.gemfile"
   eval_gemfile "modular/x_std_libs/r2.6/libs.gemfile"
+  eval_gemfile "modular/rspec_junit_formatter/r2/v0.6.gemfile"
 end
 
 appraise "ruby-2-7" do
   eval_gemfile "modular/omniauth/r2/v2.1.gemfile"
   eval_gemfile "modular/rack/r2/v3.2.gemfile"
   eval_gemfile "modular/x_std_libs/r2/libs.gemfile"
+  eval_gemfile "modular/rspec_junit_formatter/r2/v0.6.gemfile"
 end
 
 appraise "ruby-3-0" do
@@ -104,12 +114,14 @@ appraise "ruby-3-0" do
   eval_gemfile "modular/omniauth/r3/v2.1.gemfile"
   eval_gemfile "modular/rack/r3/v3.2.gemfile"
   eval_gemfile "modular/x_std_libs/r3.1/libs.gemfile"
+  eval_gemfile "modular/rspec_junit_formatter/r3.2/v0.6.gemfile"
 end
 
 appraise "ruby-3-1" do
   eval_gemfile "modular/omniauth/r3/v2.1.gemfile"
   eval_gemfile "modular/rack/r3/v3.2.gemfile"
   eval_gemfile "modular/x_std_libs/r3.1/libs.gemfile"
+  eval_gemfile "modular/rspec_junit_formatter/r3.2/v0.6.gemfile"
 end
 
 appraise "ruby-3-2" do
@@ -117,16 +129,19 @@ appraise "ruby-3-2" do
   eval_gemfile "modular/omniauth/r3/v2.1.gemfile"
   eval_gemfile "modular/rack/r3/v3.2.gemfile"
   eval_gemfile "modular/x_std_libs/r3/libs.gemfile"
+  eval_gemfile "modular/rspec_junit_formatter/r3.2/v0.6.gemfile"
 end
 
 appraise "ruby-3-3" do
   eval_gemfile "modular/omniauth/r3/v2.1.gemfile"
   eval_gemfile "modular/rack/r3/v3.2.gemfile"
   eval_gemfile "modular/x_std_libs/r3/libs.gemfile"
+  eval_gemfile "modular/rspec_junit_formatter/r3/v0.8.gemfile"
 end
 
 appraise "ruby-3-4" do
   eval_gemfile "modular/x_std_libs/r3/libs.gemfile"
+  eval_gemfile "modular/rspec_junit_formatter/r3/v0.8.gemfile"
 end
 
 appraise "audit" do
@@ -154,41 +169,34 @@ end
 appraise "ruby-2-3-omni-v1.2" do
   eval_gemfile "modular/omniauth/r2/v1.2.gemfile"
   eval_gemfile "modular/rack/r2.1/v1.0.gemfile"
-  eval_gemfile "modular/x_std_libs/r2.3/libs.gemfile"
 end
 
 appraise "ruby-2-3-omni-v1.3" do
   eval_gemfile "modular/omniauth/r2/v1.3.gemfile"
   eval_gemfile "modular/rack/r2.1/v1.1.gemfile"
-  eval_gemfile "modular/x_std_libs/r2.3/libs.gemfile"
 end
 
 appraise "ruby-2-3-omni-v1.4" do
   eval_gemfile "modular/omniauth/r2/v1.4.gemfile"
   eval_gemfile "modular/rack/r2.1/v1.2.gemfile"
-  eval_gemfile "modular/x_std_libs/r2.3/libs.gemfile"
 end
 
 appraise "ruby-2-3-omni-v1.5" do
   eval_gemfile "modular/omniauth/r2/v1.5.gemfile"
   eval_gemfile "modular/rack/r2.1/v1.3.gemfile"
-  eval_gemfile "modular/x_std_libs/r2.3/libs.gemfile"
 end
 
 appraise "ruby-2-3-omni-v1.6" do
   eval_gemfile "modular/omniauth/r2/v1.6.gemfile"
   eval_gemfile "modular/rack/r2.1/v1.4.gemfile"
-  eval_gemfile "modular/x_std_libs/r2.3/libs.gemfile"
 end
 
 appraise "ruby-2-3-omni-v1.7" do
   eval_gemfile "modular/omniauth/r2/v1.7.gemfile"
   eval_gemfile "modular/rack/r2.1/v1.5.gemfile"
-  eval_gemfile "modular/x_std_libs/r2.3/libs.gemfile"
 end
 
 appraise "ruby-2-3-omni-v1.8" do
   eval_gemfile "modular/omniauth/r2/v1.8.gemfile"
   eval_gemfile "modular/rack/r2.1/v1.6.gemfile"
-  eval_gemfile "modular/x_std_libs/r2.3/libs.gemfile"
 end

@@ -1,6 +1,6 @@
 header:
   license:
-    spdx-id: MIT
+    spdx-id: "MIT"
 
 dependency:
   files:
@@ -8,7 +8,4 @@ dependency:
   licenses:
     - name: "simplecov-rcov"
       version: "0.3.7"
-      license: "MIT"
-    - name: "pyu-ruby-sasl"
-      version: "0.0.3.3"
       license: "MIT"

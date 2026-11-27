@@ -2,8 +2,6 @@
 
 source "https://gem.coop"
 
-gem "benchmark", "~> 0.4", ">= 0.4.1"
-
 gemspec path: "../"
 
 eval_gemfile("modular/omniauth/vHEAD.gemfile")
@@ -13,3 +11,5 @@ eval_gemfile("modular/optional.gemfile")
 eval_gemfile("modular/rack/vHEAD.gemfile")
 
 eval_gemfile("modular/x_std_libs.gemfile")
+
+eval_gemfile("modular/rspec.gemfile")
