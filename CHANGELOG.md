@@ -65,6 +65,8 @@ Please file a bug if you notice a violation of semantic versioning.
   - other (9)
   - workflows (31)
 
+- Dependency floors raised to the latest releases, including auth-sanitizer >= 0.2.4 (Hash#inspect redaction in debug logging, GHSA-cmh8-5q25-68v6).
+
 ### Deprecated
 
 ### Removed
